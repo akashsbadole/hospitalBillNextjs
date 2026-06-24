@@ -18,8 +18,15 @@ export const metadata: Metadata = {
   description: "Comprehensive hospital management system with GST-compliant billing, appointment scheduling, and Razorpay payment integration for Indian clinics and hospitals.",
   keywords: ["hospital", "billing", "GST", "Razorpay", "patient management", "appointments", "medical"],
   icons: {
-    icon: "https://z-cdn.chatglm.cn/z-ai/static/logo.svg",
+    icon: [
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
+      { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+      { url: '/logo.png', sizes: 'any', type: 'image/png' },
+    ],
+    apple: '/apple-touch-icon.png',
   },
+  manifest: '/site.webmanifest',
 };
 
 export default function RootLayout({

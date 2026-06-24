@@ -53,6 +53,7 @@ import {
 import { useAuth } from '@/stores/auth'
 import { useBranchStore } from '@/stores/branch'
 import { PaymentGatewaySettings } from '@/components/settings/PaymentGatewaySettings'
+import { ImageUpload } from '@/components/ImageUpload'
 import {
   Building2,
   Receipt,
@@ -703,8 +704,6 @@ export function SettingsPage() {
   const [loadingSettings, setLoadingSettings] = useState(true)
   const [savingSettings, setSavingSettings] = useState(false)
   const [logoUrl, setLogoUrl] = useState('')
-  const [savingLogo, setSavingLogo] = useState(false)
-
   // Staff state
   const [staffList, setStaffList] = useState<StaffMember[]>([])
   const [loadingStaff, setLoadingStaff] = useState(false)
@@ -981,21 +980,6 @@ export function SettingsPage() {
     }
   }
 
-  const handleSaveLogo = async () => {
-    setSavingLogo(true)
-    try {
-      await apiPut<SingleResponse<ClinicSettings>>('/settings', { logo: logoUrl || null })
-      toast({ title: 'Success', description: 'Logo URL saved successfully!' })
-      fetchSettings()
-    } catch (err) {
-      if (err instanceof ApiError) {
-        toast({ title: 'Error', description: err.message, variant: 'destructive' })
-      }
-    } finally {
-      setSavingLogo(false)
-    }
-  }
-
   const handleOpenHsnDialog = (item?: HsnCode) => {
     if (item) {
       setEditingHsn(item)
@@ -1192,29 +1176,15 @@ export function SettingsPage() {
                     )} />
                   </div>
                   <div className="space-y-2">
-                    <Label>Logo URL</Label>
-                    <div className="flex items-center gap-3">
-                      {logoUrl ? (
-                        <img src={logoUrl} alt="Clinic Logo" className="h-20 w-20 rounded-xl object-contain border" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }} />
-                      ) : (
-                        <div className="flex h-20 w-20 items-center justify-center rounded-xl border-2 border-dashed bg-muted/50">
-                          <Globe className="h-8 w-8 text-muted-foreground" />
-                        </div>
-                      )}
-                      <div className="flex-1 space-y-2">
-                        <Input
-                          type="url"
-                          placeholder="https://example.com/logo.png"
-                          value={logoUrl}
-                          onChange={(e) => setLogoUrl(e.target.value)}
-                        />
-                        <Button type="button" variant="outline" size="sm" className="gap-2" disabled={savingLogo} onClick={handleSaveLogo}>
-                          {savingLogo ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
-                          Save Logo
-                        </Button>
-                      </div>
-                    </div>
-                    <p className="text-xs text-muted-foreground">Enter the URL for your clinic logo image.</p>
+                    <Label>Clinic Logo</Label>
+                    <ImageUpload
+                      currentImage={logoUrl}
+                      onUploadComplete={(url) => setLogoUrl(url)}
+                      type="logo"
+                      aspectRatio="aspect-[2/1]"
+                      className="items-start"
+                    />
+                    <p className="text-xs text-muted-foreground">Upload your clinic logo. Supported: JPEG, PNG, WebP, GIF (max 5MB).</p>
                   </div>
                   <div className="flex justify-end">
                     <Button type="submit" className="bg-emerald-600 hover:bg-emerald-700 gap-2" disabled={savingSettings}>
