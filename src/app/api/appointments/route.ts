@@ -152,9 +152,9 @@ export async function GET(request: NextRequest) {
     if (patientId) where.patientId = patientId
     if (search) {
       where.OR = [
-        { patient: { name: { contains: search } } },
-        { doctor: { name: { contains: search } } },
-        { aptId: { contains: search } },
+        { patient: { name: { contains: search, mode: 'insensitive' } } },
+        { doctor: { name: { contains: search, mode: 'insensitive' } } },
+        { aptId: { contains: search, mode: 'insensitive' } },
       ]
     }
 

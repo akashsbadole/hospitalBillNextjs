@@ -58,9 +58,9 @@ export async function GET(request: NextRequest) {
     if (category) where.category = category
     if (search) {
       where.OR = [
-        { name: { contains: search } },
-        { manufacturer: { contains: search } },
-        { medicineId: { contains: search } },
+        { name: { contains: search, mode: 'insensitive' } },
+        { manufacturer: { contains: search, mode: 'insensitive' } },
+        { medicineId: { contains: search, mode: 'insensitive' } },
         { batchNumber: { contains: search } },
       ]
     }

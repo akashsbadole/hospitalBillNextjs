@@ -19,6 +19,7 @@ export async function GET(request: NextRequest) {
     }
 
     const searchTerm = `%${q}%`
+    const prefixTerm = `${q}%`
     const searchResults: Record<string, unknown[]> = {}
 
     const queries: Promise<void>[] = []
@@ -28,12 +29,12 @@ export async function GET(request: NextRequest) {
         db.$queryRawUnsafe<any[]>(
           `SELECT id, patientId, name, phone, email, bloodGroup, gender, status
            FROM Patient
-           WHERE name LIKE ? OR phone LIKE ? OR email LIKE ? OR patientId LIKE ?
+           WHERE name ILIKE ? OR phone ILIKE ? OR email ILIKE ? OR patientId ILIKE ?
            ORDER BY
-             CASE WHEN name LIKE ? THEN 0 WHEN patientId LIKE ? THEN 1 ELSE 2 END,
+             CASE WHEN name ILIKE ? THEN 0 WHEN patientId ILIKE ? THEN 1 ELSE 2 END,
              createdAt DESC
            LIMIT ?`,
-          searchTerm, searchTerm, searchTerm, searchTerm, `${q}%`, `${q}%`, limit
+          searchTerm, searchTerm, searchTerm, searchTerm, prefixTerm, prefixTerm, limit
         ).then(rows => { searchResults['patients'] = rows })
       )
     }
@@ -44,10 +45,10 @@ export async function GET(request: NextRequest) {
           `SELECT i.id, i.invoiceNumber, i.date, i.status, i.grandTotal, i.paidAmount, p.name as patientName
            FROM Invoice i
            LEFT JOIN Patient p ON p.id = i.patientId
-           WHERE i.invoiceNumber LIKE ?
-           ORDER BY CASE WHEN i.invoiceNumber LIKE ? THEN 0 ELSE 1 END, i.createdAt DESC
+           WHERE i.invoiceNumber ILIKE ?
+           ORDER BY CASE WHEN i.invoiceNumber ILIKE ? THEN 0 ELSE 1 END, i.createdAt DESC
            LIMIT ?`,
-          searchTerm, `${q}%`, limit
+          searchTerm, prefixTerm, limit
         ).then(rows => { searchResults['invoices'] = rows })
       )
     }
@@ -59,7 +60,7 @@ export async function GET(request: NextRequest) {
            FROM Prescription p
            LEFT JOIN Patient pt ON pt.id = p.patientId
            LEFT JOIN Doctor d ON d.id = p.doctorId
-           WHERE p.prescriptionId LIKE ? OR p.diagnosis LIKE ?
+           WHERE p.prescriptionId ILIKE ? OR p.diagnosis ILIKE ?
            ORDER BY p.createdAt DESC LIMIT ?`,
           searchTerm, searchTerm, limit
         ).then(rows => { searchResults['prescriptions'] = rows })
@@ -73,7 +74,7 @@ export async function GET(request: NextRequest) {
            FROM Appointment a
            LEFT JOIN Patient pt ON pt.id = a.patientId
            LEFT JOIN Doctor d ON d.id = a.doctorId
-           WHERE a.aptId LIKE ? OR a.notes LIKE ?
+           WHERE a.aptId ILIKE ? OR a.notes ILIKE ?
            ORDER BY a.createdAt DESC LIMIT ?`,
           searchTerm, searchTerm, limit
         ).then(rows => { searchResults['appointments'] = rows })
@@ -85,10 +86,10 @@ export async function GET(request: NextRequest) {
         db.$queryRawUnsafe<any[]>(
           `SELECT id, doctorId, name, specialization, qualification, consultationFee, phone, status
            FROM Doctor
-           WHERE name LIKE ? OR specialization LIKE ? OR doctorId LIKE ? OR qualification LIKE ?
-           ORDER BY CASE WHEN name LIKE ? THEN 0 ELSE 1 END
+           WHERE name ILIKE ? OR specialization ILIKE ? OR doctorId ILIKE ? OR qualification ILIKE ?
+           ORDER BY CASE WHEN name ILIKE ? THEN 0 ELSE 1 END
            LIMIT ?`,
-          searchTerm, searchTerm, searchTerm, searchTerm, `${q}%`, limit
+          searchTerm, searchTerm, searchTerm, searchTerm, prefixTerm, limit
         ).then(rows => { searchResults['doctors'] = rows })
       )
     }
@@ -98,10 +99,10 @@ export async function GET(request: NextRequest) {
         db.$queryRawUnsafe<any[]>(
           `SELECT id, medicineId, name, category, manufacturer, batchNumber, stock, minStock, sellingPrice
            FROM Medicine
-           WHERE name LIKE ? OR medicineId LIKE ? OR category LIKE ? OR manufacturer LIKE ?
-           ORDER BY CASE WHEN name LIKE ? THEN 0 ELSE 1 END
+           WHERE name ILIKE ? OR medicineId ILIKE ? OR category ILIKE ? OR manufacturer ILIKE ?
+           ORDER BY CASE WHEN name ILIKE ? THEN 0 ELSE 1 END
            LIMIT ?`,
-          searchTerm, searchTerm, searchTerm, searchTerm, `${q}%`, limit
+          searchTerm, searchTerm, searchTerm, searchTerm, prefixTerm, limit
         ).then(rows => { searchResults['medicines'] = rows })
       )
     }

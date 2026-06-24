@@ -103,10 +103,10 @@ export async function GET(request: NextRequest) {
     // Search filter
     if (search) {
       where.OR = [
-        { name: { contains: search } },
+        { name: { contains: search, mode: 'insensitive' } },
         { phone: { contains: search } },
-        { email: { contains: search } },
-        { patientId: { contains: search } },
+        { email: { contains: search, mode: 'insensitive' } },
+        { patientId: { contains: search, mode: 'insensitive' } },
       ]
     }
 

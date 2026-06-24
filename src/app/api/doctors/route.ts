@@ -45,10 +45,10 @@ export async function GET(request: NextRequest) {
     if (status) where.status = status
     if (search) {
       where.OR = [
-        { name: { contains: search } },
-        { specialization: { contains: search } },
+        { name: { contains: search, mode: 'insensitive' } },
+        { specialization: { contains: search, mode: 'insensitive' } },
         { phone: { contains: search } },
-        { doctorId: { contains: search } },
+        { doctorId: { contains: search, mode: 'insensitive' } },
       ]
     }
 
