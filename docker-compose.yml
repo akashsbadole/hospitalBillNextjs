@@ -1,0 +1,58 @@
+version: "3.9"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    env_file: .env
+    environment:
+      - DATABASE_URL=postgresql://medibill:medibill@db:5432/medibill
+      - SOCKET_PORT=3001
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  realtime:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    env_file: .env
+    environment:
+      - NEXT_PUBLIC_SOCKET_URL=ws://localhost:3001
+      - SOCKET_PORT=3001
+    command: npx tsx server.ts
+    restart: unless-stopped
+
+  db:
+    image: postgres:16-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: medibill
+      POSTGRES_PASSWORD: medibill
+      POSTGRES_DB: medibill
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U medibill -d medibill"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  video-service:
+    build:
+      context: ./mini-services/video-service
+      dockerfile: Dockerfile
+    ports:
+      - "3005:3005"
+    restart: unless-stopped
+
+volumes:
+  postgres_data:

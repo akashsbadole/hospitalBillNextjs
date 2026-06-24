@@ -1,0 +1,24 @@
+Critical Gaps That Must Be Addressed
+🔴 Showstoppers (Production-Blocking)
+1. Zero Tests — No unit, integration, or e2e tests. Healthcare software requires rigorous testing (patient safety). Add Vitest + Playwright.
+2. SQLite in Production — better-sqlite3 cannot handle concurrent hospital workloads. Must migrate to PostgreSQL via Prisma.(I will migrate to postgres using neondb added env)
+3. No Real Backups — SQLite file with no backup strategy. PostgreSQL + automated backups needed.
+4. Custom JWT Implementation — Manual HMAC-SHA256 is risky. Replace with jsonwebtoken library (battle-tested).
+5. Notification System is a No-Op — sendNotification() just logs to console. No SMS/Email actually sent. Need Twilio/SES integration.
+🟡 Important (High Priority)
+ 6. No Error Boundaries — Any React crash takes down the entire SPA. Wrap modules in error boundaries.
+ 7. No API Rate Limiting — Login endpoint is unprotected against brute force.
+ 8. Search Uses LIKE %...% — No full-text search index. Will become unusable over 10k+ records.
+ 9. No WebSocket Real-Time — Only polling every 30s. No real-time bed status, appointment updates, or notifications.
+10. No Database Migrations Tracked — prisma db push in dev. Need proper migration files for production.
+11. No Docker Compose — No orchestration for the main app, video service, and database.
+12. ESLint Rules Largely Disabled — no-unused-vars, no-explicit-any turned off. Enable them.
+🟢 Nice-to-Have (Enhancements)
+13. No Queue Management — Queue display board for patients waiting (common in hospitals).
+14. No Radiology/PACS Module — X-ray/MRI/CT scan management with DICOM integration.
+15. No Ambulance Tracking — Often expected in hospital software.
+16. No EHR Interoperability — No HL7 FHIR or HIPAA compliance for data exchange.
+17. No Blood Bank Module — Blood donation, grouping, cross-matching.
+18. No Doctor Mobile App — No mobile companion for doctors (push notifications, on-call scheduling).
+19. No Kiosk/Counter Integration — Self check-in kiosk at reception.
+20. No Inventory Barcode Scanning — Barcode/RFID for pharmacy and inventory.
