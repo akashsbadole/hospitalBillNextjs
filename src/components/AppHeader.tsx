@@ -16,6 +16,7 @@ import { useAuth } from '@/stores/auth'
 import { useBranchStore } from '@/stores/branch'
 import { apiGet } from '@/lib/api-client'
 import { cn } from '@/lib/utils'
+import { LanguageSwitcher } from '@/components/i18n/LanguageSwitcher'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -459,6 +460,9 @@ export function AppHeader() {
       >
         <Search className="h-5 w-5" />
       </Button>
+
+      {/* ── Language Switcher ──────────────────────────────────────────────── */}
+      <LanguageSwitcher />
 
       {/* ── Notifications ────────────────────────────────────────────────── */}
       <DropdownMenu open={notifOpen} onOpenChange={setNotifOpen}>

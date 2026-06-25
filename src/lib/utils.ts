@@ -309,3 +309,80 @@ export function generateWhatsAppId(lastNumber: string | null): string {
   const num = parseInt(lastNumber.replace('WAM-', ''), 10)
   return `WAM-${String(num + 1).padStart(4, '0')}`
 }
+
+// Discharge Summary ID generator
+export function generateDischargeId(lastNumber: string | null): string {
+  if (!lastNumber) return 'DCS-0001'
+  const num = parseInt(lastNumber.replace('DCS-', ''), 10)
+  return `DCS-${String(num + 1).padStart(4, '0')}`
+}
+
+// Diet Order ID generator
+export function generateDietOrderId(lastNumber: string | null): string {
+  if (!lastNumber) return 'DIT-0001'
+  const num = parseInt(lastNumber.replace('DIT-', ''), 10)
+  return `DIT-${String(num + 1).padStart(4, '0')}`
+}
+
+// Pharmacy Sale ID generator
+export function generatePharmacySaleId(lastNumber: string | null): string {
+  if (!lastNumber) return 'PSA-0001'
+  const num = parseInt(lastNumber.replace('PSA-', ''), 10)
+  return `PSA-${String(num + 1).padStart(4, '0')}`
+}
+
+// Camp ID generator
+export function generateCampId(lastNumber: string | null): string {
+  if (!lastNumber) return 'CAMP-0001'
+  const num = parseInt(lastNumber.replace('CAMP-', ''), 10)
+  return `CAMP-${String(num + 1).padStart(4, '0')}`
+}
+
+// Camp Registration ID generator
+export function generateCampRegId(lastNumber: string | null): string {
+  if (!lastNumber) return 'CREG-0001'
+  const num = parseInt(lastNumber.replace('CREG-', ''), 10)
+  return `CREG-${String(num + 1).padStart(4, '0')}`
+}
+
+// Asset ID generator
+export function generateAssetId(lastNumber: string | null): string {
+  if (!lastNumber) return 'AST-0001'
+  const num = parseInt(lastNumber.replace('AST-', ''), 10)
+  return `AST-${String(num + 1).padStart(4, '0')}`
+}
+
+// Analytics Report ID generator
+export function generateReportId(lastNumber: string | null): string {
+  if (!lastNumber) return 'RPT-0001'
+  const num = parseInt(lastNumber.replace('RPT-', ''), 10)
+  return `RPT-${String(num + 1).padStart(4, '0')}`
+}
+
+// HL7 Message ID generator
+export function generateHl7MessageId(lastNumber: string | null): string {
+  if (!lastNumber) return 'HL7-0001'
+  const num = parseInt(lastNumber.replace('HL7-', ''), 10)
+  return `HL7-${String(num + 1).padStart(4, '0')}`
+}
+
+// Compliance Standard ID generator
+export function generateComplianceStandardId(lastNumber: string | null): string {
+  if (!lastNumber) return 'STD-0001'
+  const num = parseInt(lastNumber.replace('STD-', ''), 10)
+  return `STD-${String(num + 1).padStart(4, '0')}`
+}
+
+// Compliance Checklist ID generator
+export function generateComplianceChecklistId(lastNumber: string | null): string {
+  if (!lastNumber) return 'CHK-0001'
+  const num = parseInt(lastNumber.replace('CHK-', ''), 10)
+  return `CHK-${String(num + 1).padStart(4, '0')}`
+}
+
+// Compliance Audit ID generator
+export function generateComplianceAuditId(lastNumber: string | null): string {
+  if (!lastNumber) return 'AUD-0001'
+  const num = parseInt(lastNumber.replace('AUD-', ''), 10)
+  return `AUD-${String(num + 1).padStart(4, '0')}`
+}

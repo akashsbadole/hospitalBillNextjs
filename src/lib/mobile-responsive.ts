@@ -1,0 +1,15 @@
+export const mobileCardStyles = {
+  desktopOnly: 'hidden md:block',
+  mobileOnly: 'md:hidden',
+  tableWrapper: 'w-full overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0',
+  mobileCard: 'rounded-lg border bg-card p-4 space-y-2 md:hidden',
+  mobileLabel: 'text-xs font-medium text-muted-foreground',
+  mobileValue: 'text-sm font-medium',
+  responsiveGrid: 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4',
+  statsGrid: 'grid grid-cols-2 lg:grid-cols-4 gap-3',
+  filterBar: 'flex flex-col gap-3 lg:flex-row lg:items-end lg:gap-3',
+  dialogContent: 'sm:max-w-lg max-h-[85vh] overflow-y-auto',
+  fullMobile: 'w-full lg:w-auto',
+  touchButton: 'min-h-[44px] min-w-[44px]',
+  responsivePadding: 'px-3 sm:px-4 lg:px-6',
+}

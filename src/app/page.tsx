@@ -32,6 +32,17 @@ import { BloodBankPage } from '@/components/bloodbank/BloodBankPage'
 import { ImagingPage } from '@/components/imaging/ImagingPage'
 import { OperationTheatrePage } from '@/components/surgery/OperationTheatrePage'
 import { PayrollPage } from '@/components/payroll/PayrollPage'
+import { NursingChartingPage } from '@/components/nursing/NursingChartingPage'
+import { DischargeSummaryPage } from '@/components/discharge/DischargeSummaryPage'
+import { DietManagementPage } from '@/components/diet/DietManagementPage'
+import { PharmacyPosPage } from '@/components/pharmacy/PharmacyPosPage'
+import { PatientPortalPage } from '@/components/portal/PatientPortalPage'
+import { AssetManagementPage } from '@/components/assets/AssetManagementPage'
+import { CampManagementPage } from '@/components/camps/CampManagementPage'
+import { CompliancePage } from '@/components/compliance/CompliancePage'
+import { AnalyticsPage } from '@/components/analytics/AnalyticsPage'
+import { I18nAdminPage } from '@/components/i18n/I18nAdminPage'
+import { Hl7FhirPage } from '@/components/hl7/Hl7FhirPage'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
 import { KeyboardShortcutsDialog } from '@/components/KeyboardShortcutsDialog'
 import { Loader2 } from 'lucide-react'
@@ -110,6 +121,28 @@ export default function Home() {
           return <ReportsPage />
         case 'payroll':
           return <PayrollPage />
+        case 'nursing-charting':
+          return <NursingChartingPage />
+        case 'discharge-summary':
+          return <DischargeSummaryPage />
+        case 'diet-management':
+          return <DietManagementPage />
+        case 'pharmacy-pos':
+          return <PharmacyPosPage />
+        case 'patient-portal':
+          return <PatientPortalPage />
+        case 'asset-management':
+          return <AssetManagementPage />
+        case 'camp-management':
+          return <CampManagementPage />
+        case 'compliance':
+          return <CompliancePage />
+        case 'analytics':
+          return <AnalyticsPage />
+        case 'i18n-admin':
+          return <I18nAdminPage />
+        case 'hl7-fhir':
+          return <Hl7FhirPage />
         case 'settings':
           return <SettingsPage />
         case 'support':

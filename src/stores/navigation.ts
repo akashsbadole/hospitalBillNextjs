@@ -27,6 +27,17 @@ export type Page =
   | 'barcode-scanner'
   | 'surgery'
   | 'payroll'
+  | 'patient-portal'
+  | 'nursing-charting'
+  | 'discharge-summary'
+  | 'diet-management'
+  | 'pharmacy-pos'
+  | 'compliance'
+  | 'asset-management'
+  | 'camp-management'
+  | 'analytics'
+  | 'i18n-admin'
+  | 'hl7-fhir'
 
 interface NavigationState {
   currentPage: Page
