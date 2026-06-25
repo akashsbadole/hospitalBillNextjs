@@ -126,14 +126,16 @@ export function AppSidebar() {
   const { user, logout } = useAuth()
 
   const role = user?.role as Role | undefined
-  const { modules: enabledModules } = useEnabledModules()
+  const { modules: enabledModules, loading: modulesLoading } = useEnabledModules()
 
   // Filter nav items based on role permissions + module enabled status
   const visibleItems = ALL_NAV_ITEMS.filter((item) => {
     if (role && !canAccessPage(role, item.page)) return false
     // Main section is always visible; operations/admin check module state
     if (item.section === 'main') return true
-    return enabledModules.length === 0 || enabledModules.some((m) => m.moduleKey === item.page)
+    // During loading, show all items to avoid flash; after loading, filter by enabled
+    if (modulesLoading) return true
+    return enabledModules.some((m) => m.moduleKey === item.page)
   })
 
   // Group by section

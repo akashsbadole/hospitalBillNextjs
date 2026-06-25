@@ -181,6 +181,18 @@ export function checkWritePermission(role: Role, method: string): { allowed: boo
 const moduleGateCache = new Map<string, { enabled: boolean; checkedAt: number }>()
 const MODULE_GATE_CACHE_TTL = 10_000
 
+// Periodic cleanup to prevent unbounded memory growth
+if (typeof setInterval !== 'undefined') {
+  setInterval(() => {
+    const now = Date.now()
+    for (const [key, value] of moduleGateCache) {
+      if (now - value.checkedAt > MODULE_GATE_CACHE_TTL * 2) {
+        moduleGateCache.delete(key)
+      }
+    }
+  }, MODULE_GATE_CACHE_TTL * 10)
+}
+
 export async function checkModuleEnabled(moduleKey: string): Promise<{ allowed: boolean; error?: { status: number; message: string } }> {
   const cached = moduleGateCache.get(moduleKey)
   if (cached && Date.now() - cached.checkedAt < MODULE_GATE_CACHE_TTL) {

@@ -4,7 +4,7 @@ import { join } from 'path'
 import { v4 as uuid } from 'uuid'
 import { db } from '@/lib/db'
 import { z } from 'zod'
-import { authenticateRequest, checkWritePermission } from '@/lib/api-auth'
+import { authenticateRequest, checkWritePermission, checkModuleEnabled } from '@/lib/api-auth'
 import { logAudit, extractRequestInfo } from '@/lib/audit-log'
 import { analyzeMedicalImage, ALLOWED_IMAGE_TYPES, MODALITY_OPTIONS } from '@/lib/ai-service'
 
@@ -24,6 +24,9 @@ export async function POST(request: NextRequest) {
   if (auth.error) return NextResponse.json({ error: auth.error.message }, { status: auth.error.status })
   const writeCheck = checkWritePermission(auth.role!, 'POST')
   if (!writeCheck.allowed) return NextResponse.json({ error: writeCheck.error }, { status: 403 })
+
+  const moduleCheck = await checkModuleEnabled('ai-imaging')
+  if (!moduleCheck.allowed) return NextResponse.json({ error: moduleCheck.error!.message }, { status: 403 })
 
   try {
     const formData = await request.formData()
@@ -154,6 +157,9 @@ export async function POST(request: NextRequest) {
 export async function GET(request: NextRequest) {
   const auth = await authenticateRequest(request, '/api/ai')
   if (auth.error) return NextResponse.json({ error: auth.error.message }, { status: auth.error.status })
+
+  const moduleCheck = await checkModuleEnabled('ai-imaging')
+  if (!moduleCheck.allowed) return NextResponse.json({ error: moduleCheck.error!.message }, { status: 403 })
 
   try {
     const { searchParams } = new URL(request.url)
