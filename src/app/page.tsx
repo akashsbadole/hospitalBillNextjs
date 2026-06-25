@@ -24,6 +24,7 @@ import { InsuranceClaimsPage } from '@/components/insurance/InsuranceClaimsPage'
 import { LabTestsPage } from '@/components/labtests/LabTestsPage'
 import { PatientWorkflowPage } from '@/components/workflow/PatientWorkflowPage'
 import { AiHealthAnalysisPage } from '@/components/ai/AiHealthAnalysisPage'
+import { AiImagingPage } from '@/components/ai/AiImagingPage'
 import { CallManagementPage } from '@/components/calls/CallManagementPage'
 import { QueueManagementPage } from '@/components/queue/QueueManagementPage'
 import BarcodeScannerPage from '@/components/barcode/BarcodeScannerPage'
@@ -87,6 +88,8 @@ export default function Home() {
           return <PatientWorkflowPage />
         case 'ai-analysis':
           return <AiHealthAnalysisPage />
+        case 'ai-imaging':
+          return <AiImagingPage />
         case 'telemedicine':
           return <CallManagementPage />
         case 'queue':

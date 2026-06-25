@@ -39,7 +39,7 @@ export async function GET(
       details: {
         analysisId: analysis.analysisId,
         patientId: analysis.patientId,
-        patientName: analysis.patient.name,
+        patientName: analysis.patient?.name || 'Unknown',
       },
       ...extractRequestInfo(request),
     })
@@ -52,7 +52,7 @@ export async function GET(
         input: (() => { try { return JSON.parse(analysis.input) } catch { return analysis.input } })(),
         result: (() => { try { return JSON.parse(analysis.result) } catch { return analysis.result } })(),
         model: analysis.model,
-        patientName: analysis.patient.name,
+        patientName: analysis.patient?.name || 'Unknown',
         createdAt: analysis.createdAt,
       },
     })

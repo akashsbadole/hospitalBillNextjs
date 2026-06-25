@@ -585,17 +585,17 @@ model VisitStage {
 model AiAnalysis {
   id          String   @id @default(cuid())
   analysisId  String   @unique // AI-0001
-  patientId   String
+  patientId   String?
   visitId     String?
-  type        String   @default("Health Analysis") // Health Analysis, Symptom Check, Drug Interaction, Diagnosis Suggestion
-  input       String   // JSON: { symptoms, patientContext, vitals }
-  result      String   // JSON: { analysis, recommendations, urgency, followUp }
+  type        String   @default("Health Analysis")
+  input       String   @default("{}")
+  result      String   @default("{}")
   model       String   @default("Grok")
   requestedById String
   createdAt   DateTime @default(now())
 
   visit   PatientVisit? @relation(fields: [visitId], references: [id])
-  patient Patient       @relation(fields: [patientId], references: [id])
+  patient Patient?      @relation(fields: [patientId], references: [id])
 
   @@index([patientId])
   @@index([type])

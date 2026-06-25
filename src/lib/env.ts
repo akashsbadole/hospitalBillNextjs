@@ -18,6 +18,8 @@ const OPTIONAL: Record<string, string> = {
   'NOTIFICATION_ENABLED': 'false',
   'SOCKET_PORT': '3001',
   'BACKUP_RETENTION_DAYS': '7',
+  'GEMINI_API_KEY': '',
+  'CLAUDE_API_KEY': '',
 }
 
 let validated = false

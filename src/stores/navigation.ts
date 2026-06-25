@@ -8,6 +8,7 @@ export type Page =
   | 'doctors'
   | 'workflow'
   | 'ai-analysis'
+  | 'ai-imaging'
   | 'telemedicine'
   | 'billing'
   | 'invoice-detail'
