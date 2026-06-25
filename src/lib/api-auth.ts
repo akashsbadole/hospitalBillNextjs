@@ -174,3 +174,37 @@ export function checkWritePermission(role: Role, method: string): { allowed: boo
   }
   return { allowed: true }
 }
+
+// Module gating — check if a module is enabled before processing request
+// Returns an error response if the module is disabled, null if allowed.
+// Cache result for 10s to avoid DB hit on every request.
+const moduleGateCache = new Map<string, { enabled: boolean; checkedAt: number }>()
+const MODULE_GATE_CACHE_TTL = 10_000
+
+export async function checkModuleEnabled(moduleKey: string): Promise<{ allowed: boolean; error?: { status: number; message: string } }> {
+  const cached = moduleGateCache.get(moduleKey)
+  if (cached && Date.now() - cached.checkedAt < MODULE_GATE_CACHE_TTL) {
+    if (!cached.enabled) {
+      return { allowed: false, error: { status: 403, message: `"${moduleKey}" module is currently disabled. Contact Super Admin to enable it.` } }
+    }
+    return { allowed: true }
+  }
+
+  try {
+    const mod = await db.moduleSetting.findUnique({
+      where: { moduleKey },
+      select: { enabled: true },
+    })
+
+    const enabled = mod?.enabled ?? true
+    moduleGateCache.set(moduleKey, { enabled, checkedAt: Date.now() })
+
+    if (!enabled) {
+      return { allowed: false, error: { status: 403, message: `"${moduleKey}" module is currently disabled. Contact Super Admin to enable it.` } }
+    }
+    return { allowed: true }
+  } catch {
+    // If DB is unreachable, allow access (fail open)
+    return { allowed: true }
+  }
+}

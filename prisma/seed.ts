@@ -46,7 +46,8 @@ async function main() {
 
   // ==================== USERS (Credentials: admin@medibill.com / Admin@123, others / password123) ====================
   const usersData = [
-    { userId: 'USR-0001', name: 'Admin User', email: 'admin@medibill.com', password: adminHash, role: 'Admin', phone: '9820000001', branchIdx: 0 },
+    { userId: 'USR-0001', name: 'Super Admin', email: 'superadmin@medibill.com', password: adminHash, role: 'Super Admin', phone: '9820000000', branchIdx: 0 },
+    { userId: 'USR-0002', name: 'Admin User', email: 'admin@medibill.com', password: adminHash, role: 'Admin', phone: '9820000001', branchIdx: 0 },
     { userId: 'USR-0002', name: 'Pooja Mehta', email: 'receptionist@medibill.com', password: passwordHash, role: 'Receptionist', phone: '9820000002', branchIdx: 0 },
     { userId: 'USR-0003', name: 'Dr. Rajesh Sharma', email: 'doctor@medibill.com', password: passwordHash, role: 'Doctor', phone: '9820000003', branchIdx: 0 },
     { userId: 'USR-0004', name: 'Sanjay Verma', email: 'accountant@medibill.com', password: passwordHash, role: 'Accountant', phone: '9820000004', branchIdx: 0 },
@@ -941,6 +942,57 @@ async function main() {
   }
   console.log('Notifications seeded')
 
+  // ==================== MODULE SETTINGS ====================
+  const existingModules = await db.moduleSetting.count()
+  if (existingModules === 0) {
+    const modules = [
+      // Main
+      { moduleKey: 'dashboard', label: 'Dashboard', icon: 'LayoutDashboard', section: 'main', isCore: true, description: 'Main dashboard with key metrics and KPIs' },
+      { moduleKey: 'patients', label: 'Patients', icon: 'Users', section: 'main', isCore: true, description: 'Patient registration, records, and history' },
+      { moduleKey: 'appointments', label: 'Appointments', icon: 'CalendarDays', section: 'main', isCore: true, description: 'Appointment scheduling and calendar' },
+      { moduleKey: 'doctors', label: 'Doctors', icon: 'Stethoscope', section: 'main', isCore: true, description: 'Doctor profiles and schedules' },
+      // Operations
+      { moduleKey: 'workflow', label: 'Workflow', icon: 'Activity', section: 'operations', isCore: false, description: 'Patient visit workflow and stage tracking' },
+      { moduleKey: 'ai-analysis', label: 'AI Analysis', icon: 'Brain', section: 'operations', isCore: false, description: 'AI-powered symptom analysis and diagnosis suggestions' },
+      { moduleKey: 'ai-imaging', label: 'AI Imaging', icon: 'Microscope', section: 'operations', isCore: false, description: 'AI medical image analysis (X-ray, CT, MRI, etc.)' },
+      { moduleKey: 'telemedicine', label: 'Telemedicine', icon: 'Video', section: 'operations', isCore: false, description: 'Video consultation and remote patient care' },
+      { moduleKey: 'billing', label: 'Billing', icon: 'Receipt', section: 'operations', isCore: false, description: 'Invoice generation and GST-compliant billing' },
+      { moduleKey: 'payments', label: 'Payments', icon: 'CreditCard', section: 'operations', isCore: false, description: 'Payment collection and reconciliation' },
+      { moduleKey: 'insurance', label: 'Insurance', icon: 'ShieldCheck', section: 'operations', isCore: false, description: 'Insurance claims, pre-auth, and policy management' },
+      { moduleKey: 'prescriptions', label: 'Prescriptions', icon: 'FileText', section: 'operations', isCore: false, description: 'E-prescriptions with medicine management' },
+      { moduleKey: 'lab-tests', label: 'Lab Tests', icon: 'FlaskConical', section: 'operations', isCore: false, description: 'Lab test catalog, orders, and results' },
+      { moduleKey: 'bed-management', label: 'Bed Management', icon: 'BedDouble', section: 'operations', isCore: false, description: 'Ward and bed allocation tracking' },
+      { moduleKey: 'inventory', label: 'Inventory', icon: 'Pill', section: 'operations', isCore: false, description: 'Medicine and supply inventory management' },
+      { moduleKey: 'queue', label: 'Queue', icon: 'TicketCheck', section: 'operations', isCore: false, description: 'Patient queue and token management' },
+      { moduleKey: 'ambulance', label: 'Ambulance', icon: 'Truck', section: 'operations', isCore: false, description: 'Ambulance fleet and dispatch management' },
+      { moduleKey: 'blood-bank', label: 'Blood Bank', icon: 'Droplets', section: 'operations', isCore: false, description: 'Blood donor registry and inventory management' },
+      { moduleKey: 'imaging', label: 'Radiology', icon: 'ScanLine', section: 'operations', isCore: false, description: 'Radiology imaging study management' },
+      { moduleKey: 'surgery', label: 'Operation Theatre', icon: 'Syringe', section: 'operations', isCore: false, description: 'OT scheduling and surgery management' },
+      { moduleKey: 'barcode-scanner', label: 'Barcode Scanner', icon: 'ScanBarcode', section: 'operations', isCore: false, description: 'Barcode scanning for inventory and assets' },
+      { moduleKey: 'nursing-charting', label: 'Nursing Charting', icon: 'HeartPulse', section: 'operations', isCore: false, description: 'Nursing notes, vitals, and intake/output' },
+      { moduleKey: 'discharge-summary', label: 'Discharge Summary', icon: 'ClipboardCheck', section: 'operations', isCore: false, description: 'IPD discharge summary generation' },
+      { moduleKey: 'diet-management', label: 'Diet Management', icon: 'UtensilsCrossed', section: 'operations', isCore: false, description: 'Diet orders, meal schedules, kitchen tracking' },
+      { moduleKey: 'pharmacy-pos', label: 'Pharmacy POS', icon: 'ShoppingCart', section: 'operations', isCore: false, description: 'Walk-in pharmacy point of sale' },
+      { moduleKey: 'patient-portal', label: 'Patient Portal', icon: 'UserCheck', section: 'operations', isCore: false, description: 'Patient self-service portal' },
+      // Admin
+      { moduleKey: 'reports', label: 'Reports', icon: 'BarChart3', section: 'admin', isCore: false, description: 'Custom report generation and export' },
+      { moduleKey: 'payroll', label: 'Payroll', icon: 'DollarSign', section: 'admin', isCore: false, description: 'Staff payroll processing and management' },
+      { moduleKey: 'asset-management', label: 'Asset Management', icon: 'Wrench', section: 'admin', isCore: false, description: 'Hospital equipment and asset tracking' },
+      { moduleKey: 'camp-management', label: 'Camp Management', icon: 'Tent', section: 'admin', isCore: false, description: 'Health camp registration and screening' },
+      { moduleKey: 'compliance', label: 'Compliance', icon: 'ClipboardList', section: 'admin', isCore: false, description: 'NABH/JCI compliance tracking and audits' },
+      { moduleKey: 'analytics', label: 'Analytics', icon: 'BarChart4', section: 'admin', isCore: false, description: 'Advanced analytics dashboards and widgets' },
+      { moduleKey: 'i18n-admin', label: 'i18n Translations', icon: 'Languages', section: 'admin', isCore: false, description: 'Multi-language translation management' },
+      { moduleKey: 'hl7-fhir', label: 'HL7/FHIR', icon: 'Radio', section: 'admin', isCore: false, description: 'HL7 and FHIR interoperability logs' },
+      { moduleKey: 'settings', label: 'Settings', icon: 'Settings', section: 'admin', isCore: true, description: 'System settings and configuration' },
+      { moduleKey: 'support', label: 'Support Center', icon: 'CircleHelp', section: 'admin', isCore: false, description: 'Internal support ticket system' },
+    ]
+
+    await db.moduleSetting.createMany({ data: modules })
+    console.log(`${modules.length} module settings seeded`)
+  } else {
+    console.log('Module settings already exist — skipping')
+  }
+
   // ==================== FINAL REPORT ====================
   const counts = {
     branches: await db.branch.count(),
@@ -987,6 +1039,7 @@ async function main() {
   console.log('\n========== SEED COMPLETE ==========')
   console.log(JSON.stringify(counts, null, 2))
   console.log('\nCredentials:')
+  console.log('  Super Admin:  superadmin@medibill.com / Admin@123')
   console.log('  Admin:       admin@medibill.com / Admin@123')
   console.log('  Receptionist: receptionist@medibill.com / password123')
   console.log('  Doctor:       doctor@medibill.com / password123')

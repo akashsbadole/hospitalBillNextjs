@@ -55,6 +55,7 @@ import { useBranchStore } from '@/stores/branch'
 import { PaymentGatewaySettings } from '@/components/settings/PaymentGatewaySettings'
 import { CustomFieldsSettings } from '@/components/settings/CustomFieldsSettings'
 import { DepartmentSettings } from '@/components/settings/DepartmentSettings'
+import { ModuleManagementSettings } from '@/components/modules/ModuleManagementSettings'
 import { ImageUpload } from '@/components/ImageUpload'
 import {
   Building2,
@@ -82,6 +83,7 @@ import {
   FilterX,
   X,
   List,
+  ToggleLeft,
 } from 'lucide-react'
 
 // ─── Schemas ─────────────────────────────────────────────────────────────────
@@ -1103,6 +1105,9 @@ export function SettingsPage() {
           {user?.role === 'Admin' && (
             <TabsTrigger value="audit"><ScrollText className="h-4 w-4 mr-1.5" />Audit Logs</TabsTrigger>
           )}
+          {user?.role === 'Super Admin' && (
+            <TabsTrigger value="modules"><ToggleLeft className="h-4 w-4 mr-1.5" />Modules</TabsTrigger>
+          )}
         </TabsList>
 
         {/* ═══ TAB 1: CLINIC INFORMATION ═══ */}
@@ -1933,6 +1938,24 @@ export function SettingsPage() {
                 </CardContent>
               </Card>
             </>
+          )}
+        </TabsContent>
+
+        <TabsContent value="modules" className="space-y-6 mt-6">
+          {user?.role !== 'Super Admin' ? (
+            <Card>
+              <CardContent className="flex flex-col items-center justify-center py-16 gap-4">
+                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-purple-100">
+                  <Shield className="h-8 w-8 text-purple-600" />
+                </div>
+                <div className="text-center">
+                  <h3 className="text-lg font-semibold">Super Admin Only</h3>
+                  <p className="text-sm text-muted-foreground mt-1">Module management is only accessible to Super Admin users.</p>
+                </div>
+              </CardContent>
+            </Card>
+          ) : (
+            <ModuleManagementSettings />
           )}
         </TabsContent>
       </Tabs>

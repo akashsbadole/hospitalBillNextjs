@@ -1,10 +1,11 @@
 'use client'
 
-import React from 'react'
+import React, { useMemo } from 'react'
 import { useNavigation, type Page } from '@/stores/navigation'
 import { useAuth } from '@/stores/auth'
 import { canAccessPage } from '@/lib/rbac'
 import type { Role } from '@/lib/rbac'
+import { useEnabledModules } from '@/hooks/use-enabled-modules'
 import {
   LayoutDashboard,
   Users,
@@ -112,6 +113,7 @@ const SECTION_LABELS: Record<string, string> = {
 }
 
 const ROLE_COLORS: Record<string, string> = {
+  'Super Admin': 'bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-300',
   Admin: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300',
   Receptionist: 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300',
   Doctor: 'bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-300',
@@ -124,11 +126,15 @@ export function AppSidebar() {
   const { user, logout } = useAuth()
 
   const role = user?.role as Role | undefined
+  const { modules: enabledModules } = useEnabledModules()
 
-  // Filter nav items based on role permissions
-  const visibleItems = ALL_NAV_ITEMS.filter(
-    (item) => !role || canAccessPage(role, item.page)
-  )
+  // Filter nav items based on role permissions + module enabled status
+  const visibleItems = ALL_NAV_ITEMS.filter((item) => {
+    if (role && !canAccessPage(role, item.page)) return false
+    // Main section is always visible; operations/admin check module state
+    if (item.section === 'main') return true
+    return enabledModules.length === 0 || enabledModules.some((m) => m.moduleKey === item.page)
+  })
 
   // Group by section
   const sections = ['main', 'operations', 'admin']

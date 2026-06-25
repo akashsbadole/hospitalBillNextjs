@@ -1,7 +1,7 @@
 // RBAC — Role-Based Access Control definitions for the Hospital Management System
 // Defines which pages and API routes each role can access, plus write permissions.
 
-export type Role = 'Admin' | 'Receptionist' | 'Doctor' | 'Accountant' | 'Pharmacist'
+export type Role = 'Super Admin' | 'Admin' | 'Receptionist' | 'Doctor' | 'Accountant' | 'Pharmacist'
 
 export interface Permission {
   pages: string[]        // which navigation pages this role can access
@@ -12,6 +12,13 @@ export interface Permission {
 }
 
 export const ROLE_PERMISSIONS: Record<Role, Permission> = {
+  'Super Admin': {
+    pages: ['dashboard', 'patients', 'patient-detail', 'appointments', 'doctors', 'workflow', 'ai-analysis', 'ai-imaging', 'telemedicine', 'billing', 'invoice-detail', 'payments', 'insurance', 'prescriptions', 'bed-management', 'inventory', 'lab-tests', 'reports', 'settings', 'support', 'queue', 'ambulance', 'blood-bank', 'imaging', 'barcode-scanner', 'payroll', 'patient-portal', 'nursing-charting', 'discharge-summary', 'diet-management', 'pharmacy-pos', 'compliance', 'asset-management', 'camp-management', 'analytics', 'i18n-admin', 'hl7-fhir'],
+    apiRoutes: ['/api'],
+    canCreate: true,
+    canUpdate: true,
+    canDelete: true,
+  },
   Admin: {
     pages: ['dashboard', 'patients', 'patient-detail', 'appointments', 'doctors', 'workflow', 'ai-analysis', 'ai-imaging', 'telemedicine', 'billing', 'invoice-detail', 'payments', 'insurance', 'prescriptions', 'bed-management', 'inventory', 'lab-tests', 'reports', 'settings', 'support', 'queue', 'ambulance', 'blood-bank', 'imaging', 'barcode-scanner', 'payroll', 'patient-portal', 'nursing-charting', 'discharge-summary', 'diet-management', 'pharmacy-pos', 'compliance', 'asset-management', 'camp-management', 'analytics', 'i18n-admin', 'hl7-fhir'],
     apiRoutes: ['/api/patients', '/api/patient-visits', '/api/appointments', '/api/doctors', '/api/billing', '/api/payments', '/api/prescriptions', '/api/medicines', '/api/inventory', '/api/reports', '/api/settings', '/api/staff', '/api/dashboard', '/api/seed', '/api/support', '/api/audit-logs', '/api/ai', '/api/calls', '/api/insurance', '/api/lab-tests', '/api/beds', '/api/branches', '/api/search', '/api/queue', '/api/ambulance', '/api/blood-bank', '/api/imaging', '/api/barcode', '/api/payroll', '/api/attendance', '/api/shifts', '/api/leaves', '/api/leave-balance', '/api/whatsapp', '/api/medicines/search', '/api/vital-signs', '/api/nursing-notes', '/api/intake-output', '/api/discharge-summary', '/api/diet-orders', '/api/diet-schedules', '/api/pharmacy-sales', '/api/translations', '/api/hl7', '/api/fhir', '/api/compliance', '/api/assets', '/api/camps', '/api/analytics', '/api/portal'],

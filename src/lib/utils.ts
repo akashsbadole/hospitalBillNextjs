@@ -259,6 +259,7 @@ export function generateScanId(lastNumber: string | null): string {
 // Role badge color utility
 export function getRoleBadgeColor(role: string): string {
   switch (role) {
+    case 'Super Admin': return 'bg-purple-100 text-purple-700 border-purple-200 dark:bg-purple-950/40 dark:text-purple-300 dark:border-purple-800'
     case 'Admin': return 'bg-red-100 text-red-700 border-red-200 dark:bg-red-950/40 dark:text-red-300 dark:border-red-800'
     case 'Doctor': return 'bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800'
     case 'Receptionist': return 'bg-sky-100 text-sky-700 border-sky-200 dark:bg-sky-950/40 dark:text-sky-300 dark:border-sky-800'

@@ -2178,3 +2178,19 @@ model AnalyticsReport {
   @@index([type])
   @@index([createdAt])
 }
+
+model ModuleSetting {
+  id          String   @id @default(cuid())
+  moduleKey   String   @unique
+  label       String
+  description String?
+  icon        String?
+  section     String   @default("operations")
+  enabled     Boolean  @default(true)
+  isCore      Boolean  @default(false)
+  updatedAt   DateTime @updatedAt
+  updatedById String?
+
+  @@index([section])
+  @@index([enabled])
+}
