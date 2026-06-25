@@ -613,6 +613,7 @@ export function PrescriptionListPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [sendingId, setSendingId] = useState<string>('')
 
   // New prescription form state
   const [newPatient, setNewPatient] = useState('')
@@ -1391,7 +1392,56 @@ export function PrescriptionListPage() {
               <Printer className="mr-2 h-4 w-4" />Print
             </Button>
             <Button variant="outline"><Download className="mr-2 h-4 w-4" />Download PDF</Button>
-            <Button className="bg-emerald-600 hover:bg-emerald-700"><Send className="mr-2 h-4 w-4" />Send to Patient</Button>
+            <Button
+              className="bg-emerald-600 hover:bg-emerald-700"
+              disabled={!detailDialog || sendingId === detailDialog.id}
+              onClick={async () => {
+                const rx = detailDialog
+                if (!rx) return
+                const meds = parseNotes(rx.notes)
+                const phone = rx.patient?.phone?.replace(/[^0-9]/g, '')
+                if (!phone) {
+                  toast({ title: 'Error', description: 'Patient has no phone number', variant: 'destructive' })
+                  return
+                }
+                const msg = `📋 Prescription from MediBill Pro
+
+Patient: ${rx.patient?.name || 'Unknown'}
+Doctor: Dr. ${rx.doctor?.name || 'Unknown'}
+Prescription #: ${rx.prescriptionId}
+Date: ${formatDate(rx.date)}
+Medicines: ${meds.length} item(s)
+
+Medicines:
+${meds.map((m: MedicineNote, i: number) => `${i + 1}. ${m.medicine}${m.dosage ? ` - ${m.dosage}` : ''}${m.frequency ? `, ${m.frequency}` : ''}${m.duration ? `, ${m.duration}` : ''}`).join('\n')}
+
+${rx.diagnosis ? `Diagnosis: ${rx.diagnosis}` : ''}
+Please carry this prescription when visiting the pharmacy.`
+                setSendingId(rx.id)
+                try {
+                  const { sendWhatsApp } = await import('@/lib/whatsapp-client')
+                  await sendWhatsApp({
+                    to: `+91${phone}`,
+                    template: 'prescription',
+                    entityType: 'Prescription',
+                    entityId: rx.id,
+                    messageBody: msg,
+                    onSuccess: () => toast({ title: 'Sent!', description: `Prescription sent via WhatsApp to ${rx.patient?.name}` }),
+                    onError: (err) => toast({ title: 'Failed', description: err, variant: 'destructive' }),
+                  })
+                } catch {
+                  toast({ title: 'Error', description: 'Failed to send prescription', variant: 'destructive' })
+                } finally {
+                  setSendingId('')
+                }
+              }}
+            >
+              {detailDialog && sendingId === detailDialog.id ? (
+                <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Sending...</>
+              ) : (
+                <><Send className="mr-2 h-4 w-4" />Send to Patient</>
+              )}
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

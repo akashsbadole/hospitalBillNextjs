@@ -262,7 +262,40 @@ export function InvoiceDetailPage() {
             <Printer className="mr-2 h-4 w-4" />
             Print
           </Button>
-          <Button variant="outline">
+          <Button
+            variant="outline"
+            onClick={async () => {
+              const phone = invoice.patient.phone?.replace(/[^0-9]/g, '')
+              if (!phone) {
+                toast({ title: 'Error', description: 'Patient has no phone number', variant: 'destructive' })
+                return
+              }
+              const msg = `🧾 Invoice from MediBill Pro
+
+Patient: ${invoice.patient.name}
+Invoice #: ${invoice.invoiceNumber}
+Amount: Rs.${invoice.grandTotal.toFixed(2)}
+Paid: Rs.${invoice.paidAmount.toFixed(2)}
+Balance: Rs.${(invoice.grandTotal - invoice.paidAmount).toFixed(2)}
+Status: ${invoice.status}
+
+Thank you for choosing our services.`
+              try {
+                const { sendWhatsApp } = await import('@/lib/whatsapp-client')
+                sendWhatsApp({
+                  to: `+91${phone}`,
+                  template: 'invoice',
+                  entityType: 'Invoice',
+                  entityId: invoice.id,
+                  messageBody: msg,
+                  onSuccess: () => toast({ title: 'Sent!', description: `Invoice sent via WhatsApp to ${invoice.patient.name}` }),
+                  onError: (err) => toast({ title: 'Failed', description: err, variant: 'destructive' }),
+                })
+              } catch {
+                toast({ title: 'Error', description: 'Failed to send invoice', variant: 'destructive' })
+              }
+            }}
+          >
             <Send className="mr-2 h-4 w-4" />
             Send to Patient
           </Button>

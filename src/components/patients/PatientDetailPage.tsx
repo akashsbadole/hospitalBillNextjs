@@ -59,6 +59,7 @@ import { Label } from '@/components/ui/label'
 import { WorkflowStepper, StageBadge, type StageInfo } from '@/components/workflow/WorkflowStepper'
 import { StartVisitDialog } from '@/components/workflow/StartVisitDialog'
 import { EhrTab } from '@/components/ehr/EhrTab'
+import { InsurancePolicySection } from '@/components/insurance/InsurancePolicySection'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -916,39 +917,8 @@ export function PatientDetailPage() {
                 </CardContent>
               </Card>
 
-              {/* Insurance Card */}
-              <Card className="rounded-xl border shadow-sm">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-base">
-                    <Shield className="size-4 text-emerald-600" />
-                    Insurance
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <InfoRow
-                    label="Provider"
-                    value={patient.insuranceProvider || 'No insurance'}
-                  />
-                  <InfoRow
-                    label="Policy Number"
-                    value={patient.insuranceNumber || '—'}
-                  />
-                  {claims.length > 0 && (
-                    <>
-                      <Separator />
-                      <InfoRow label="Total Claims" value={String(claims.length)} />
-                      <InfoRow
-                        label="Settled"
-                        value={String(claims.filter(c => c.status === 'Settled').length)}
-                      />
-                      <InfoRow
-                        label="Pending"
-                        value={String(claims.filter(c => ['Submitted', 'Pre-Approved', 'Processing'].includes(c.status)).length)}
-                      />
-                    </>
-                  )}
-                </CardContent>
-              </Card>
+              {/* Insurance Policies */}
+              {patientId && <InsurancePolicySection patientId={patientId} patientName={patient.name} />}
 
               {/* Allergies Card */}
               <Card className="rounded-xl border shadow-sm">

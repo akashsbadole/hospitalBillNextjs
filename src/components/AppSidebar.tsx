@@ -30,6 +30,7 @@ import {
   Truck,
   Droplets,
   ScanLine,
+  DollarSign,
   ScanBarcode,
   Syringe,
 } from 'lucide-react'
@@ -75,6 +76,7 @@ const ALL_NAV_ITEMS: NavItem[] = [
   { label: 'Operation Theatre', icon: Syringe, page: 'surgery', section: 'operations' },
   { label: 'Barcode Scanner', icon: ScanBarcode, page: 'barcode-scanner', section: 'operations' },
   { label: 'Reports', icon: BarChart3, page: 'reports', section: 'admin' },
+  { label: 'Payroll', icon: DollarSign, page: 'payroll', section: 'admin' },
   { label: 'Settings', icon: Settings, page: 'settings', section: 'admin' },
   { label: 'Support Center', icon: CircleHelp, page: 'support', section: 'admin' },
 ]

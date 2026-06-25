@@ -13,8 +13,8 @@ export interface Permission {
 
 export const ROLE_PERMISSIONS: Record<Role, Permission> = {
   Admin: {
-    pages: ['dashboard', 'patients', 'patient-detail', 'appointments', 'doctors', 'workflow', 'ai-analysis', 'telemedicine', 'billing', 'invoice-detail', 'payments', 'insurance', 'prescriptions', 'bed-management', 'inventory', 'lab-tests', 'reports', 'settings', 'support', 'queue', 'ambulance', 'blood-bank', 'imaging', 'barcode-scanner'],
-    apiRoutes: ['/api/patients', '/api/patient-visits', '/api/appointments', '/api/doctors', '/api/billing', '/api/payments', '/api/prescriptions', '/api/medicines', '/api/inventory', '/api/reports', '/api/settings', '/api/staff', '/api/dashboard', '/api/seed', '/api/support', '/api/audit-logs', '/api/ai', '/api/calls', '/api/insurance', '/api/lab-tests', '/api/beds', '/api/branches', '/api/search', '/api/queue', '/api/ambulance', '/api/blood-bank', '/api/imaging', '/api/barcode'],
+    pages: ['dashboard', 'patients', 'patient-detail', 'appointments', 'doctors', 'workflow', 'ai-analysis', 'telemedicine', 'billing', 'invoice-detail', 'payments', 'insurance', 'prescriptions', 'bed-management', 'inventory', 'lab-tests', 'reports', 'settings', 'support', 'queue', 'ambulance', 'blood-bank', 'imaging', 'barcode-scanner', 'payroll'],
+    apiRoutes: ['/api/patients', '/api/patient-visits', '/api/appointments', '/api/doctors', '/api/billing', '/api/payments', '/api/prescriptions', '/api/medicines', '/api/inventory', '/api/reports', '/api/settings', '/api/staff', '/api/dashboard', '/api/seed', '/api/support', '/api/audit-logs', '/api/ai', '/api/calls', '/api/insurance', '/api/lab-tests', '/api/beds', '/api/branches', '/api/search', '/api/queue', '/api/ambulance', '/api/blood-bank', '/api/imaging', '/api/barcode', '/api/payroll', '/api/attendance', '/api/shifts', '/api/leaves', '/api/leave-balance', '/api/whatsapp', '/api/medicines/search'],
     canCreate: true,
     canUpdate: true,
     canDelete: true,

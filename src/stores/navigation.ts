@@ -26,6 +26,7 @@ export type Page =
   | 'imaging'
   | 'barcode-scanner'
   | 'surgery'
+  | 'payroll'
 
 interface NavigationState {
   currentPage: Page

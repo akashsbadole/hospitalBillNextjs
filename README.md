@@ -6,7 +6,7 @@
 
 ---
 
-## Features
+## Features (50+)
 
 | Module | Description |
 |---|---|
@@ -14,7 +14,7 @@
 | **Appointments** | Schedule, reschedule, cancel with calendar view and time-slot management |
 | **Billing & Invoicing** | GST-compliant invoices, CGST/SGST/IGST auto-calculation, HSN/SAC codes, PDF exports, discharge summary PDF |
 | **Payments** | Cash, UPI, Card, Net Banking, Wallet + Razorpay & PayPal integration |
-| **Prescriptions** | Digital prescriptions with dosage, frequency, and duration tracking |
+| **Prescriptions** | Digital prescriptions with medicine inventory picker (search/autocomplete from stock), dosage/frequency/duration tracking, 6 prescription templates, A4 print format |
 | **OPD/IPD Workflow** | 10-stage visit lifecycle (Registration → Triage → Consultation → Lab → Billed → Discharged), stage advancement, discharge summary, auto-invoice generation |
 | **Staff Management** | Dedicated staff CRUD (Admin, Receptionist, Accountant, Pharmacist, Lab Technician, Nurse) — separate from doctors |
 | **Queue Management** | Digital token system with priority levels, call/skip/complete, TV display board |
@@ -24,7 +24,8 @@
 | **Ambulance Tracking** | Fleet management, dispatch lifecycle, GPS coordinates, fare tracking |
 | **Inventory & Pharmacy** | Medicine catalog, batch/expiry tracking, purchase orders, stock movements |
 | **Ward & Bed Management** | 7 ward types, 78 beds with occupancy tracking and daily rates |
-| **Insurance / TPA** | Cashless & reimbursement claims, policy tracking, multi-company support |
+| **Insurance / TPA** | Patient insurance policies (Individual/Family Floater/Group/Corporate) with coverage, deductible, copay, nominee; pre-auth approval workflow; full claim lifecycle (Submitted → Pre-Approved → Approved → Processed → Settled → Rejected); multi-company support |
+| **Payroll & HR** | Staff management with salary/bank/PAN/ESI/PF details; shift scheduling (Morning/Evening/Night with grace periods); attendance tracking (check-in/out, overtime, Late, Half-Day, Holiday); leave management (Annual/Sick/Casual/Maternity/Paternity with balance tracking); payroll processing with auto-calculated earnings (HRA, conveyance, medical, special, bonus, overtime) and deductions (PF, ESI, PT, income tax, loan) |
 | **Operation Theatre** | OT scheduling, calendar view, conflict detection, surgical team assignment, anesthesia tracking |
 | **Consent Forms** | Digital consent capture with templates and witness management |
 | **Doctor Scheduling** | Weekly schedules, availability, leave management, fee overrides |
@@ -44,7 +45,8 @@
 | **Full-Text Search** | PostgreSQL full-text search across patients, doctors, and medicines |
 | **Multi-Branch** | 3 branches seeded with tenant-isolated data, branch switcher in header |
 | **RBAC** | 5 roles: Admin, Receptionist, Doctor, Accountant, Pharmacist |
-| **Notifications** | In-app + Twilio SMS + AWS SES email notifications |
+| **Notifications** | In-app + Twilio SMS + AWS SES email + Twilio WhatsApp (prescriptions, invoices, appointments, payment receipts) |
+| **WhatsApp Sharing** | Share prescriptions, invoices, payment receipts, and appointment reminders via WhatsApp with tracking (sent/delivered/read status) |
 | **Audit Trail** | Full action logging with IP, user-agent, and module context |
 
 ### Production Ready
@@ -205,9 +207,9 @@ For production, deploy behind the included `nginx.conf` as a reverse proxy for c
 
 ---
 
-## API Routes (120+ endpoints)
+## API Routes (140+ endpoints)
 
-The application exposes **120+ API routes** across all modules:
+The application exposes **140+ API routes** across all modules:
 
 - `/api/auth/*` — Login, logout, refresh, change-password
 - `/api/patients/*` — CRUD + search
@@ -251,6 +253,15 @@ The application exposes **120+ API routes** across all modules:
 - `/api/problem-list/*` — Active problem list with ICD-10 codes (EHR)
 - `/api/active-medications/*` — Active medications with dosage/frequency (EHR)
 - `/api/health` — Production healthcheck endpoint
+- `/api/payroll/*` — Payroll processing: earnings/deductions calculation, status workflow (Draft→Calculated→Approved→Paid)
+- `/api/attendance/*` — Staff attendance: check-in/out, overtime, status marking, hours calculation
+- `/api/shifts/*` — Shift management: Morning/Evening/Night shifts, grace periods, day-of-week assignment
+- `/api/leaves/*` — Leave management: Annual/Sick/Casual/Maternity/Paternity, balance tracking, approve/reject
+- `/api/leave-balance/*` — Leave balance tracking with yearly accrual
+- `/api/insurance/policies/*` — Patient insurance policies with coverage limits, deductibles, copay
+- `/api/insurance/pre-auth/*` — Pre-authorization approval workflow for insurance claims
+- `/api/whatsapp/send` — Send WhatsApp messages via Twilio for prescriptions, invoices, appointments
+- `/api/medicines/search` — Quick medicine search (autocomplete for prescription picker)
 
 ---
 
@@ -337,7 +348,7 @@ prisma/
 ├── setup-fts.ts          # PostgreSQL full-text search setup
 └── migrations/           # PostgreSQL migrations
 docs/                     # Credentials, features, user guide
-tests/                    # Vitest unit + Playwright E2E tests
+tests/                    # Vitest unit (6 files, 69 tests) + Playwright E2E tests
 scripts/                  # Backup & restore scripts
 mini-services/
 └── video-service/        # Standalone WebRTC video conferencing (port 3005)

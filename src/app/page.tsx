@@ -31,6 +31,7 @@ import { AmbulanceManagementPage } from '@/components/ambulance/AmbulanceManagem
 import { BloodBankPage } from '@/components/bloodbank/BloodBankPage'
 import { ImagingPage } from '@/components/imaging/ImagingPage'
 import { OperationTheatrePage } from '@/components/surgery/OperationTheatrePage'
+import { PayrollPage } from '@/components/payroll/PayrollPage'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
 import { KeyboardShortcutsDialog } from '@/components/KeyboardShortcutsDialog'
 import { Loader2 } from 'lucide-react'
@@ -107,6 +108,8 @@ export default function Home() {
           return <BedManagementPage />
         case 'reports':
           return <ReportsPage />
+        case 'payroll':
+          return <PayrollPage />
         case 'settings':
           return <SettingsPage />
         case 'support':
