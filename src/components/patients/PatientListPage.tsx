@@ -22,6 +22,7 @@ import {
   Droplets,
   UserCheck,
   X,
+  Upload,
 } from 'lucide-react'
 import { useNavigation } from '@/stores/navigation'
 import { useToast } from '@/hooks/use-toast'
@@ -64,6 +65,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
 import { AddPatientDialog } from '@/components/patients/AddPatientDialog'
+import { ImportCsvDialog } from '@/components/ImportCsvDialog'
 
 interface Patient {
   id: string
@@ -110,6 +112,7 @@ export function PatientListPage() {
   const [showFilters, setShowFilters] = useState(false)
   const searchTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const [debouncedSearch, setDebouncedSearch] = useState('')
+  const [importDialogOpen, setImportDialogOpen] = useState(false)
 
   const fetchPatients = useCallback(async (
     page: number,
@@ -272,6 +275,10 @@ export function PatientListPage() {
           </p>
         </div>
         <div className="flex gap-2">
+          <Button variant="outline" onClick={() => setImportDialogOpen(true)}>
+            <Upload className="mr-2 size-4" />
+            Import CSV
+          </Button>
           <Button
             variant="outline"
             onClick={() => {
@@ -832,6 +839,15 @@ export function PatientListPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <ImportCsvDialog
+        open={importDialogOpen}
+        onOpenChange={setImportDialogOpen}
+        title="Patients"
+        importUrl="/api/import/patients"
+        templateHeaders={['Name', 'Phone', 'Email', 'Date of Birth', 'Gender', 'Blood Group', 'Address', 'City', 'State', 'Pincode', 'Aadhaar Number', 'Emergency Contact', 'Emergency Phone', 'Insurance Provider', 'Insurance Number', 'Marital Status', 'Occupation', 'Allergies', 'Past Treatments', 'Status']}
+        onSuccess={() => { fetchPatients(currentPage, debouncedSearch, statusFilter, genderFilter, bloodGroupFilter, insuranceFilter, dateFrom, dateTo).catch(() => {}) }}
+      />
     </div>
   )
 }

@@ -1,7 +1,4 @@
 import { describe, it, expect, beforeAll } from 'vitest'
-
-process.env.JWT_SECRET = 'test-secret-key-for-unit-tests'
-
 import { hashPassword, comparePassword, signToken, verifyToken, signRefreshToken, verifyRefreshToken } from '@/lib/auth'
 
 describe('Password Hashing', () => {

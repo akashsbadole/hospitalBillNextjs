@@ -10,12 +10,13 @@
 
 | Module | Description |
 |---|---|
-| **Patient Management** | Registration, demographics, medical history, insurance, document tracking |
+| **Patient Management** | Registration, demographics, medical history, insurance, document tracking, custom fields, ICD-10 coded problem list, active medication list, SOAP clinical notes |
 | **Appointments** | Schedule, reschedule, cancel with calendar view and time-slot management |
-| **Billing & Invoicing** | GST-compliant invoices, CGST/SGST/IGST auto-calculation, HSN/SAC codes, PDF exports |
+| **Billing & Invoicing** | GST-compliant invoices, CGST/SGST/IGST auto-calculation, HSN/SAC codes, PDF exports, discharge summary PDF |
 | **Payments** | Cash, UPI, Card, Net Banking, Wallet + Razorpay & PayPal integration |
 | **Prescriptions** | Digital prescriptions with dosage, frequency, and duration tracking |
-| **OPD/IPD Workflow** | 10-stage visit lifecycle (Registration → Triage → Consultation → Lab → Billed → Discharged) |
+| **OPD/IPD Workflow** | 10-stage visit lifecycle (Registration → Triage → Consultation → Lab → Billed → Discharged), stage advancement, discharge summary, auto-invoice generation |
+| **Staff Management** | Dedicated staff CRUD (Admin, Receptionist, Accountant, Pharmacist, Lab Technician, Nurse) — separate from doctors |
 | **Queue Management** | Digital token system with priority levels, call/skip/complete, TV display board |
 | **Radiology / Imaging** | X-Ray, MRI, CT, Ultrasound with DICOM UID, radiologist findings |
 | **Lab Tests** | 22+ test catalog across Hematology, Biochemistry, Microbiology, Pathology |
@@ -24,7 +25,7 @@
 | **Inventory & Pharmacy** | Medicine catalog, batch/expiry tracking, purchase orders, stock movements |
 | **Ward & Bed Management** | 7 ward types, 78 beds with occupancy tracking and daily rates |
 | **Insurance / TPA** | Cashless & reimbursement claims, policy tracking, multi-company support |
-| **Operation Theatre** | OT scheduling, surgery types (Major/Minor/Micro), anesthesia tracking |
+| **Operation Theatre** | OT scheduling, calendar view, conflict detection, surgical team assignment, anesthesia tracking |
 | **Consent Forms** | Digital consent capture with templates and witness management |
 | **Doctor Scheduling** | Weekly schedules, availability, leave management, fee overrides |
 | **Telemedicine** | Video/audio call sessions with Socket.IO real-time signaling |
@@ -32,13 +33,31 @@
 | **Support Center** | Internal ticketing with priorities, categories, and reply threads |
 | **Feedback** | Patient satisfaction tracking with ratings and staff response workflow |
 | **Referrals** | Internal & external doctor referrals with status tracking |
+| **Departments** | Admin-configurable dynamic departments (CRUD, active toggle, sort order) — replaces hardcoded lists |
+| **EHR / EMR** | SOAP clinical notes (Subjective, Objective, Assessment, Plan), ICD-10 coded problem list, active medication list with dosage/frequency/route, medical coding on surgeries and visits |
+| **Custom Fields** | Admin-configurable dynamic fields for Patients, Visits, Medicines, Invoices, Appointments |
 | **Expenses** | Operational expense tracking by category with approval workflow |
 | **Waste Disposal** | Biomedical waste management per BMW color-coding rules |
 | **TDS Records** | Tax deduction compliance with PAN, section, quarter tracking |
-| **Multi-Branch** | 3 branches seeded with tenant-isolated data |
+| **Import CSV** | Bulk import patients, medicines, appointments, and invoices from CSV with template download |
+| **Barcode / RFID Scanning** | Scan barcodes for patients, medicines, beds; lookup by barcode; scan history |
+| **Full-Text Search** | PostgreSQL full-text search across patients, doctors, and medicines |
+| **Multi-Branch** | 3 branches seeded with tenant-isolated data, branch switcher in header |
 | **RBAC** | 5 roles: Admin, Receptionist, Doctor, Accountant, Pharmacist |
 | **Notifications** | In-app + Twilio SMS + AWS SES email notifications |
 | **Audit Trail** | Full action logging with IP, user-agent, and module context |
+
+### Production Ready
+
+| Feature | Description |
+|---|---|
+| **Healthcheck** | `GET /api/health` — DB connectivity, latency, uptime, memory monitoring |
+| **Env Validation** | Boot-time validation via `src/instrumentation.ts` — checks `DATABASE_URL`, `JWT_SECRET`, `ENCRYPTION_KEY` |
+| **Compression** | Production nginx config with gzip + brotli, asset caching, WebSocket proxy, security headers |
+| **Backup & Restore** | Automated PostgreSQL backup scripts (Windows `.ps1` + Unix `.sh`) with retention policy |
+| **Rate Limiting** | IP-based rate limiting on all API routes via `src/lib/rate-limiter.ts` |
+| **Session Security** | Password change invalidates all active sessions (`tokenVersion`), encryption key rotation |
+| **Accessibility** | Screen reader announcements (`use-announcer`), keyboard shortcuts (`Ctrl+K` for search) |
 
 ---
 
@@ -88,9 +107,27 @@ cp .env.example .env
 Edit `.env` with your database URL and secrets:
 
 ```env
+# Required
 DATABASE_URL=postgresql://user:password@host:5432/medibill?sslmode=require
 JWT_SECRET=<random-64-char-string>
 ENCRYPTION_KEY=<random-32-char-string>
+
+# Optional — Notifications (Twilio SMS)
+TWILIO_ACCOUNT_SID=
+TWILIO_AUTH_TOKEN=
+TWILIO_PHONE_NUMBER=
+
+# Optional — Notifications (AWS SES)
+AWS_REGION=
+AWS_ACCESS_KEY_ID=
+AWS_SECRET_ACCESS_KEY=
+SES_FROM_EMAIL=
+
+# Optional — Other
+SOCKET_PORT=3001
+NOTIFICATION_ENABLED=false
+BACKUP_RETENTION_DAYS=7
+NEXT_PUBLIC_SHOW_DEMO=true
 ```
 
 ### 3. Setup Database
@@ -137,9 +174,12 @@ Full credentials reference → [docs/credentials.md](docs/credentials.md)
 | `npm start` | Start production server |
 | `npm test` | Run Vitest unit tests |
 | `npm run test:e2e` | Run Playwright E2E tests |
-| `npm run db:seed` | Seed database with demo data |
+| `npm run db:seed` | Seed database with full demo data |
+| `npm run db:seed:departments` | Seed default department list (22 standard depts) |
 | `npm run db:reset` | Drop and recreate database |
 | `npm run db:migrate` | Run Prisma migrations |
+| `npm run db:setup` | Run migrations + full-text search setup |
+| `npm run db:setup:fts` | Setup PostgreSQL full-text search indexes |
 | `npm run lint` | ESLint check |
 | `npm run typecheck` | TypeScript check |
 
@@ -159,17 +199,21 @@ Full credentials reference → [docs/credentials.md](docs/credentials.md)
 docker compose up -d
 ```
 
-Starts: Next.js app (port 3000), WebSocket server (port 3001), PostgreSQL, and optional video service.
+Starts: Next.js app (port 3000), WebSocket server (port 3001), PostgreSQL, video conferencing service (port 3005), and optional backup service.
+
+For production, deploy behind the included `nginx.conf` as a reverse proxy for compression, caching, WebSocket support, and security headers.
 
 ---
 
-## API Routes (105 endpoints)
+## API Routes (120+ endpoints)
 
-The application exposes **105 API routes** across all modules:
+The application exposes **120+ API routes** across all modules:
 
 - `/api/auth/*` — Login, logout, refresh, change-password
 - `/api/patients/*` — CRUD + search
 - `/api/doctors/*`, `/api/staff/*` — Doctor/staff management
+- `/api/branches/*` — Multi-branch CRUD
+- `/api/doctor-schedules/*` — Weekly schedule management
 - `/api/appointments/*` — Scheduling
 - `/api/billing/*`, `/api/payments/*` — Invoices, payments, gateways
 - `/api/prescriptions/*` — Digital prescriptions
@@ -178,6 +222,7 @@ The application exposes **105 API routes** across all modules:
 - `/api/lab-tests/*` — Catalog & orders
 - `/api/imaging/*` — Radiology studies
 - `/api/queue/*` — Digital queue tokens
+- `/api/upload/*` — File/image upload
 - `/api/ambulance/*` — Fleet & dispatch
 - `/api/blood-bank/*` — Donors, donations, inventory, requests
 - `/api/beds/*`, `/api/beds/wards/*` — Ward & bed management
@@ -196,6 +241,16 @@ The application exposes **105 API routes** across all modules:
 - `/api/barcode/*` — Barcode scanning
 - `/api/ai/*` — AI health analysis
 - `/api/calls/*` — Telemedicine sessions
+- `/api/departments/*` — Dynamic department CRUD (Admin)
+- `/api/custom-fields/*` — Custom field CRUD (Admin)
+- `/api/custom-field-values/*` — Custom field value storage
+- `/api/operation-theatres/*` — OT management CRUD
+- `/api/surgeries/*` — Surgery scheduling & status
+- `/api/import/*` — Bulk CSV import (patients, medicines, appointments, invoices)
+- `/api/clinical-notes/*` — SOAP clinical notes CRUD (EHR)
+- `/api/problem-list/*` — Active problem list with ICD-10 codes (EHR)
+- `/api/active-medications/*` — Active medications with dosage/frequency (EHR)
+- `/api/health` — Production healthcheck endpoint
 
 ---
 
@@ -231,34 +286,74 @@ The application exposes **105 API routes** across all modules:
 src/
 ├── app/                  # Next.js App Router pages & API routes
 │   ├── (auth)/           # Auth pages (login)
-│   └── api/              # 105 API route handlers
+│   └── api/              # 120+ API route handlers
 ├── components/           # React components
 │   ├── ui/               # shadcn/ui primitives
+│   ├── surgery/          # OT management, surgery scheduling, calendar
+│   ├── ehr/              # SOAP clinical notes, problem list, active medications
+│   ├── workflow/         # Visit lifecycle, stage advancement, bed allocation
+│   ├── settings/         # Departments, custom fields, payment gateways
+│   ├── calls/            # Telemedicine (video/audio calls)
+│   ├── queue/            # Queue management + TV display board
+│   ├── barcode/          # Barcode/RFID scanner
+│   ├── ai/               # AI health analysis
 │   └── ...               # Feature components
 ├── hooks/                # Custom React hooks
+│   ├── use-toast.ts      # Toast notifications
+│   ├── use-mobile.ts     # Mobile detection
+│   ├── use-realtime.ts   # Socket.IO real-time hook
+│   ├── use-announcer.ts  # Screen reader accessibility
+│   └── use-keyboard-shortcuts.ts
 ├── lib/                  # Utility libraries
 │   ├── auth.ts           # bcrypt + JWT
-│   ├── api-auth.ts       # API authentication middleware
+│   ├── api-auth.ts       # API auth middleware
+│   ├── api-client.ts     # Frontend API client (auth, branchId, 401 redirect)
+│   ├── constants.ts      # App-wide constants
+│   ├── validations.ts    # Zod schemas for all inputs
+│   ├── utils.ts          # formatCurrency, calculateGST, validateGSTIN
+│   ├── csv-utils.ts      # CSV parse/build for import/export
+│   ├── db.ts             # Prisma client singleton
+│   ├── env.ts            # Boot-time env validation
+│   ├── rbac.ts           # Role-based access control
+│   ├── audit-log.ts      # Action audit logging
 │   ├── crypto.ts         # AES-256-CBC with key rotation
-│   ├── notifications.ts  # Twilio + SES
+│   ├── notifications.ts  # Twilio SMS + AWS SES
 │   ├── rate-limiter.ts   # IP-based rate limiting
 │   ├── sanitize.ts       # XSS prevention
 │   └── socket-server.ts  # Socket.IO server
-├── store/                # Zustand stores
-└── middleware.ts          # CSRF protection
+├── stores/               # Zustand stores
+│   ├── auth.ts           # Auth state + token management
+│   ├── billing.ts        # Billing/invoice state
+│   ├── branch.ts         # Multi-branch tenant selection
+│   ├── navigation.ts     # App navigation (24 routes)
+│   ├── payment.ts        # Payment flow
+│   └── settings.ts       # App settings
+├── middleware.ts          # CSRF validation, security headers, rate limiting
+└── instrumentation.ts    # Next.js hook — validates env at boot
 prisma/
 ├── schema.prisma         # 40+ models
-├── seed.ts               # Demo data seeder
+├── seed.ts               # Full demo data seeder
+├── seed-departments.ts   # Default departments seeder
+├── setup-fts.ts          # PostgreSQL full-text search setup
 └── migrations/           # PostgreSQL migrations
-docs/                     # Documentation
-tests/                    # Vitest + Playwright tests
+docs/                     # Credentials, features, user guide
+tests/                    # Vitest unit + Playwright E2E tests
+scripts/                  # Backup & restore scripts
+mini-services/
+└── video-service/        # Standalone WebRTC video conferencing (port 3005)
+server.ts                 # Standalone Socket.IO server (port 3001)
+nginx.conf                # Production reverse proxy config
+Dockerfile                # Multi-stage Docker build
+docker-compose.yml        # Full stack orchestration
 ```
 
 ---
 
 ## Seed Data
 
-The seed script populates **40 tables** with realistic Indian hospital data:
+The full seed script populates **40+ tables** with realistic Indian hospital data:
+
+### Full Demo (`npm run db:seed`)
 
 ```
 branches: 3, users: 8, patients: 20, doctors: 8, staff: 8
@@ -274,6 +369,17 @@ notifications: 6
 ```
 
 Run `npm run db:seed` to reset and re-seed.
+
+### Departments Only (`npm run db:seed:departments`)
+
+Seeds **22 standard departments** (skips duplicates):
+
+```
+General Medicine, Cardiology, Orthopedics, Pediatrics, Gynecology, Dermatology,
+ENT, Ophthalmology, Neurology, Psychiatry, Radiology, Pathology, Urology,
+Nephrology, Gastroenterology, Pulmonology, Endocrinology, Oncology,
+Emergency Medicine, Anesthesiology, Surgery (General), ICU / Critical Care
+```
 
 ---
 

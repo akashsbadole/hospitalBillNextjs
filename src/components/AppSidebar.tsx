@@ -31,6 +31,7 @@ import {
   Droplets,
   ScanLine,
   ScanBarcode,
+  Syringe,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
@@ -71,6 +72,7 @@ const ALL_NAV_ITEMS: NavItem[] = [
   { label: 'Ambulance', icon: Truck, page: 'ambulance', section: 'operations' },
   { label: 'Blood Bank', icon: Droplets, page: 'blood-bank', section: 'operations' },
   { label: 'Radiology', icon: ScanLine, page: 'imaging', section: 'operations' },
+  { label: 'Operation Theatre', icon: Syringe, page: 'surgery', section: 'operations' },
   { label: 'Barcode Scanner', icon: ScanBarcode, page: 'barcode-scanner', section: 'operations' },
   { label: 'Reports', icon: BarChart3, page: 'reports', section: 'admin' },
   { label: 'Settings', icon: Settings, page: 'settings', section: 'admin' },

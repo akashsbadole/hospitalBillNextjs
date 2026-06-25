@@ -73,6 +73,16 @@ interface MedicineNote {
   dosage?: string
   frequency?: string
   duration?: string
+  medicineId?: string
+}
+
+interface MedicineSearchResult {
+  id: string
+  medicineId: string
+  name: string
+  category: string | null
+  sellingPrice: number
+  stock: number
 }
 
 interface PatientOption {
@@ -612,6 +622,12 @@ export function PrescriptionListPage() {
   const [newMedicines, setNewMedicines] = useState<MedicineNote[]>([
     { medicine: '', dosage: '', frequency: '', duration: '' },
   ])
+
+  // Medicine search
+  const [medicineSearchQuery, setMedicineSearchQuery] = useState('')
+  const [medicineResults, setMedicineResults] = useState<MedicineSearchResult[]>([])
+  const [medicineSearching, setMedicineSearching] = useState(false)
+  const [activeMedicineIndex, setActiveMedicineIndex] = useState<number | null>(null)
   const [newNotes, setNewNotes] = useState('')
   const [followUpDays, setFollowUpDays] = useState<number>(7)
 
@@ -750,6 +766,27 @@ export function PrescriptionListPage() {
     }
   }, [newPrescriptionOpen, fetchDoctors, fetchPatients])
 
+  // Debounced medicine search
+  useEffect(() => {
+    if (!medicineSearchQuery || activeMedicineIndex === null) {
+      setMedicineResults([])
+      setMedicineSearching(false)
+      return
+    }
+    const timer = setTimeout(async () => {
+      setMedicineSearching(true)
+      try {
+        const res = await apiGet<{ data: MedicineSearchResult[] }>(`/medicines/search?q=${encodeURIComponent(medicineSearchQuery)}`)
+        setMedicineResults(res.data || [])
+      } catch {
+        setMedicineResults([])
+      } finally {
+        setMedicineSearching(false)
+      }
+    }, 300)
+    return () => clearTimeout(timer)
+  }, [medicineSearchQuery, activeMedicineIndex])
+
   const handlePatientSearch = (value: string) => {
     setNewPatient(value)
     if (patientSearchTimerRef.current) clearTimeout(patientSearchTimerRef.current)
@@ -788,16 +825,35 @@ export function PrescriptionListPage() {
   }
 
   // Template handler
-  const handleSelectTemplate = (template: PrescriptionTemplate) => {
+  const handleSelectTemplate = useCallback(async (template: PrescriptionTemplate) => {
     setNewDiagnosis(template.diagnosis)
-    setNewMedicines(template.medicines.map(m => ({ ...m })))
     setNewNotes(template.notes)
     setFollowUpDays(template.followUpDays)
+
+    // Look up medicineIds from inventory for template medicines
+    const medicinesWithIds: MedicineNote[] = await Promise.all(
+      template.medicines.map(async (m) => {
+        try {
+          const searchRes = await apiGet<{ data: MedicineSearchResult[] }>(`/medicines/search?q=${encodeURIComponent(m.medicine)}`)
+          const match = searchRes.data?.find((r) =>
+            r.name.toLowerCase().includes(m.medicine.toLowerCase().split(/[\s(]/)[0].toLowerCase())
+          )
+          if (match) {
+            return { ...m, medicineId: match.id }
+          }
+        } catch {
+          // Ignore lookup failures
+        }
+        return { ...m }
+      })
+    )
+    setNewMedicines(medicinesWithIds)
+
     if (!newPrescriptionOpen) {
       setNewPrescriptionOpen(true)
     }
     toast({ title: 'Template Applied', description: `"${template.name}" template applied. Edit details as needed.` })
-  }
+  }, [newPrescriptionOpen, toast])
 
   // Submit prescription
   const handleSavePrescription = async () => {
@@ -809,7 +865,13 @@ export function PrescriptionListPage() {
         doctorId: newDoctor,
         date: newDate,
         diagnosis: newDiagnosis || undefined,
-        notes: newMedicines.filter((m) => m.medicine.trim()),
+        notes: newMedicines.filter((m) => m.medicine.trim()).map((m) => ({
+          medicine: m.medicine,
+          dosage: m.dosage,
+          frequency: m.frequency,
+          duration: m.duration,
+          medicineId: m.medicineId || undefined,
+        })),
         followUpDays: followUpDays || undefined,
       }
       await apiPost<SingleResponse<Prescription>>('/prescriptions', body)
@@ -1471,13 +1533,67 @@ export function PrescriptionListPage() {
                     )}
                   </div>
                   <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                    <div className="space-y-1.5">
+                    <div className="space-y-1.5 relative">
                       <Label className="text-xs">Medicine Name</Label>
-                      <Input
-                        placeholder="e.g., Paracetamol 500mg"
-                        value={med.medicine}
-                        onChange={(e) => handleMedicineChange(idx, 'medicine', e.target.value)}
-                      />
+                      <div className="relative">
+                        <Input
+                          placeholder="e.g., Paracetamol 500mg"
+                          value={med.medicine}
+                          onChange={(e) => {
+                            handleMedicineChange(idx, 'medicine', e.target.value)
+                            setMedicineSearchQuery(e.target.value)
+                            setActiveMedicineIndex(idx)
+                          }}
+                          onFocus={() => {
+                            setActiveMedicineIndex(idx)
+                            setMedicineSearchQuery(med.medicine)
+                          }}
+                          onBlur={() => {
+                            setTimeout(() => setActiveMedicineIndex(null), 200)
+                          }}
+                        />
+                        {med.medicineId && (
+                          <span className="absolute right-2 top-1/2 -translate-y-1/2 flex h-2 w-2">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+                          </span>
+                        )}
+                      </div>
+                      {activeMedicineIndex === idx && medicineSearchQuery && (
+                        <div className="absolute z-50 top-full left-0 right-0 mt-1 bg-popover border rounded-md shadow-md max-h-48 overflow-y-auto">
+                          {medicineSearching ? (
+                            <div className="flex items-center justify-center py-3">
+                              <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+                            </div>
+                          ) : medicineResults.length > 0 ? (
+                            medicineResults.map((m) => (
+                              <button
+                                key={m.id}
+                                type="button"
+                                className="w-full text-left px-3 py-2 text-sm hover:bg-muted/50 border-b last:border-0 transition-colors"
+                                onMouseDown={(e) => {
+                                  e.preventDefault()
+                                  handleMedicineChange(idx, 'medicine', m.name)
+                                  handleMedicineChange(idx, 'medicineId', m.id)
+                                  setMedicineSearchQuery('')
+                                  setActiveMedicineIndex(null)
+                                }}
+                              >
+                                <div className="flex items-center justify-between">
+                                  <span className="font-medium">{m.name}</span>
+                                  <Badge variant="outline" className="text-[10px]">{m.category || 'General'}</Badge>
+                                </div>
+                                <div className="flex items-center gap-3 text-xs text-muted-foreground mt-0.5">
+                                  <span>Stock: <span className={m.stock <= 0 ? 'text-red-500 font-medium' : 'font-medium'}>{m.stock}</span></span>
+                                  <span>Price: ₹{m.sellingPrice}</span>
+                                </div>
+                              </button>
+                            ))
+                          ) : (
+                            <p className="px-3 py-2 text-xs text-muted-foreground">No matching medicines found</p>
+                          )}
+                        </div>
+                      )}
                     </div>
                     <div className="space-y-1.5">
                       <Label className="text-xs">Dosage</Label>

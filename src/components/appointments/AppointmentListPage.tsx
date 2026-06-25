@@ -18,7 +18,9 @@ import {
   FileText,
   List,
   Loader2,
+  Upload,
 } from 'lucide-react'
+import { ImportCsvDialog } from '@/components/ImportCsvDialog'
 import { useToast } from '@/hooks/use-toast'
 import { apiGet, apiPut, ApiError, type PaginatedResponse } from '@/lib/api-client'
 import { formatCurrency } from '@/lib/utils'
@@ -411,6 +413,7 @@ export function AppointmentListPage() {
   const { toast } = useToast()
   const [currentDate, setCurrentDate] = useState(startOfDay(new Date()))
   const [dialogOpen, setDialogOpen] = useState(false)
+  const [importDialogOpen, setImportDialogOpen] = useState(false)
   const [activeView, setActiveView] = useState<'timeline' | 'list' | 'calendar'>('timeline')
   const [statusFilter, setStatusFilter] = useState<string>('all')
   const [appointments, setAppointments] = useState<Appointment[]>([])
@@ -513,13 +516,19 @@ export function AppointmentListPage() {
             Manage and track patient appointments
           </p>
         </div>
-        <Button
-          onClick={() => setDialogOpen(true)}
-          className="bg-emerald-600 hover:bg-emerald-700 text-white"
-        >
-          <Plus className="mr-2 h-4 w-4" />
-          New Appointment
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={() => setImportDialogOpen(true)}>
+            <Upload className="mr-2 h-4 w-4" />
+            Import CSV
+          </Button>
+          <Button
+            onClick={() => setDialogOpen(true)}
+            className="bg-emerald-600 hover:bg-emerald-700 text-white"
+          >
+            <Plus className="mr-2 h-4 w-4" />
+            New Appointment
+          </Button>
+        </div>
       </div>
 
       {/* Stats Cards */}
@@ -706,6 +715,15 @@ export function AppointmentListPage() {
         open={dialogOpen}
         onOpenChange={setDialogOpen}
         onSuccess={handleDialogSuccess}
+      />
+
+      <ImportCsvDialog
+        open={importDialogOpen}
+        onOpenChange={setImportDialogOpen}
+        title="Appointments"
+        importUrl="/api/import/appointments"
+        templateHeaders={['Patient ID', 'Patient Name', 'Patient Phone', 'Doctor ID', 'Doctor Name', 'Date', 'Time', 'Duration', 'Type', 'Status', 'Notes']}
+        onSuccess={() => fetchAppointments(dateStr, statusFilter)}
       />
     </div>
   )

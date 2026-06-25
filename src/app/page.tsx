@@ -30,6 +30,7 @@ import BarcodeScannerPage from '@/components/barcode/BarcodeScannerPage'
 import { AmbulanceManagementPage } from '@/components/ambulance/AmbulanceManagementPage'
 import { BloodBankPage } from '@/components/bloodbank/BloodBankPage'
 import { ImagingPage } from '@/components/imaging/ImagingPage'
+import { OperationTheatrePage } from '@/components/surgery/OperationTheatrePage'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
 import { KeyboardShortcutsDialog } from '@/components/KeyboardShortcutsDialog'
 import { Loader2 } from 'lucide-react'
@@ -84,6 +85,8 @@ export default function Home() {
           return <BloodBankPage />
         case 'imaging':
           return <ImagingPage />
+        case 'surgery':
+          return <OperationTheatrePage />
         case 'barcode-scanner':
           return <BarcodeScannerPage />
         case 'billing':

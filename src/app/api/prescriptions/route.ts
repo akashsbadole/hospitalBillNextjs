@@ -8,6 +8,7 @@ import { logAudit, extractRequestInfo } from '@/lib/audit-log'
 // ── Schemas ──────────────────────────────────────────────────────────────
 const prescriptionItemSchema = z.object({
   medicine: z.string().trim().min(1, 'Medicine name is required'),
+  medicineId: z.string().optional(),
   dosage: z.string().trim().optional(),
   frequency: z.string().trim().optional(),
   duration: z.string().trim().optional(),

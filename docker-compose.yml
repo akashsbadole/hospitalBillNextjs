@@ -54,5 +54,21 @@ services:
       - "3005:3005"
     restart: unless-stopped
 
+  # Run backup: docker compose --profile backup run --rm backup
+  # Schedule via host cron: 0 3 * * * cd /app && docker compose --profile backup run --rm backup
+  backup:
+    image: postgres:16-alpine
+    profiles: ["backup"]
+    env_file: .env
+    environment:
+      - BACKUP_DIR=/backups
+      - BACKUP_RETENTION_DAYS=7
+    volumes:
+      - ./scripts:/scripts:ro
+      - postgres_backups:/backups
+    entrypoint: ["sh", "/scripts/backup.sh"]
+    restart: no
+
 volumes:
   postgres_data:
+  postgres_backups:

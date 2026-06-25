@@ -53,6 +53,8 @@ import {
 import { useAuth } from '@/stores/auth'
 import { useBranchStore } from '@/stores/branch'
 import { PaymentGatewaySettings } from '@/components/settings/PaymentGatewaySettings'
+import { CustomFieldsSettings } from '@/components/settings/CustomFieldsSettings'
+import { DepartmentSettings } from '@/components/settings/DepartmentSettings'
 import { ImageUpload } from '@/components/ImageUpload'
 import {
   Building2,
@@ -79,6 +81,7 @@ import {
   ChevronRight,
   FilterX,
   X,
+  List,
 } from 'lucide-react'
 
 // ─── Schemas ─────────────────────────────────────────────────────────────────
@@ -1089,9 +1092,13 @@ export function SettingsPage() {
         <TabsList className="flex-wrap h-auto gap-1">
           <TabsTrigger value="clinic"><Building2 className="h-4 w-4 mr-1.5" />Clinic Info</TabsTrigger>
           <TabsTrigger value="branches"><Building2 className="h-4 w-4 mr-1.5" />Branches</TabsTrigger>
+          <TabsTrigger value="departments"><Building2 className="h-4 w-4 mr-1.5" />Departments</TabsTrigger>
           <TabsTrigger value="gst"><Receipt className="h-4 w-4 mr-1.5" />GST Settings</TabsTrigger>
           <TabsTrigger value="payment"><CreditCard className="h-4 w-4 mr-1.5" />Payment</TabsTrigger>
           <TabsTrigger value="users"><Shield className="h-4 w-4 mr-1.5" />User Management</TabsTrigger>
+          {user?.role === 'Admin' && (
+            <TabsTrigger value="custom-fields"><List className="h-4 w-4 mr-1.5" />Custom Fields</TabsTrigger>
+          )}
           <TabsTrigger value="backup"><Database className="h-4 w-4 mr-1.5" />Backup & Data</TabsTrigger>
           {user?.role === 'Admin' && (
             <TabsTrigger value="audit"><ScrollText className="h-4 w-4 mr-1.5" />Audit Logs</TabsTrigger>
@@ -1247,7 +1254,12 @@ export function SettingsPage() {
           <BranchesSettingsTab />
         </TabsContent>
 
-        {/* ═══ TAB 3: GST SETTINGS ═══ */}
+        {/* ═══ TAB 3: DEPARTMENTS ═══ */}
+        <TabsContent value="departments" className="space-y-6 mt-6">
+          <DepartmentSettings />
+        </TabsContent>
+
+        {/* ═══ TAB 4: GST SETTINGS ═══ */}
         <TabsContent value="gst" className="space-y-6 mt-6">
           <Card>
             <CardHeader>
@@ -1587,7 +1599,20 @@ export function SettingsPage() {
           </Card>
         </TabsContent>
 
-        {/* ═══ TAB 5: BACKUP & DATA ═══ */}
+        {/* ═══ TAB 5: CUSTOM FIELDS ═══ */}
+        <TabsContent value="custom-fields" className="space-y-6 mt-6">
+          {user?.role !== 'Admin' ? (
+            <Card><CardContent className="flex flex-col items-center justify-center py-16 gap-4">
+              <Shield className="h-8 w-8 text-red-600" />
+              <h3 className="text-lg font-semibold">Admin Only</h3>
+              <p className="text-sm text-muted-foreground">Custom fields can only be managed by administrators.</p>
+            </CardContent></Card>
+          ) : (
+            <CustomFieldsSettings />
+          )}
+        </TabsContent>
+
+        {/* ═══ TAB 6: BACKUP & DATA ═══ */}
         <TabsContent value="backup" className="space-y-6 mt-6">
           <Card>
             <CardHeader>

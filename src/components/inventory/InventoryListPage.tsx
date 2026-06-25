@@ -75,7 +75,9 @@ import {
   ArrowUpRight,
   TimerReset,
   Minus,
+  Upload,
 } from 'lucide-react'
+import { ImportCsvDialog } from '@/components/ImportCsvDialog'
 
 // ==================== TYPES ====================
 
@@ -278,6 +280,7 @@ export function InventoryListPage() {
   const debouncedSearch = useRef('')
 
   const [addDialogOpen, setAddDialogOpen] = useState(false)
+  const [importDialogOpen, setImportDialogOpen] = useState(false)
   const [stockDialogMed, setStockDialogMed] = useState<Medicine | null>(null)
   const [stockValue, setStockValue] = useState('')
   const [isSubmittingStock, setIsSubmittingStock] = useState(false)
@@ -1065,6 +1068,10 @@ export function InventoryListPage() {
                   >
                     <Filter className="mr-2 h-4 w-4" />
                     Clear
+                  </Button>
+                  <Button variant="outline" onClick={() => setImportDialogOpen(true)}>
+                    <Upload className="mr-2 h-4 w-4" />
+                    Import CSV
                   </Button>
                   <Button
                     className="bg-emerald-600 hover:bg-emerald-700"
@@ -2060,6 +2067,15 @@ export function InventoryListPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <ImportCsvDialog
+        open={importDialogOpen}
+        onOpenChange={setImportDialogOpen}
+        title="Medicines"
+        importUrl="/api/import/medicines"
+        templateHeaders={['Name', 'Category', 'Manufacturer', 'Batch Number', 'Expiry Date', 'Purchase Price', 'Selling Price', 'Stock', 'Min Stock', 'GST Rate', 'HSN Code', 'Barcode', 'Status']}
+        onSuccess={() => fetchMedicines('')}
+      />
     </div>
   )
 }

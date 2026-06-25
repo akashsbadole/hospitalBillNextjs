@@ -28,7 +28,9 @@ import {
   Loader2,
   RefreshCw,
   Download,
+  Upload,
 } from 'lucide-react'
+import { ImportCsvDialog } from '@/components/ImportCsvDialog'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -179,6 +181,7 @@ export function BillingListPage() {
   // Local state: delete confirmation (list-page specific)
   const [deleteTarget, setDeleteTarget] = useState<StoreInvoice | null>(null)
   const [deleting, setDeleting] = useState(false)
+  const [importDialogOpen, setImportDialogOpen] = useState(false)
 
   // Local search input with debounce to store
   const [localSearch, setLocalSearch] = useState(filters.search || '')
@@ -431,6 +434,10 @@ export function BillingListPage() {
               >
                 <Download className="mr-2 h-4 w-4" />
                 Export CSV
+              </Button>
+              <Button variant="outline" onClick={() => setImportDialogOpen(true)}>
+                <Upload className="mr-2 h-4 w-4" />
+                Import CSV
               </Button>
               <Button
                 onClick={openCreateDialog}
@@ -692,6 +699,15 @@ export function BillingListPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <ImportCsvDialog
+        open={importDialogOpen}
+        onOpenChange={setImportDialogOpen}
+        title="Invoices"
+        importUrl="/api/import/invoices"
+        templateHeaders={['Invoice No', 'Patient ID', 'Patient Name', 'Date', 'Status', 'Description', 'Quantity', 'Unit Price', 'GST Rate', 'HSN Code', 'Type']}
+        onSuccess={() => fetchInvoices()}
+      />
     </div>
   )
 }

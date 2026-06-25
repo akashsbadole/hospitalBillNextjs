@@ -8,6 +8,10 @@ export default defineConfig({
     environment: 'node',
     globals: true,
     setupFiles: [],
+    env: {
+      JWT_SECRET: 'test-secret-key-for-unit-tests',
+      DATABASE_URL: 'postgresql://test:test@localhost:5432/test',
+    },
     include: ['tests/**/*.test.ts', 'tests/**/*.test.tsx'],
     exclude: ['node_modules', '.next', 'examples', 'skills', '.opencode'],
   },

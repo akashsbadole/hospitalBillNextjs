@@ -25,6 +25,7 @@ export type Page =
   | 'blood-bank'
   | 'imaging'
   | 'barcode-scanner'
+  | 'surgery'
 
 interface NavigationState {
   currentPage: Page

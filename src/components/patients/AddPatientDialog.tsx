@@ -8,6 +8,7 @@ import { useToast } from '@/hooks/use-toast'
 import { apiPost, apiPut, ApiError, type SingleResponse } from '@/lib/api-client'
 import { createPatientSchema } from '@/lib/validations'
 import { BLOOD_GROUPS, GENDER_OPTIONS, INDIAN_STATES, MARITAL_STATUS_OPTIONS } from '@/lib/constants'
+import { CustomFieldsSection, saveCustomFieldValues } from '@/components/CustomFieldsSection'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -79,6 +80,7 @@ export function AddPatientDialog({ open, onOpenChange, patient, onSuccess }: Add
   const isEditing = !!patient
   const { toast } = useToast()
   const [submitting, setSubmitting] = useState(false)
+  const [customFieldValues, setCustomFieldValues] = useState<Record<string, string | null>>({})
 
   const form = useForm<PatientFormValues>({
     resolver: zodResolver(createPatientSchema),
@@ -177,12 +179,18 @@ export function AddPatientDialog({ open, onOpenChange, patient, onSuccess }: Add
         occupation: data.occupation || undefined,
       }
 
+      let savedId = patient?.id || ''
       if (isEditing && patient) {
         await apiPut<SingleResponse<Patient>>(`/patients/${patient.id}`, payload)
+        savedId = patient.id
         toast({ title: 'Patient Updated', description: `${data.name}'s details have been updated.` })
       } else {
-        await apiPost<SingleResponse<Patient>>('/patients', payload)
+        const res = await apiPost<SingleResponse<Patient>>('/patients', payload)
+        savedId = res.data.id
         toast({ title: 'Patient Added', description: `${data.name} has been registered successfully.` })
+      }
+      if (Object.keys(customFieldValues).length > 0 && savedId) {
+        await saveCustomFieldValues('Patient', savedId, customFieldValues).catch(() => {})
       }
       onSuccess()
     } catch (error) {
@@ -581,6 +589,15 @@ export function AddPatientDialog({ open, onOpenChange, patient, onSuccess }: Add
                   )}
                 />
               </div>
+
+              <Separator />
+
+              <CustomFieldsSection
+                entityType="Patient"
+                entityId={patient?.id || null}
+                values={customFieldValues}
+                onChange={(fieldId, value) => setCustomFieldValues(prev => ({ ...prev, [fieldId]: value }))}
+              />
             </form>
           </Form>
         </ScrollArea>

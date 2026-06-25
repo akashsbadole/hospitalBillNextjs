@@ -58,6 +58,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { WorkflowStepper, StageBadge, type StageInfo } from '@/components/workflow/WorkflowStepper'
 import { StartVisitDialog } from '@/components/workflow/StartVisitDialog'
+import { EhrTab } from '@/components/ehr/EhrTab'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -665,6 +666,7 @@ export function PatientDetailPage() {
         <TabsList className="flex-wrap h-auto gap-1">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="medical">Medical Records</TabsTrigger>
+          <TabsTrigger value="ehr">EHR</TabsTrigger>
           <TabsTrigger value="visits">Visits</TabsTrigger>
           <TabsTrigger value="prescriptions">Prescriptions</TabsTrigger>
           <TabsTrigger value="billing">Billing</TabsTrigger>
@@ -1172,6 +1174,13 @@ export function PatientDetailPage() {
                 </CardContent>
               </Card>
             </div>
+          </div>
+        </TabsContent>
+
+        {/* ═══════════════════ EHR / EMR Tab ═══════════════════ */}
+        <TabsContent value="ehr">
+          <div className="py-2">
+            {patientId && <EhrTab patientId={patientId} />}
           </div>
         </TabsContent>
 

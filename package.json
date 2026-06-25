@@ -18,7 +18,13 @@
     "db:migrate": "prisma migrate dev",
     "db:migrate:create": "prisma migrate dev --create-only",
     "db:reset": "prisma migrate reset",
-    "db:seed": "tsx prisma/seed.ts"
+    "db:seed": "tsx prisma/seed.ts",
+    "db:seed:departments": "tsx prisma/seed-departments.ts",
+    "db:setup:fts": "tsx prisma/setup-fts.ts",
+    "db:setup": "prisma migrate dev && tsx prisma/setup-fts.ts",
+    "backup": "powershell -File scripts/backup.ps1",
+    "backup:unix": "bash scripts/backup.sh",
+    "restore": "powershell -File scripts/restore.ps1"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.1.1",

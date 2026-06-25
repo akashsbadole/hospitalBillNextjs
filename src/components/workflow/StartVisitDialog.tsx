@@ -58,6 +58,11 @@ interface AppointmentOption {
   doctor: { name: string } | null
 }
 
+interface DepartmentOption {
+  id: string
+  name: string
+}
+
 interface WardOption {
   id: string
   name: string
@@ -74,23 +79,7 @@ interface BedOption {
   wardName: string
 }
 
-const DEPARTMENTS = [
-  'General Medicine',
-  'Cardiology',
-  'Orthopedics',
-  'Neurology',
-  'Pediatrics',
-  'Gynecology',
-  'Dermatology',
-  'ENT',
-  'Ophthalmology',
-  'Psychiatry',
-  'Radiology',
-  'Pathology',
-  'Emergency',
-  'Surgery',
-  'ICU',
-]
+
 
 export function StartVisitDialog({
   open,
@@ -131,9 +120,11 @@ export function StartVisitDialog({
   const [patients, setPatients] = useState<PatientOption[]>([])
   const [doctors, setDoctors] = useState<DoctorOption[]>([])
   const [appointments, setAppointments] = useState<AppointmentOption[]>([])
+  const [departments, setDepartments] = useState<DepartmentOption[]>([])
   const [isLoadingPatients, setIsLoadingPatients] = useState(false)
   const [isLoadingDoctors, setIsLoadingDoctors] = useState(false)
   const [isLoadingAppointments, setIsLoadingAppointments] = useState(false)
+  const [isLoadingDepartments, setIsLoadingDepartments] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [patientSearch, setPatientSearch] = useState('')
 
@@ -163,6 +154,7 @@ export function StartVisitDialog({
       setIsLoadingWards(false)
       fetchPatients()
       fetchDoctors()
+      fetchDepartments()
     }
   }, [open, prefillPatientId])
 
@@ -251,6 +243,18 @@ export function StartVisitDialog({
       setAvailableBeds([])
     } finally {
       setIsLoadingBeds(false)
+    }
+  }
+
+  const fetchDepartments = async () => {
+    setIsLoadingDepartments(true)
+    try {
+      const res = await apiGet<{ data: DepartmentOption[] }>('/departments')
+      setDepartments(res.data)
+    } catch {
+      setDepartments([])
+    } finally {
+      setIsLoadingDepartments(false)
     }
   }
 
@@ -486,18 +490,28 @@ export function StartVisitDialog({
                   Department (optional)
                 </span>
               </Label>
-              <Select value={department} onValueChange={setDepartment}>
-                <SelectTrigger id="department-select" className="w-full">
-                  <SelectValue placeholder="Select department..." />
-                </SelectTrigger>
-                <SelectContent className="max-h-56">
-                  {DEPARTMENTS.map(d => (
-                    <SelectItem key={d} value={d}>
-                      {d}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              {isLoadingDepartments ? (
+                <Skeleton className="h-9 w-full rounded-md" />
+              ) : (
+                <Select value={department} onValueChange={setDepartment}>
+                  <SelectTrigger id="department-select" className="w-full">
+                    <SelectValue placeholder="Select department..." />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-56">
+                    {departments.length === 0 ? (
+                      <div className="px-2 py-4 text-center text-sm text-muted-foreground">
+                        No departments available
+                      </div>
+                    ) : (
+                      departments.map(d => (
+                        <SelectItem key={d.id} value={d.name}>
+                          {d.name}
+                        </SelectItem>
+                      ))
+                    )}
+                  </SelectContent>
+                </Select>
+              )}
             </div>
 
             {/* IPD Bed Allocation */}

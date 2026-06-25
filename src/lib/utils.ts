@@ -267,3 +267,45 @@ export function getRoleBadgeColor(role: string): string {
     default: return 'bg-gray-100 text-gray-600 border-gray-200 dark:bg-gray-950/40 dark:text-gray-400 dark:border-gray-800'
   }
 }
+
+// Payroll ID generator
+export function generatePayrollId(lastNumber: string | null): string {
+  if (!lastNumber) return 'PAYR-0001'
+  const num = parseInt(lastNumber.replace('PAYR-', ''), 10)
+  return `PAYR-${String(num + 1).padStart(4, '0')}`
+}
+
+// Shift ID generator
+export function generateShiftId(lastNumber: string | null): string {
+  if (!lastNumber) return 'SFT-0001'
+  const num = parseInt(lastNumber.replace('SFT-', ''), 10)
+  return `SFT-${String(num + 1).padStart(4, '0')}`
+}
+
+// Leave ID generator
+export function generateLeaveId(lastNumber: string | null): string {
+  if (!lastNumber) return 'LEV-0001'
+  const num = parseInt(lastNumber.replace('LEV-', ''), 10)
+  return `LEV-${String(num + 1).padStart(4, '0')}`
+}
+
+// Insurance Policy ID generator
+export function generatePolicyId(lastNumber: string | null): string {
+  if (!lastNumber) return 'POL-0001'
+  const num = parseInt(lastNumber.replace('POL-', ''), 10)
+  return `POL-${String(num + 1).padStart(4, '0')}`
+}
+
+// Pre-Auth ID generator
+export function generatePreAuthId(lastNumber: string | null): string {
+  if (!lastNumber) return 'PRA-0001'
+  const num = parseInt(lastNumber.replace('PRA-', ''), 10)
+  return `PRA-${String(num + 1).padStart(4, '0')}`
+}
+
+// WhatsApp Message ID generator
+export function generateWhatsAppId(lastNumber: string | null): string {
+  if (!lastNumber) return 'WAM-0001'
+  const num = parseInt(lastNumber.replace('WAM-', ''), 10)
+  return `WAM-${String(num + 1).padStart(4, '0')}`
+}
