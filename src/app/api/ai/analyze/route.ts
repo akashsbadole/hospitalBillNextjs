@@ -158,7 +158,7 @@ export async function POST(request: NextRequest) {
     // Call AI for analysis
     let aiResult: Record<string, unknown> | null = null
     let aiError: string | null = null
-    let modelUsed = 'Grok'
+    const modelUsed = 'Grok'
 
     try {
       const zai = await ZAI.create()

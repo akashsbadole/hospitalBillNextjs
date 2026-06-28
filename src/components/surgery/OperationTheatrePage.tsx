@@ -21,7 +21,7 @@ import {
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import {
-  Plus, Loader2, Pencil, Trash2, Syringe, CalendarDays, Clock, AlertTriangle, Users, X, ChevronLeft, ChevronRight,
+  Plus, Loader2, Pencil, Trash2, Syringe, CalendarDays, AlertTriangle, Users, X, ChevronLeft, ChevronRight,
 } from 'lucide-react'
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, startOfWeek, endOfWeek, isSameMonth, isSameDay, isToday } from 'date-fns'
 
@@ -107,6 +107,7 @@ export function OperationTheatrePage() {
     setLoading(false)
   }
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => { load() }, [statusFilter])
 
   const resetOtForm = () => {

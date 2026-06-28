@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { apiGet, apiPost, type SingleResponse, type PaginatedResponse, ApiError } from '@/lib/api-client'
 import { useToast } from '@/hooks/use-toast'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -38,7 +38,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import {
@@ -83,7 +82,6 @@ const MESSAGE_TYPES = ['ADT', 'ORU', 'ORM', 'SIU', 'MDM']
 const DIRECTIONS = ['Inbound', 'Outbound']
 const HL7_STATUSES = ['Processed', 'Failed', 'Pending']
 const RESOURCE_TYPES = ['Patient', 'Observation', 'Condition', 'MedicationRequest', 'Encounter', 'DiagnosticReport']
-const FHIR_OPERATIONS = ['CREATE', 'UPDATE', 'DELETE', 'READ']
 const FHIR_STATUSES = ['Success', 'Failed', 'Pending']
 
 function SkeletonTable({ rows = 5, cols = 6 }: { rows?: number; cols?: number }) {
@@ -181,14 +179,18 @@ export function Hl7FhirPage() {
     }
   }, [toast])
 
+   
   useEffect(() => {
     if (activeTab === 'hl7') {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       fetchHl7Messages(hl7FilterDirection, hl7FilterType, hl7FilterStatus)
     }
   }, [activeTab, hl7FilterDirection, hl7FilterType, hl7FilterStatus, fetchHl7Messages])
 
+    
   useEffect(() => {
     if (activeTab === 'fhir') {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       fetchFhirResources(fhirFilterType, fhirFilterStatus)
     }
   }, [activeTab, fhirFilterType, fhirFilterStatus, fetchFhirResources])

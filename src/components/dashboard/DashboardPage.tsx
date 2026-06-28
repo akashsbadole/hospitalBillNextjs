@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useEffect, useCallback, useRef } from 'react'
-import { apiGet, apiPost, type SingleResponse, type PaginatedResponse, ApiError } from '@/lib/api-client'
+import { useState, useEffect, useCallback } from 'react'
+import { apiGet, type SingleResponse, type PaginatedResponse, ApiError } from '@/lib/api-client'
 import { useNavigation } from '@/stores/navigation'
 import { formatCurrency, cn } from '@/lib/utils'
 import { useToast } from '@/hooks/use-toast'
@@ -14,14 +14,11 @@ import {
   TrendingDown,
   ArrowUpRight,
   Plus,
-  CalendarPlus,
   FileText,
   Clock,
-  Stethoscope,
   Activity,
   UserCheck,
   LogOut,
-  BedDouble,
   Timer,
   ClipboardList,
   ShieldCheck,
@@ -37,8 +34,6 @@ import {
 import {
   Area,
   AreaChart,
-  Bar,
-  BarChart,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -57,14 +52,6 @@ import { Progress } from '@/components/ui/progress'
 import { Skeleton } from '@/components/ui/skeleton'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Separator } from '@/components/ui/separator'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table'
 import {
   type ChartConfig,
   ChartContainer,
@@ -148,13 +135,6 @@ interface PendingPayment {
   patient: { id: string; name: string } | null
 }
 
-interface ActiveVisit {
-  id: string
-  visitId: string
-  patient: { id: string; name: string } | null
-  currentStage: string
-}
-
 // ─── Stage Colors (matching WorkflowStepper) ───────────────────────────────
 
 const STAGE_COLORS: Record<string, { bg: string; bar: string; text: string }> = {
@@ -174,29 +154,6 @@ const ALL_STAGE_KEYS = [
   'Registration', 'Triage', 'Waiting', 'In-Consultation',
   'Lab-Ordered', 'Lab-Done', 'Prescribed', 'Billed', 'Paid', 'Discharged',
 ]
-
-// ─── Status Badge ────────────────────────────────────────────────────────────
-
-function StatusBadge({ status }: { status: string }) {
-  const styles: Record<string, string> = {
-    Scheduled: 'bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-950 dark:text-blue-300 dark:border-blue-800',
-    Completed: 'bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-950 dark:text-emerald-300 dark:border-emerald-800',
-    Cancelled: 'bg-red-100 text-red-700 border-red-200 dark:bg-red-950 dark:text-red-300 dark:border-red-800',
-    'No-Show': 'bg-amber-100 text-amber-700 border-amber-200 dark:bg-amber-950 dark:text-amber-300 dark:border-amber-800',
-  }
-
-  return (
-    <Badge
-      variant="outline"
-      className={cn(
-        'font-medium text-xs px-2.5 py-0.5',
-        styles[status] ?? 'bg-gray-100 text-gray-700 border-gray-200'
-      )}
-    >
-      {status}
-    </Badge>
-  )
-}
 
 // ─── Appointment Type Badge ──────────────────────────────────────────────────
 
@@ -1100,6 +1057,7 @@ function RealTimeClock() {
 
   useEffect(() => {
     const interval = setInterval(() => {
+       
       setNow(new Date())
     }, 1000)
     return () => clearInterval(interval)
@@ -1188,9 +1146,13 @@ export function DashboardPage() {
     }
   }, [])
 
+   
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchDashboard()
+     
     fetchAuditLogs()
+     
     fetchOverviewData()
   }, [fetchDashboard, fetchAuditLogs, fetchOverviewData])
 

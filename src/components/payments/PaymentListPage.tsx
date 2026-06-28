@@ -127,20 +127,6 @@ function formatDateTime(dateStr: string) {
   })
 }
 
-function isToday(dateStr: string) {
-  const d = new Date(dateStr)
-  const now = new Date()
-  return d.getDate() === now.getDate() &&
-    d.getMonth() === now.getMonth() &&
-    d.getFullYear() === now.getFullYear()
-}
-
-function isThisMonth(dateStr: string) {
-  const d = new Date(dateStr)
-  const now = new Date()
-  return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear()
-}
-
 function StatsSkeleton() {
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -235,6 +221,7 @@ export function PaymentListPage() {
   const refundPaymentRecord = refundingPaymentId ? payments.find((p) => p.id === refundingPaymentId) || null : null
 
   // ── Effects ──
+   
   useEffect(() => {
     fetchPayments()
   }, [page, filters.method, filters.status, filters.fromDate, filters.toDate, fetchPayments])
@@ -290,7 +277,9 @@ export function PaymentListPage() {
     }
   }, [])
 
+   
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchStats()
   }, [fetchStats])
 

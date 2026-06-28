@@ -22,6 +22,7 @@ interface AuthResult {
 // Cache user branch lookups to avoid DB hits on every request (in-memory, short TTL)
 const branchCache = new Map<string, { branchId: string | null; fetchedAt: number }>()
 const BRANCH_CACHE_TTL = 30_000 // 30 seconds
+const MAX_BRANCH_CACHE_SIZE = 2_000
 
 // Periodic cleanup to prevent unbounded memory growth
 if (typeof setInterval !== 'undefined') {
@@ -32,7 +33,15 @@ if (typeof setInterval !== 'undefined') {
         branchCache.delete(key)
       }
     }
-  }, BRANCH_CACHE_TTL * 10)
+    // Evict oldest entries if cache exceeds max size
+    if (branchCache.size > MAX_BRANCH_CACHE_SIZE) {
+      const entries = [...branchCache.entries()].sort((a, b) => a[1].fetchedAt - b[1].fetchedAt)
+      const toRemove = entries.slice(0, branchCache.size - MAX_BRANCH_CACHE_SIZE)
+      for (const [key] of toRemove) {
+        branchCache.delete(key)
+      }
+    }
+  }, BRANCH_CACHE_TTL)
 }
 
 export async function authenticateRequest(request: Request, requiredRoute?: string): Promise<AuthResult> {
@@ -180,6 +189,7 @@ export function checkWritePermission(role: Role, method: string): { allowed: boo
 // Cache result for 10s to avoid DB hit on every request.
 const moduleGateCache = new Map<string, { enabled: boolean; checkedAt: number }>()
 const MODULE_GATE_CACHE_TTL = 10_000
+const MAX_MODULE_CACHE_SIZE = 200
 
 // Periodic cleanup to prevent unbounded memory growth
 if (typeof setInterval !== 'undefined') {
@@ -190,7 +200,14 @@ if (typeof setInterval !== 'undefined') {
         moduleGateCache.delete(key)
       }
     }
-  }, MODULE_GATE_CACHE_TTL * 10)
+    if (moduleGateCache.size > MAX_MODULE_CACHE_SIZE) {
+      const entries = [...moduleGateCache.entries()].sort((a, b) => a[1].checkedAt - b[1].checkedAt)
+      const toRemove = entries.slice(0, moduleGateCache.size - MAX_MODULE_CACHE_SIZE)
+      for (const [key] of toRemove) {
+        moduleGateCache.delete(key)
+      }
+    }
+  }, MODULE_GATE_CACHE_TTL)
 }
 
 export async function checkModuleEnabled(moduleKey: string): Promise<{ allowed: boolean; error?: { status: number; message: string } }> {
@@ -216,7 +233,7 @@ export async function checkModuleEnabled(moduleKey: string): Promise<{ allowed: 
     }
     return { allowed: true }
   } catch {
-    // If DB is unreachable, allow access (fail open)
-    return { allowed: true }
+    // If DB is unreachable, deny access (fail closed for security)
+    return { allowed: false, error: { status: 503, message: 'Service temporarily unavailable. Please try again.' } }
   }
 }

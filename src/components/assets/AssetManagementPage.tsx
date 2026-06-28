@@ -1,10 +1,9 @@
 'use client'
 
 import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react'
-import { formatCurrency, cn } from '@/lib/utils'
-import { apiGet, apiPost, apiPut, apiDelete, type PaginatedResponse, type SingleResponse, ApiError } from '@/lib/api-client'
+import { formatCurrency } from '@/lib/utils'
+import { apiGet, apiPost, apiPut, type PaginatedResponse, type SingleResponse, ApiError } from '@/lib/api-client'
 import { useToast } from '@/hooks/use-toast'
-import { useNavigation } from '@/stores/navigation'
 import {
   Card,
   CardContent,
@@ -57,7 +56,6 @@ import {
   AlertTriangle,
   CheckCircle2,
   XCircle,
-  Trash2,
   Eye,
   Filter,
   Plus,
@@ -67,9 +65,6 @@ import {
   Stethoscope,
   Sofa,
   Beaker,
-  MapPin,
-  User,
-  Clock,
   IndianRupee,
 } from 'lucide-react'
 
@@ -182,14 +177,8 @@ function formatDate(dateStr: string): string {
   return d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })
 }
 
-function formatDateTime(dateStr: string): string {
-  const d = new Date(dateStr)
-  return d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })
-}
-
 export function AssetManagementPage() {
   const { toast } = useToast()
-  const { setCurrentPage } = useNavigation()
 
   const [assets, setAssets] = useState<Asset[]>([])
   const [assetsLoading, setAssetsLoading] = useState(true)
@@ -213,9 +202,9 @@ export function AssetManagementPage() {
 
   const [maintenanceRecords, setMaintenanceRecords] = useState<MaintenanceRecord[]>([])
   const [maintenanceLoading, setMaintenanceLoading] = useState(false)
-  const [maintenancePage, setMaintenancePage] = useState(1)
+  const [maintenancePage] = useState(1)
   const [maintenanceTotal, setMaintenanceTotal] = useState(0)
-  const [maintenanceTotalPages, setMaintenanceTotalPages] = useState(1)
+  const [, setMaintenanceTotalPages] = useState(1)
 
   const [maintenanceDialogOpen, setMaintenanceDialogOpen] = useState(false)
   const [maintFormAssetId, setMaintFormAssetId] = useState('')
@@ -266,7 +255,9 @@ export function AssetManagementPage() {
     }
   }, [page, categoryFilter, statusFilter, toast])
 
+   
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchAssets()
   }, [fetchAssets])
 
@@ -376,18 +367,6 @@ export function AssetManagementPage() {
       }
     } finally {
       setFormSubmitting(false)
-    }
-  }
-
-  const handleDelete = async (asset: Asset) => {
-    try {
-      await apiDelete(`/assets/${asset.id}`)
-      toast({ title: 'Success', description: `"${asset.name}" has been deactivated.` })
-      fetchAssets()
-    } catch (err) {
-      if (err instanceof ApiError) {
-        toast({ title: 'Error', description: err.message, variant: 'destructive' })
-      }
     }
   }
 

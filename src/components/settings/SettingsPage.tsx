@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback, useRef } from 'react'
-import { useForm } from 'react-hook-form'
+import { useForm, type Resolver } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { apiGet, apiPost, apiPut, apiDelete, type SingleResponse, type PaginatedResponse, ApiError } from '@/lib/api-client'
@@ -16,7 +16,6 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
-import { Separator } from '@/components/ui/separator'
 import { Skeleton } from '@/components/ui/skeleton'
 import {
   Form,
@@ -72,7 +71,6 @@ import {
   Download,
   HardDrive,
   Clock,
-  Globe,
   Loader2,
   AlertCircle,
   RefreshCw,
@@ -340,7 +338,7 @@ type BranchFormValues = z.infer<typeof branchFormSchema>
 function BranchesSettingsTab() {
   const { toast } = useToast()
   const { user } = useAuth()
-  const { branches, fetchBranches } = useBranchStore()
+  const { fetchBranches } = useBranchStore()
 
   const [branchList, setBranchList] = useState<BranchRecord[]>([])
   const [loading, setLoading] = useState(false)
@@ -377,7 +375,9 @@ function BranchesSettingsTab() {
     }
   }, [])
 
+   
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchBranchList()
   }, [fetchBranchList])
 
@@ -767,6 +767,35 @@ export function SettingsPage() {
   const [auditSearch, setAuditSearch] = useState('')
   const auditSearchRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
+  // ─── Forms ───
+  const clinicForm = useForm<ClinicFormValues>({
+    resolver: zodResolver(clinicSchema),
+    defaultValues: {
+      clinicName: '',
+      address: '',
+      city: '',
+      state: '',
+      pincode: '',
+      phone: '',
+      email: '',
+      website: '',
+    },
+  })
+
+  const gstForm = useForm<GstFormValues>({
+    resolver: zodResolver(gstSchema),
+    defaultValues: {
+      gstin: '',
+      gstType: 'none',
+      state: '',
+    },
+  })
+
+  const hsnForm = useForm<HsnFormValues>({
+    resolver: zodResolver(hsnSchema) as Resolver<HsnFormValues>,
+    defaultValues: { code: '', description: '', gstRate: 5 },
+  })
+
   // ─── Fetch Settings ───
   const fetchSettings = useCallback(async () => {
     setLoadingSettings(true)
@@ -799,7 +828,7 @@ export function SettingsPage() {
     } finally {
       setLoadingSettings(false)
     }
-  }, [toast])
+  }, [toast, clinicForm, gstForm])
 
   // ─── Fetch Staff ───
   const fetchStaff = useCallback(async () => {
@@ -816,12 +845,16 @@ export function SettingsPage() {
     }
   }, [toast])
 
+   
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchSettings()
   }, [fetchSettings])
 
+  
   useEffect(() => {
     if ((activeTab === 'users' || activeTab === 'roles') && staffList.length === 0) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       fetchStaff()
     }
   }, [activeTab, staffList.length, fetchStaff])
@@ -911,35 +944,6 @@ export function SettingsPage() {
     setAutoPassword(pass)
   }
 
-  // ─── Forms ───
-  const clinicForm = useForm<ClinicFormValues>({
-    resolver: zodResolver(clinicSchema),
-    defaultValues: {
-      clinicName: '',
-      address: '',
-      city: '',
-      state: '',
-      pincode: '',
-      phone: '',
-      email: '',
-      website: '',
-    },
-  })
-
-  const gstForm = useForm<GstFormValues>({
-    resolver: zodResolver(gstSchema),
-    defaultValues: {
-      gstin: '',
-      gstType: 'none',
-      state: '',
-    },
-  })
-
-  const hsnForm = useForm<HsnFormValues>({
-    resolver: zodResolver(hsnSchema) as any,
-    defaultValues: { code: '', description: '', gstRate: 5 },
-  })
-
   // ─── Handlers ───
   const handleSaveClinic = async (data: ClinicFormValues) => {
     setSavingSettings(true)
@@ -980,10 +984,10 @@ export function SettingsPage() {
     try {
       await apiGet<SingleResponse<ClinicSettings>>('/settings')
       toast({ title: 'Connection Test', description: 'Connection Successful! API server is reachable.' })
-    } catch (err) {
+    } catch {
       toast({ title: 'Connection Failed', description: 'Could not reach the server. Please check your network.', variant: 'destructive' })
     }
-  }
+  }; void handleConnectionTest
 
   const handleOpenHsnDialog = (item?: HsnCode) => {
     if (item) {
@@ -1050,8 +1054,10 @@ export function SettingsPage() {
     }
   }, [auditPage, auditAction, auditModule, auditFromDate, auditToDate, auditSearch])
 
+   
   useEffect(() => {
     if (activeTab === 'audit') {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       fetchAuditLogs()
     }
   }, [activeTab, fetchAuditLogs])

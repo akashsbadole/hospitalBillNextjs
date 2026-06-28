@@ -5,7 +5,7 @@ import { apiGet, apiPost, apiPut, apiDelete, ApiError } from '@/lib/api-client'
 import { useToast } from '@/hooks/use-toast'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Textarea } from '@/components/ui/textarea'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -64,7 +64,10 @@ export function ClinicalNotesSection({ patientId }: Props) {
     } catch { /* silent */ } finally { setLoading(false) }
   }
 
-  useEffect(() => { fetchNotes() }, [patientId])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    fetchNotes()
+  }, [patientId, fetchNotes])
 
   const resetForm = () => {
     setNoteType('SOAP'); setSubjective(''); setObjective(''); setAssessment(''); setPlan('')

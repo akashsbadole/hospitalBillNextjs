@@ -75,7 +75,7 @@ export function PaymentDialog({ clinicName }: { clinicName?: string }) {
   const { toast } = useToast()
   const {
     dialogOpen, invoice, amount, method, onlineStep, onlineError,
-    razorpayLoading, upiVpa, upiTransactionId, recording,
+    razorpayLoading, upiTransactionId, recording,
     gatewaySettings,
     closeDialog, setAmount, setMethod, setOnlineStep,
     setUpiTransactionId,

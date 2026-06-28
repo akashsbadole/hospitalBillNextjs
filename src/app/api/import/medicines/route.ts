@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { authenticateRequest } from '@/lib/api-auth'
 import { parseCsv, buildImportResponse, type CsvImportResult } from '@/lib/csv-utils'
+import type { Prisma } from '@prisma/client'
 
 const FIELD_MAP: Record<string, string> = {
   'medicine id': 'medicineId',
@@ -64,7 +65,7 @@ export async function POST(request: NextRequest) {
         if (data.minStock) data.minStock = Number(data.minStock)
         if (data.gstRate) data.gstRate = Number(data.gstRate)
 
-        await db.medicine.create({ data: data as any })
+        await db.medicine.create({ data: data as Prisma.MedicineCreateInput })
         result.success++
       } catch (err) {
         result.errors.push({ row: i + 2, message: err instanceof Error ? err.message : 'Unknown error' })

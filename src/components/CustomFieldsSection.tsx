@@ -29,7 +29,7 @@ interface CustomFieldsSectionProps {
 }
 
 export function CustomFieldsSection({
-  entityType, entityId, values, onChange, showTitle = true,
+  entityType, values, onChange, showTitle = true,
 }: CustomFieldsSectionProps) {
   const [fields, setFields] = useState<CustomFieldDef[]>([])
   const [loading, setLoading] = useState(true)
@@ -39,11 +39,17 @@ export function CustomFieldsSection({
     const load = async () => {
       try {
         const res = await apiGet<{ data: CustomFieldDef[] }>(`/custom-fields?entityType=${entityType}&activeOnly=true`)
-        if (!cancelled) setFields(res.data.sort((a, b) => a.label.localeCompare(b.label)))
+        if (!cancelled) {
+           
+          setFields(res.data.sort((a, b) => a.label.localeCompare(b.label)))
+        }
       } catch {
         // silently fail
       } finally {
-        if (!cancelled) setLoading(false)
+        if (!cancelled) {
+           
+          setLoading(false)
+        }
       }
     }
     load()

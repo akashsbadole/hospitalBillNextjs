@@ -167,7 +167,7 @@ export async function PUT(
       userEmail: auth.user!.email,
       userRole: auth.role!,
       action: 'UPDATE',
-      module: 'payroll' as any,
+      module: 'payroll',
       details: { payrollId: id, changedFields: Object.keys(data) },
       ...extractRequestInfo(request),
     })
@@ -210,7 +210,7 @@ export async function DELETE(
       userEmail: auth.user!.email,
       userRole: auth.role!,
       action: 'DELETE',
-      module: 'payroll' as any,
+      module: 'payroll',
       details: { payrollId: existing.payrollId, staffId: existing.staffId, month: existing.month, year: existing.year },
       ...extractRequestInfo(request),
     })

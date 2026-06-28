@@ -259,14 +259,20 @@ export function AnalyticsPage() {
     }
   }, [])
 
+   
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchDashboards()
   }, [fetchDashboards])
 
+    
   useEffect(() => {
     if (selectedDashboard) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       fetchMetrics(selectedDashboard)
+       
       fetchWidgetData(selectedDashboard)
+       
       fetchRecentReports()
     }
   }, [selectedDashboard, fetchMetrics, fetchWidgetData, fetchRecentReports])

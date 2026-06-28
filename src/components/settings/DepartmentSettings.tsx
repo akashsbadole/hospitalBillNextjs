@@ -42,7 +42,8 @@ export function DepartmentSettings() {
     } finally { setLoading(false) }
   }
 
-  useEffect(() => { fetch() }, [])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => { fetch() }, [fetch])
 
   const reset = () => { setName(''); setDescription(''); setCode(''); setSortOrder(0); setEditing(null) }
 

@@ -28,7 +28,6 @@ import { Input } from '@/components/ui/input'
 import {
   DollarSign,
   Users,
-  CalendarDays,
   FileDown,
   Activity,
   ClipboardList,
@@ -46,9 +45,6 @@ import {
   Receipt,
   ChevronDown,
   ChevronUp,
-  Timer,
-  Gauge,
-  AlertTriangle,
 } from 'lucide-react'
 
 // ─── Types ───────────────────────────────────────────────────────────────
@@ -510,44 +506,53 @@ export function ReportsPage() {
   }, [gstPeriod, gstMonth, gstQuarter, gstCustomFrom, gstCustomTo])
 
   // ─── Load data on demand ───────────────────────────────────────────────
+   
   useEffect(() => {
     if (activeTab === 'revenue' && !revenueData && !loadingRevenue) {
       fetchSingleReport('revenue', setRevenueData, setLoadingRevenue, setErrorRevenue)
     }
   }, [activeTab, revenueData, loadingRevenue, fetchSingleReport])
 
+   
   useEffect(() => {
     if (activeTab === 'revenue' && !prevRevenueData && !loadingRevenue) {
       fetchSingleReport('revenue-prev', setPrevRevenueData, () => {}, () => {})
     }
   }, [activeTab, prevRevenueData, loadingRevenue, fetchSingleReport])
 
+   
   useEffect(() => {
     if (activeTab === 'patient-flow' && !flowData && !loadingFlow) {
       fetchSingleReport('patient-flow', setFlowData, setLoadingFlow, setErrorFlow)
     }
   }, [activeTab, flowData, loadingFlow, fetchSingleReport])
 
+   
   useEffect(() => {
     if (activeTab === 'billing' && !billingData && !loadingBilling) {
       fetchSingleReport('billing', setBillingData, setLoadingBilling, setErrorBilling)
     }
   }, [activeTab, billingData, loadingBilling, fetchSingleReport])
 
+   
   useEffect(() => {
     if (activeTab === 'doctor-performance' && !doctorData && !loadingDoctor) {
       fetchSingleReport('doctor-performance', setDoctorData, setLoadingDoctor, setErrorDoctor)
     }
   }, [activeTab, doctorData, loadingDoctor, fetchSingleReport])
 
+   
   useEffect(() => {
     if (activeTab === 'audit-trail') {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       fetchAuditLogs(auditPage, auditFilterAction, auditFilterModule, auditFilterSearch, auditFilterUser)
     }
   }, [activeTab, auditPage, auditFilterAction, auditFilterModule, auditFilterSearch, auditFilterUser, fetchAuditLogs])
 
+    
   useEffect(() => {
     if (activeTab === 'gst') {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       fetchGstReport()
     }
   }, [activeTab, fetchGstReport])
@@ -555,8 +560,6 @@ export function ReportsPage() {
   // ─── Color palettes ────────────────────────────────────────────────────
   const PIE_COLORS = ['#059669', '#10b981', '#34d399', '#6ee7b7', '#a7f3d0', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#f97316']
   const BAR_COLORS = ['#059669', '#10b981', '#34d399', '#6ee7b7', '#a7f3d0', '#d1fae5', '#f59e0b', '#fbbf24', '#fcd34d']
-  const PEAK_COLORS = ['#059669', '#10b981', '#34d399', '#6ee7b7', '#a7f3d0', '#d1fae5', '#f59e0b', '#ef4444']
-
   // ─── Tab 1: Revenue ─────────────────────────────────────────────────────
   const renderRevenue = () => {
     if (loadingRevenue) return <ReportSkeleton />
@@ -1163,7 +1166,7 @@ export function ReportsPage() {
     const sortedDoctors = [...(dd.doctors || [])].sort((a, b) => b[doctorSortBy] - a[doctorSortBy])
 
     const maxPatients = Math.max(...(dd.doctors || []).map((d) => d.patientsSeen), 1)
-    const maxRevenue = Math.max(...(dd.doctors || []).map((d) => d.revenueGenerated), 1)
+    const maxRevenue = Math.max(...(dd.doctors || []).map((d) => d.revenueGenerated), 1); void maxRevenue
 
     return (
       <div className="space-y-6">

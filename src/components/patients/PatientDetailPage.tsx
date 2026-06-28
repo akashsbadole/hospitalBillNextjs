@@ -22,7 +22,6 @@ import {
   XCircle,
   Timer,
   Banknote,
-  IndianRupee,
   AlertCircle,
   Activity,
   Eye,
@@ -30,7 +29,6 @@ import {
   LogOut,
   FlaskConical,
   Briefcase,
-  Users,
   BadgeCheck,
 } from 'lucide-react'
 import { useNavigation } from '@/stores/navigation'
@@ -337,16 +335,23 @@ export function PatientDetailPage() {
 
   // ─── Lifecycle ───────────────────────────────────────────────────────────
 
+   
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchPatient()
   }, [fetchPatient])
 
   useEffect(() => {
     if (patientId) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       fetchVisits()
+       
       fetchPrescriptions()
+       
       fetchInvoices()
+       
       fetchLabOrders()
+       
       fetchClaims()
     }
   }, [patientId, fetchVisits, fetchPrescriptions, fetchInvoices, fetchLabOrders, fetchClaims])
@@ -555,6 +560,7 @@ export function PatientDetailPage() {
 
   const age = patient.dateOfBirth
     ? Math.floor(
+        // eslint-disable-next-line react-hooks/purity
         (Date.now() - new Date(patient.dateOfBirth).getTime()) /
           (365.25 * 24 * 60 * 60 * 1000)
       )

@@ -7,7 +7,6 @@ import { logAudit, extractRequestInfo } from '@/lib/audit-log'
 const BLOOD_GROUPS = ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'] as const
 const URGENCIES = ['Normal', 'Urgent', 'Emergency'] as const
 const CROSSMATCH_TYPES = ['Type & Screen', 'Type & Crossmatch'] as const
-const REQUEST_STATUSES = ['Pending', 'Approved', 'Crossmatched', 'Issued', 'Partially-Issued', 'Cancelled'] as const
 
 const createRequestSchema = z.object({
   patientId: z.string().min(1, 'Patient ID is required'),

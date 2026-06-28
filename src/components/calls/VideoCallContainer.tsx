@@ -5,13 +5,10 @@ import {
   Video,
   Phone,
   PhoneCall,
-  PhoneOff,
   Stethoscope,
-  Clock,
   Calendar,
   Loader2,
   ShieldCheck,
-  MonitorUp,
 } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
 import { apiPost, ApiError } from '@/lib/api-client'

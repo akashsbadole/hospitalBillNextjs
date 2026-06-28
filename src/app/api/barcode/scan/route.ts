@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { z } from 'zod'
 import { generateScanId } from '@/lib/utils'
-import { authenticateRequest, getTenantFilter, getCreateBranchId } from '@/lib/api-auth'
+import { authenticateRequest, getCreateBranchId } from '@/lib/api-auth'
 import { logAudit, extractRequestInfo } from '@/lib/audit-log'
 
 const scanSchema = z.object({

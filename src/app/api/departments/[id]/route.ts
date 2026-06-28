@@ -20,11 +20,11 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       },
     })
     return NextResponse.json({ data: department })
-  } catch (error: any) {
-    if (error?.code === 'P2002') {
+  } catch (error: unknown) {
+    if ((error as { code?: string })?.code === 'P2002') {
       return NextResponse.json({ error: 'A department with this name or code already exists' }, { status: 409 })
     }
-    if (error?.code === 'P2025') {
+    if ((error as { code?: string })?.code === 'P2025') {
       return NextResponse.json({ error: 'Department not found' }, { status: 404 })
     }
     console.error('[DEPARTMENTS_PUT]', error)
@@ -40,8 +40,8 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
     const { id } = await params
     await db.department.delete({ where: { id } })
     return NextResponse.json({ message: 'Department deleted' })
-  } catch (error: any) {
-    if (error?.code === 'P2025') {
+  } catch (error: unknown) {
+    if ((error as { code?: string })?.code === 'P2025') {
       return NextResponse.json({ error: 'Department not found' }, { status: 404 })
     }
     console.error('[DEPARTMENTS_DELETE]', error)

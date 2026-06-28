@@ -1,4 +1,6 @@
 import { db } from './db'
+import twilio from 'twilio'
+import { SESClient, SendEmailCommand } from '@aws-sdk/client-ses'
 
 type NotificationChannel = 'sms' | 'email'
 type NotificationType = 'appointment_reminder' | 'payment_confirmation' | 'lab_result' | 'invoice_overdue'
@@ -9,15 +11,24 @@ interface NotificationResult {
   channel: NotificationChannel
 }
 
-let twilioClient: unknown = null
-let sesClient: unknown = null
+interface TwilioClient {
+  messages: {
+    create(opts: { body: string; from?: string; to: string }): Promise<unknown>
+  }
+}
+
+interface SesClient {
+  send(command: unknown): Promise<unknown>
+}
+
+let twilioClient: TwilioClient | null = null
+let sesClient: SesClient | null = null
 
 function getTwilioClient() {
-  if (twilioClient) return twilioClient as any
+  if (twilioClient) return twilioClient
   const accountSid = process.env.TWILIO_ACCOUNT_SID
   const authToken = process.env.TWILIO_AUTH_TOKEN
   if (accountSid && authToken) {
-    const twilio = require('twilio')
     twilioClient = twilio(accountSid, authToken)
     return twilioClient
   }
@@ -25,12 +36,11 @@ function getTwilioClient() {
 }
 
 function getSesClient() {
-  if (sesClient) return sesClient as any
+  if (sesClient) return sesClient
   const region = process.env.AWS_REGION || 'ap-south-1'
   const accessKeyId = process.env.AWS_ACCESS_KEY_ID
   const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY
   if (accessKeyId && secretAccessKey) {
-    const { SESClient } = require('@aws-sdk/client-ses')
     sesClient = new SESClient({ region, credentials: { accessKeyId, secretAccessKey } })
     return sesClient
   }
@@ -64,7 +74,6 @@ async function sendEmail(to: string, subject: string, body: string): Promise<boo
     return false
   }
   try {
-    const { SendEmailCommand } = require('@aws-sdk/client-ses')
     const from = process.env.SES_FROM_EMAIL || 'noreply@medibillpro.com'
     await client.send(new SendEmailCommand({
       Source: from,
@@ -86,14 +95,12 @@ export async function sendNotification(
   data: Record<string, unknown>,
 ): Promise<NotificationResult> {
   if (!isEnabled()) {
-    console.log(`[NOTIFICATION] Suppressed (NOTIFICATION_ENABLED is not true). Type: ${type}`)
+    console.warn(`[NOTIFICATION] Suppressed (NOTIFICATION_ENABLED is not true). Type: ${type}`)
     return { success: false, message: 'Notification suppressed', channel: 'sms' }
   }
 
   const channel = (data.channel as NotificationChannel) || 'sms'
   const to = data.to as string || ''
-  const recipientName = (data.patientName as string) || ''
-
   let success = false
   let message = ''
 
@@ -113,9 +120,10 @@ export async function sendNotification(
   }
 
   try {
+    const userId = (data.userId as string) || null
     await db.notification.create({
       data: {
-        userId: (data.userId as string) || '',
+        userId: userId || 'system',
         type,
         title: type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
         message: data.message as string || '',

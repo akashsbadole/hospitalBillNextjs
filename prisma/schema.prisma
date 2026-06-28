@@ -133,7 +133,7 @@ model Doctor {
   specialization  String   // General Medicine, Cardiology, etc.
   qualification   String?  // MBBS, MD, etc.
   experience      Int      @default(0) // years
-  consultationFee Float    @default(0)
+  consultationFee Decimal @default(0) @db.Decimal(12, 2)
   bio             String?
   status          String   @default("Active")
   createdAt       DateTime @default(now())
@@ -167,7 +167,7 @@ model Staff {
   department      String?  // General Medicine, Cardiology, HR, etc.
   employmentType  String   @default("Full-Time") // Full-Time, Part-Time, Contract, Intern
   joiningDate     String?  // YYYY-MM-DD
-  baseSalary      Float    @default(0)
+  baseSalary      Decimal  @default(0) @db.Decimal(12, 2)
   bankName        String?
   bankAccountNo   String?
   ifscCode        String?
@@ -219,16 +219,16 @@ model Invoice {
   date          String   // YYYY-MM-DD
   dueDate       String?
   status        String   @default("Unpaid") // Unpaid, Partially Paid, Paid, Overdue, Cancelled
-  subtotal      Float    @default(0)
-  cgst          Float    @default(0)
-  sgst          Float    @default(0)
-  igst          Float    @default(0)
-  totalGst      Float    @default(0)
-  grandTotal    Float    @default(0)
-  discount      Float    @default(0)
-  discountType  String   @default("flat") // flat, percentage
-  roundOff      Float    @default(0)
-  paidAmount    Float    @default(0)
+  subtotal      Decimal    @default(0) @db.Decimal(12, 2)
+  cgst          Decimal    @default(0) @db.Decimal(12, 2)
+  sgst          Decimal    @default(0) @db.Decimal(12, 2)
+  igst          Decimal    @default(0) @db.Decimal(12, 2)
+  totalGst      Decimal    @default(0) @db.Decimal(12, 2)
+  grandTotal    Decimal    @default(0) @db.Decimal(12, 2)
+  discount      Decimal    @default(0) @db.Decimal(12, 2)
+  discountType  String     @default("flat") // flat, percentage
+  roundOff      Decimal    @default(0) @db.Decimal(12, 2)
+  paidAmount    Decimal    @default(0) @db.Decimal(12, 2)
   notes         String?
   branchId      String?
   createdAt     DateTime @default(now())
@@ -253,10 +253,10 @@ model InvoiceItem {
   description String
   hsnCode     String? // HSN/SAC code for GST
   quantity    Int     @default(1)
-  unitPrice   Float
-  gstRate     Float   @default(0) // 0, 5, 12, 18, 28
-  gstAmount   Float   @default(0)
-  total       Float   @default(0)
+  unitPrice   Decimal
+  gstRate     Decimal   @default(0) @db.Decimal(5, 2) // 0, 5, 12, 18, 28
+  gstAmount   Decimal   @default(0) @db.Decimal(12, 2)
+  total       Decimal   @default(0) @db.Decimal(12, 2)
   type        String  @default("Service") // Service, Medicine, Lab Test, Room Charge, Package
 
   invoice Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
@@ -269,7 +269,7 @@ model Payment {
   paymentId      String   @unique // e.g., PAY-0001
   invoiceId      String
   patientId      String
-  amount         Float
+  amount         Decimal
   method         String   @default("Cash") // Cash, UPI, Card, Net Banking, Wallet, Razorpay
   razorpayPaymentId String?
   razorpayOrderId   String?
@@ -316,11 +316,11 @@ model Medicine {
   manufacturer String?
   batchNumber String?
   expiryDate  String?
-  purchasePrice Float  @default(0)
-  sellingPrice  Float  @default(0)
+  purchasePrice Decimal  @default(0) @db.Decimal(12, 2)
+  sellingPrice  Decimal  @default(0) @db.Decimal(12, 2)
   stock       Int      @default(0)
   minStock    Int      @default(10)
-  gstRate     Float    @default(12) // GST rate for medicine
+  gstRate     Decimal    @default(12) @db.Decimal(5, 2) // GST rate for medicine
   hsnCode     String?
   barcode     String?  @unique // UPC/EAN barcode for scanning (Item 20)
   status      String   @default("Active")
@@ -360,8 +360,8 @@ model PurchaseOrder {
   orderDate       String
   expectedDate    String?
   notes           String?
-  totalAmount     Float    @default(0)
-  receivedAmount  Float    @default(0)
+  totalAmount     Decimal    @default(0) @db.Decimal(12, 2)
+  receivedAmount  Decimal    @default(0) @db.Decimal(12, 2)
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
@@ -374,9 +374,9 @@ model PurchaseOrderItem {
   poId        String
   medicineId  String
   quantity    Int
-  unitPrice   Float
+  unitPrice   Decimal
   receivedQty Int      @default(0)
-  total       Float
+  total       Decimal
   createdAt   DateTime @default(now())
 
   po       PurchaseOrder @relation(fields: [poId], references: [id], onDelete: Cascade)
@@ -598,10 +598,9 @@ model AiAnalysis {
   patient Patient?      @relation(fields: [patientId], references: [id])
 
   @@index([patientId])
+  @@index([visitId])
   @@index([type])
 }
-
-// ==================== CALL / TELEMEDICINE SESSIONS ====================
 
 model CallSession {
   id            String   @id @default(cuid())
@@ -685,9 +684,9 @@ model InsuranceClaim {
   policyNumber    String
   claimType       String   @default("Cashless") // Cashless, Reimbursement
   status          String   @default("Submitted") // Submitted, Pre-Approved, Approved, Processed, Settled, Rejected
-  approvedAmount  Float    @default(0)
-  settledAmount   Float    @default(0)
-  deductionAmount Float    @default(0)
+  approvedAmount  Decimal    @default(0) @db.Decimal(12, 2)
+  settledAmount   Decimal    @default(0) @db.Decimal(12, 2)
+  deductionAmount Decimal    @default(0) @db.Decimal(12, 2)
   remarks         String?
   submittedAt     DateTime @default(now())
   approvedAt      DateTime?
@@ -715,8 +714,8 @@ model LabTestCatalog {
   description String?
   normalRange String?  // e.g., "70-100 mg/dL"
   unit        String?  // e.g., "mg/dL", "g/dL", "cells/mm3"
-  price       Float    @default(0)
-  gstRate     Float    @default(5)
+  price       Decimal    @default(0) @db.Decimal(12, 2)
+  gstRate     Decimal    @default(5) @db.Decimal(5, 2)
   hsnCode     String?  @default("0013")
   status      String   @default("Active")
   createdAt   DateTime @default(now())
@@ -772,7 +771,7 @@ model Bed {
   wardId      String
   bedNumber   String   // e.g., "101", "102-A"
   bedType     String   @default("Standard") // Standard, Deluxe, Suite, ICU Bed, Emergency
-  dailyRate   Float    @default(0)
+  dailyRate   Decimal    @default(0) @db.Decimal(12, 2)
   status      String   @default("Available") // Available, Occupied, Maintenance, Reserved
   currentPatientId String?
   currentVisitId   String?
@@ -792,7 +791,7 @@ model Expense {
   expenseId   String   @unique  // EXP-0001
   title       String
   category    String   // Rent, Utilities, Salary, Equipment, Supplies, Maintenance, Insurance, Miscellaneous
-  amount      Float
+  amount      Decimal
   date        String   // YYYY-MM-DD
   description String?
   status      String   @default("Pending") // Pending, Approved, Rejected, Paid
@@ -908,9 +907,9 @@ model TdsRecord {
   recordId    String   @unique  // TDS-0001
   panNumber   String?  // PAN of the deductee
   recipientName String // name of the deductee
-  amount      Float    // total payment amount
-  tdsRate     Float    @default(0) // TDS rate in %
-  tdsAmount   Float    @default(0) // TDS amount deducted
+  amount      Decimal    // total payment amount
+  tdsRate     Decimal    @default(0) @db.Decimal(5, 2) // TDS rate in %
+  tdsAmount   Decimal    @default(0) @db.Decimal(12, 2) // TDS amount deducted
   section     String   @default("194C") // Income Tax section
   quarter     String   // Q1, Q2, Q3, Q4
   fiscalYear  String   // e.g., 2024-25
@@ -944,7 +943,7 @@ model DoctorSchedule {
   startTime   String   // HH:MM
   endTime     String   // HH:MM
   maxAppointments Int   @default(20)
-  consultationFee Float @default(0) // override doctor's default fee
+  consultationFee Decimal @default(0) @db.Decimal(12, 2) // override doctor's default fee
   isAvailable Boolean  @default(true)
   status      String   @default("Active") // Active, Inactive, On Leave
   effectiveFrom String? // YYYY-MM-DD
@@ -1016,6 +1015,7 @@ model Surgery {
   @@index([status])
   @@index([scheduledDate])
   @@index([branchId])
+  @@index([doctorId, scheduledDate])
 }
 
 // ==================== CONSENT FORMS ====================
@@ -1172,7 +1172,7 @@ model AmbulanceDispatch {
   destinationAt DateTime?
   completedAt   DateTime?
   distanceKm    Float?
-  fare          Float    @default(0)
+  fare          Decimal    @default(0) @db.Decimal(12, 2)
   paymentStatus String   @default("Pending") // Pending, Paid, Waived
   notes         String?
   branchId      String?
@@ -1550,24 +1550,24 @@ model Payroll {
   month           Int      // 1-12
   year            Int
   // Earnings
-  basicSalary     Float    @default(0)
-  hra             Float    @default(0)
-  conveyance      Float    @default(0)
-  medicalAllowance Float   @default(0)
-  specialAllowance Float   @default(0)
-  overtimePay     Float    @default(0)
-  bonus           Float    @default(0)
+  basicSalary     Decimal    @default(0) @db.Decimal(12, 2)
+  hra             Decimal    @default(0) @db.Decimal(12, 2)
+  conveyance      Decimal    @default(0) @db.Decimal(12, 2)
+  medicalAllowance Decimal   @default(0) @db.Decimal(12, 2)
+  specialAllowance Decimal   @default(0) @db.Decimal(12, 2)
+  overtimePay     Decimal    @default(0) @db.Decimal(12, 2)
+  bonus           Decimal    @default(0) @db.Decimal(12, 2)
   // Deductions
-  pfDeduction     Float    @default(0)
-  esiDeduction    Float    @default(0)
-  professionalTax Float    @default(0)
-  incomeTax       Float    @default(0)
-  loanDeduction   Float    @default(0)
-  otherDeductions Float    @default(0)
+  pfDeduction     Decimal    @default(0) @db.Decimal(12, 2)
+  esiDeduction    Decimal    @default(0) @db.Decimal(12, 2)
+  professionalTax Decimal    @default(0) @db.Decimal(12, 2)
+  incomeTax       Decimal    @default(0) @db.Decimal(12, 2)
+  loanDeduction   Decimal    @default(0) @db.Decimal(12, 2)
+  otherDeductions Decimal    @default(0) @db.Decimal(12, 2)
   // Totals
-  grossEarnings   Float    @default(0)
-  totalDeductions Float    @default(0)
-  netPay          Float    @default(0)
+  grossEarnings   Decimal    @default(0) @db.Decimal(12, 2)
+  totalDeductions Decimal    @default(0) @db.Decimal(12, 2)
+  netPay          Decimal    @default(0) @db.Decimal(12, 2)
   // Status
   status          String   @default("Draft") // Draft, Calculated, Approved, Paid, Cancelled
   paidAt          DateTime?
@@ -1594,12 +1594,12 @@ model InsurancePolicy {
   companyId       String
   policyNumber    String
   type            String   @default("Individual") // Individual, Family Floater, Group, Corporate
-  coverageAmount  Float    @default(0)
-  premiumAmount   Float    @default(0)
+  coverageAmount  Decimal    @default(0) @db.Decimal(12, 2)
+  premiumAmount   Decimal    @default(0) @db.Decimal(12, 2)
   startDate       String   // YYYY-MM-DD
   endDate         String   // YYYY-MM-DD
-  deductible      Float    @default(0)
-  copayPercent    Float    @default(0)
+  deductible      Decimal    @default(0) @db.Decimal(12, 2)
+  copayPercent    Decimal    @default(0) @db.Decimal(5, 2)
   isActive        Boolean  @default(true)
   nomineeName     String?
   nomineeRelation String?
@@ -1622,8 +1622,8 @@ model PreAuthApproval {
   preAuthId       String   @unique // PRA-0001
   claimId         String
   policyId        String
-  requestAmount   Float    @default(0)
-  approvedAmount  Float    @default(0)
+  requestAmount   Decimal    @default(0) @db.Decimal(12, 2)
+  approvedAmount  Decimal    @default(0) @db.Decimal(12, 2)
   status          String   @default("Pending") // Pending, Approved, Partially-Approved, Rejected
   authorizedDate  DateTime?
   authorizedBy    String?
@@ -1728,6 +1728,7 @@ model VitalSigns {
   @@index([patientId])
   @@index([visitId])
   @@index([recordedAt])
+  @@index([patientId, recordedAt])
 }
 
 model NursingNote {
@@ -1750,6 +1751,7 @@ model NursingNote {
   @@index([patientId])
   @@index([visitId])
   @@index([shift, recordedAt])
+  @@index([patientId, recordedAt])
 }
 
 model IntakeOutput {
@@ -1854,9 +1856,9 @@ model PharmacySale {
   patientId     String?
   patientName   String?  // walk-in customer name
   patientPhone  String?
-  totalAmount   Float    @default(0)
-  discount      Float    @default(0)
-  grandTotal    Float    @default(0)
+  totalAmount   Decimal    @default(0) @db.Decimal(12, 2)
+  discount      Decimal    @default(0) @db.Decimal(12, 2)
+  grandTotal    Decimal    @default(0) @db.Decimal(12, 2)
   paymentMethod String   @default("Cash") // Cash, UPI, Card, Wallet
   status        String   @default("Completed") // Completed, Returned, Cancelled
   notes         String?
@@ -1878,8 +1880,8 @@ model PharmacySaleItem {
   medicineName String
   batchNumber String?
   quantity    Int      @default(1)
-  unitPrice   Float    @default(0)
-  total       Float    @default(0)
+  unitPrice   Decimal    @default(0) @db.Decimal(12, 2)
+  total       Decimal    @default(0) @db.Decimal(12, 2)
   createdAt   DateTime @default(now())
 
   sale     PharmacySale @relation(fields: [saleId], references: [id], onDelete: Cascade)
@@ -2010,7 +2012,7 @@ model Asset {
   manufacturer    String?
   serialNumber    String?  @unique
   purchaseDate    String?
-  purchaseCost    Float    @default(0)
+  purchaseCost    Decimal    @default(0) @db.Decimal(12, 2)
   warrantyExpiry  String?
   location        String?  // department/room
   assignedTo      String?  // staff/department responsible
@@ -2035,7 +2037,7 @@ model AssetMaintenance {
   maintenanceDate String
   type            String   // Preventive, Corrective, Calibration, AMC
   description     String?
-  cost            Float    @default(0)
+  cost            Decimal    @default(0) @db.Decimal(12, 2)
   performedBy     String?  // vendor/staff name
   nextDueDate     String?
   status          String   @default("Completed") // Scheduled, In-Progress, Completed, Overdue

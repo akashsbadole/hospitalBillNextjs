@@ -20,7 +20,7 @@ import {
 } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
 import { apiGet, apiPost, ApiError, type PaginatedResponse, type SingleResponse } from '@/lib/api-client'
-import { APPOINTMENT_TYPES, DURATION_OPTIONS } from '@/lib/constants'
+import { DURATION_OPTIONS } from '@/lib/constants'
 import { formatCurrency } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -629,10 +629,15 @@ export function AddAppointmentDialog({ open, onOpenChange, onSuccess }: AddAppoi
 
   useEffect(() => {
     if (open) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       fetchDoctors()
+       
       fetchPatients()
+       
       setStep(0)
+       
       setFormData(DEFAULT_FORM)
+       
       setFormErrors({})
     }
   }, [open, fetchDoctors, fetchPatients])

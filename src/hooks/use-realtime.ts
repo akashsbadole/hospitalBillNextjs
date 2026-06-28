@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useCallback } from 'react'
+import { useEffect, useRef, useCallback, useState } from 'react'
 import { io, Socket } from 'socket.io-client'
 import { useAuth } from '@/stores/auth'
 import { create } from 'zustand'
@@ -24,6 +24,7 @@ let globalSubscribers = 0
 
 export function useRealtime() {
   const socketRef = useRef<Socket | null>(null)
+  const [socket, setSocket] = useState<Socket | null>(null)
   const user = useAuth((s: { user: { id: string } | null }) => s.user)
   const selectedBranchId = useBranch((s: BranchState) => s.selectedBranchId)
 
@@ -39,11 +40,11 @@ export function useRealtime() {
       })
 
       globalSocket.on('connect', () => {
-        console.log('[Realtime] Connected:', globalSocket?.id)
+        console.warn('[Realtime] Connected:', globalSocket?.id)
       })
 
       globalSocket.on('disconnect', (reason: string) => {
-        console.log('[Realtime] Disconnected:', reason)
+        console.warn('[Realtime] Disconnected:', reason)
       })
 
       globalSocket.on('connect_error', (err: Error) => {
@@ -52,6 +53,8 @@ export function useRealtime() {
     }
 
     socketRef.current = globalSocket
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setSocket(globalSocket)
     globalSubscribers++
 
     if (globalSocket.connected) {
@@ -76,7 +79,7 @@ export function useRealtime() {
         socketRef.current = null
       }
     }
-  }, [user?.id, selectedBranchId])
+  }, [user, selectedBranchId])
 
   useEffect(() => {
     if (globalSocket?.connected && selectedBranchId) {
@@ -95,5 +98,5 @@ export function useRealtime() {
     globalSocket?.emit(event, data)
   }, [])
 
-  return { subscribe, emit, socket: socketRef.current }
+  return { subscribe, emit, socket }
 }

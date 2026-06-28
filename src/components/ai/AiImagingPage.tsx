@@ -1,7 +1,6 @@
 'use client'
 
 import React, { useState, useRef, useCallback, useEffect } from 'react'
-import { useNavigation } from '@/stores/navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -44,7 +43,6 @@ const URGENCY_COLORS: Record<string, string> = {
 }
 
 export function AiImagingPage() {
-  const { setCurrentPage } = useNavigation()
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
@@ -74,11 +72,12 @@ export function AiImagingPage() {
   const modalityConfig = MODALITY_OPTIONS.find((m) => m.value === modality)
   const bodyParts: readonly string[] = modalityConfig?.bodyParts || []
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (bodyParts.length > 0 && bodyParts.indexOf(bodyPart) === -1) {
       setBodyPart(bodyParts[0] as string)
     }
-  }, [modality])
+  }, [modality, bodyPart, bodyParts])
 
   const loadHistory = useCallback(async () => {
     setHistoryLoading(true)
@@ -95,8 +94,10 @@ export function AiImagingPage() {
     }
   }, [])
 
+   
   useEffect(() => {
-    if (activeTab === 'history') loadHistory()
+    if (activeTab === 'history') // eslint-disable-next-line react-hooks/set-state-in-effect
+    loadHistory()
   }, [activeTab, loadHistory])
 
   const handleFileSelect = useCallback((file: File | null) => {
@@ -272,6 +273,7 @@ export function AiImagingPage() {
                     />
                     {previewUrl ? (
                       <div className="space-y-3">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                           src={previewUrl}
                           alt="Preview"
@@ -580,6 +582,7 @@ export function AiImagingPage() {
                     >
                       <div className="w-16 h-16 rounded-lg overflow-hidden bg-muted shrink-0 border">
                         {entry.input?.imageUrl ? (
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img
                             src={entry.input.imageUrl}
                             alt="Analysis"

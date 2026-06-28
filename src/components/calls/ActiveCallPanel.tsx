@@ -1,18 +1,14 @@
 'use client'
 
-import React, { useState, useEffect, useMemo, useCallback } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import {
   Video,
   Phone,
   PhoneOff,
   MessageSquare,
   Clock,
-  User,
-  Stethoscope,
   Star,
   Loader2,
-  FileText,
-  Brain,
   Eye,
 } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
@@ -22,7 +18,6 @@ import { Badge } from '@/components/ui/badge'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent } from '@/components/ui/card'
-import { Separator } from '@/components/ui/separator'
 import {
   Dialog,
   DialogContent,
@@ -93,7 +88,10 @@ function useDurationTimer(startedAt: string) {
   const [elapsed, setElapsed] = useState(() => calcElapsed())
 
   useEffect(() => {
-    const interval = setInterval(() => setElapsed(calcElapsed()), 1000)
+    const interval = setInterval(() => {
+       
+      setElapsed(calcElapsed())
+    }, 1000)
     return () => clearInterval(interval)
   }, [calcElapsed])
 
@@ -245,7 +243,6 @@ export function ActiveCallPanel({ call, onEndCall, onViewDetail, onJoinCall }: A
   const [endDialogOpen, setEndDialogOpen] = useState(false)
   const [submitting, setSubmitting] = useState(false)
 
-  const CallIcon = getCallTypeIcon(call.callType)
   const callColor = getCallTypeColor(call.callType)
 
   const handleEndSubmit = async (data: { diagnosis: string; followUpNotes: string; rating: number }) => {
@@ -283,7 +280,7 @@ export function ActiveCallPanel({ call, onEndCall, onViewDetail, onJoinCall }: A
               <div className="flex items-center gap-3 sm:min-w-[80px]">
                 <div className="relative">
                   <div className="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 dark:bg-emerald-900/40">
-                    <CallIcon className={`h-6 w-6 ${callColor}`} />
+                    {getCallTypeIcon(call.callType)({ className: `h-6 w-6 ${callColor}` })}
                   </div>
                   <span className="absolute -top-0.5 -right-0.5 flex h-3.5 w-3.5">
                     <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />

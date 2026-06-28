@@ -1,10 +1,8 @@
 'use client'
 
 import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react'
-import { formatCurrency, cn } from '@/lib/utils'
-import { apiGet, apiPost, apiPut, apiDelete, type PaginatedResponse, type SingleResponse, ApiError } from '@/lib/api-client'
+import { apiGet, apiPost, apiPut, type PaginatedResponse, type SingleResponse, ApiError } from '@/lib/api-client'
 import { useToast } from '@/hooks/use-toast'
-import { useNavigation } from '@/stores/navigation'
 import {
   Card,
   CardContent,
@@ -61,19 +59,11 @@ import {
   CheckCircle2,
   XCircle,
   Eye,
-  Filter,
   Calendar,
   Clock,
-  MapPin,
-  Phone,
   User,
-  Trash2,
   Upload,
-  Download,
   Activity,
-  Thermometer,
-  Droplets,
-  Syringe,
 } from 'lucide-react'
 
 type CampStatus = 'Planned' | 'In-Progress' | 'Completed' | 'Cancelled'
@@ -168,14 +158,8 @@ function formatDate(dateStr: string): string {
   return d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })
 }
 
-function formatDateTime(dateStr: string): string {
-  const d = new Date(dateStr)
-  return d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })
-}
-
 export function CampManagementPage() {
   const { toast } = useToast()
-  const { setCurrentPage } = useNavigation()
 
   const [activeTab, setActiveTab] = useState('camps')
   const [camps, setCamps] = useState<Camp[]>([])
@@ -194,7 +178,7 @@ export function CampManagementPage() {
   const [registrations, setRegistrations] = useState<CampRegistration[]>([])
   const [regLoading, setRegLoading] = useState(false)
   const [regPage, setRegPage] = useState(1)
-  const [regTotal, setRegTotal] = useState(0)
+  const [, setRegTotal] = useState(0)
   const [regTotalPages, setRegTotalPages] = useState(1)
 
   const [regDialogOpen, setRegDialogOpen] = useState(false)
@@ -258,8 +242,10 @@ export function CampManagementPage() {
     }
   }, [campsPage, toast])
 
+   
   useEffect(() => {
-    if (activeTab === 'camps') fetchCamps()
+    if (activeTab === 'camps') // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchCamps()
   }, [fetchCamps, activeTab])
 
   const fetchRegistrations = useCallback(async () => {
@@ -279,9 +265,11 @@ export function CampManagementPage() {
     }
   }, [selectedCamp, regPage, toast])
 
+    
   useEffect(() => {
-    if (activeTab === 'registrations' && selectedCamp) fetchRegistrations()
-  }, [fetchRegistrations, activeTab])
+    if (activeTab === 'registrations' && selectedCamp) // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchRegistrations()
+  }, [fetchRegistrations, activeTab, selectedCamp])
 
   const stats = useMemo(() => {
     const upcoming = camps.filter((c) => c.status === 'Planned').length

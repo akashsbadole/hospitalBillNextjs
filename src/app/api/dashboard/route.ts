@@ -16,11 +16,9 @@ export async function GET(request: Request) {
       totalPatients,
       todayAppointments,
       todayPaymentsResult,
-      outstandingInvoices,
       recentAppointments,
       recentPayments,
       appointmentsByStatus,
-      lastSixMonthsInvoices,
       // ── Workflow metrics ──
       activeVisits,
       todayRegistrations,

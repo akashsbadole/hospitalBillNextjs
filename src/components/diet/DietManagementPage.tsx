@@ -1,10 +1,8 @@
 'use client'
 
 import React, { useState, useEffect, useCallback, useRef } from 'react'
-import { formatCurrency, cn } from '@/lib/utils'
 import { apiGet, apiPost, apiPut, apiDelete, type PaginatedResponse, type SingleResponse, ApiError } from '@/lib/api-client'
 import { useToast } from '@/hooks/use-toast'
-import { useNavigation } from '@/stores/navigation'
 import {
   Card,
   CardContent,
@@ -59,9 +57,6 @@ import {
   Loader2,
   RefreshCw,
   AlertTriangle,
-  Filter,
-  Sun,
-  Sunrise,
   Utensils,
   Cookie,
   Moon,
@@ -157,7 +152,6 @@ function formatDateTime(dateStr: string): string {
 
 export function DietManagementPage() {
   const { toast } = useToast()
-  const { setCurrentPage } = useNavigation()
 
   const [activeTab, setActiveTab] = useState('orders')
   const [patientSearch, setPatientSearch] = useState('')
@@ -176,7 +170,7 @@ export function DietManagementPage() {
   const [orderDialogOpen, setOrderDialogOpen] = useState(false)
   const [editingOrder, setEditingOrder] = useState<DietOrder | null>(null)
   const [formPatientId, setFormPatientId] = useState('')
-  const [formPatientName, setFormPatientName] = useState('')
+  const [, setFormPatientName] = useState('')
   const [formDietType, setFormDietType] = useState<DietType>('Normal')
   const [formMealPlans, setFormMealPlans] = useState<MealPlan[]>([])
   const [formPreferences, setFormPreferences] = useState('')
@@ -215,8 +209,10 @@ export function DietManagementPage() {
     }
   }, [page, toast])
 
+   
   useEffect(() => {
-    if (activeTab === 'orders') fetchOrders()
+    if (activeTab === 'orders') // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchOrders()
   }, [fetchOrders, activeTab])
 
   const searchPatients = useCallback(async (q: string) => {
@@ -362,8 +358,10 @@ export function DietManagementPage() {
     }
   }, [selectedOrder, toast])
 
+   
   useEffect(() => {
-    if (activeTab === 'meals' && selectedOrder) fetchMeals()
+    if (activeTab === 'meals' && selectedOrder) // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchMeals()
   }, [activeTab, selectedOrder, fetchMeals])
 
   const handleOpenAddMeal = () => {
@@ -871,7 +869,7 @@ export function DietManagementPage() {
               Add Meal
             </DialogTitle>
             <DialogDescription>
-              Add a meal to {selectedOrder?.patientName}'s schedule
+              Add a meal to {selectedOrder?.patientName}&apos;s schedule
             </DialogDescription>
           </DialogHeader>
 

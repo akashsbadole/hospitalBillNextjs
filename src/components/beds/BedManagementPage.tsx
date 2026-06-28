@@ -56,7 +56,6 @@ import {
   BedDouble,
   Building2,
   Edit,
-  Trash2,
   UserPlus,
   UserMinus,
   Wrench,
@@ -217,11 +216,15 @@ export function BedManagementPage() {
     }
   }, [filterWardId, filterStatus, filterFloor, toast])
 
+   
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchWards()
   }, [fetchWards])
 
+    
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchBeds()
   }, [fetchBeds])
 

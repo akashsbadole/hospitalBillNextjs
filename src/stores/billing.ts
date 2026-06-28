@@ -1,7 +1,6 @@
 import { create } from 'zustand'
 import { apiGet, apiPost, apiPut, apiDelete, type PaginatedResponse, type SingleResponse, ApiError } from '@/lib/api-client'
-import { calculateGST } from '@/lib/utils'
-import { QUICK_SERVICES, GST_SLABS } from '@/lib/constants'
+import { QUICK_SERVICES } from '@/lib/constants'
 
 // ─── Shared Types ───────────────────────────────────────────────────────
 
@@ -116,7 +115,6 @@ function generateId() {
   return Math.random().toString(36).substring(2, 9)
 }
 
-const ITEM_TYPES = ['Service', 'Medicine', 'Lab Test', 'Room Charge', 'Package'] as const
 const ITEM_TYPE_HSN_MAP: Record<string, string> = {
   Service: '0011',
   Medicine: '3004',
@@ -263,8 +261,6 @@ interface BillingState {
   setFormErrors: (errors: Record<string, string>) => void
   submitInvoice: () => Promise<boolean>
   resetCreateForm: () => void
-  getGstCalculation: () => GstCalculation
-
   // ── Invoice Detail Actions ──
   fetchInvoiceDetail: (invoiceId: string) => Promise<void>
   setDeleteDialogOpen: (open: boolean, itemId?: string | null) => void
@@ -537,63 +533,8 @@ export const useBillingStore = create<BillingState>()((set, get) => ({
     set({ createForm: { ...get().createForm, formErrors: errors } })
   },
 
-  getGstCalculation: () => {
-    const { createForm } = get()
-    const { items, discount, discountType, roundOff, isInterstate } = createForm
-
-    let subtotal = 0
-    let totalCgst = 0
-    let totalSgst = 0
-    let totalIgst = 0
-
-    for (const item of items) {
-      const lineTotal = item.unitPrice * item.quantity
-      subtotal += lineTotal
-      const gst = calculateGST(lineTotal, item.gstRate, isInterstate)
-      totalCgst += gst.cgst
-      totalSgst += gst.sgst
-      totalIgst += gst.igst
-    }
-
-    subtotal = parseFloat(subtotal.toFixed(2))
-    const totalGst = parseFloat((totalCgst + totalSgst + totalIgst).toFixed(2))
-    const preDiscountTotal = parseFloat((subtotal + totalGst).toFixed(2))
-
-    // Calculate effective discount
-    let effectiveDiscount: number
-    if (discountType === 'percentage') {
-      effectiveDiscount = discount > 0 ? parseFloat((preDiscountTotal * discount / 100).toFixed(2)) : 0
-    } else {
-      effectiveDiscount = discount > 0 ? Math.min(discount, preDiscountTotal) : 0
-    }
-
-    let afterDiscount = parseFloat((preDiscountTotal - effectiveDiscount).toFixed(2))
-
-    // Round off to nearest rupee
-    let roundOffAmount = 0
-    if (roundOff) {
-      const rounded = Math.round(afterDiscount)
-      roundOffAmount = parseFloat((rounded - afterDiscount).toFixed(2))
-      afterDiscount = rounded
-    }
-
-    const grandTotal = Math.max(0, afterDiscount)
-
-    return {
-      subtotal,
-      cgst: parseFloat(totalCgst.toFixed(2)),
-      sgst: parseFloat(totalSgst.toFixed(2)),
-      igst: parseFloat(totalIgst.toFixed(2)),
-      totalGst,
-      effectiveDiscount,
-      discountType,
-      roundOff: roundOffAmount,
-      grandTotal,
-    }
-  },
-
   submitInvoice: async () => {
-    const { createForm, getGstCalculation, fetchInvoices } = get()
+    const { createForm, fetchInvoices } = get()
     const { selectedPatient, items, discount, discountType, roundOff, isInterstate, dueDate, notes } = createForm
 
     // Validate

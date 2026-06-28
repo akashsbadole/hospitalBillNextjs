@@ -5,7 +5,6 @@ import { formatCurrency, cn } from '@/lib/utils'
 import { MEDICINE_CATEGORIES, GST_SLABS } from '@/lib/constants'
 import { apiGet, apiPost, apiPut, apiDelete, type PaginatedResponse, type SingleResponse, ApiError } from '@/lib/api-client'
 import { useToast } from '@/hooks/use-toast'
-import { useNavigation } from '@/stores/navigation'
 import {
   Card,
   CardContent,
@@ -66,12 +65,8 @@ import {
   Eye,
   PackageCheck,
   TrendingUp,
-  TrendingDown,
-  RotateCcw,
   Wrench,
-  CalendarX,
   FileText,
-  AlertCircle,
   ArrowUpRight,
   TimerReset,
   Minus,
@@ -227,7 +222,6 @@ function StockBar({ stock, minStock }: { stock: number; minStock: number }) {
   const isOut = stock <= 0
   const isCritical = stock > 0 && stock <= minStock
   const isWarning = stock > minStock && stock <= doubleMin
-  const isGood = stock > doubleMin
 
   const barColor = isOut ? 'bg-red-500' : isCritical ? 'bg-red-500' : isWarning ? 'bg-amber-500' : 'bg-emerald-500'
   const textColor = isOut ? 'text-red-600' : isCritical ? 'text-red-600' : isWarning ? 'text-amber-600' : 'text-emerald-600'
@@ -384,8 +378,10 @@ export function InventoryListPage() {
     }
   }, [page, categoryFilter, stockFilter, toast])
 
+   
   useEffect(() => {
-    if (activeTab === 'inventory') fetchMedicines()
+    if (activeTab === 'inventory') // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchMedicines()
   }, [fetchMedicines, activeTab])
 
   const fetchPurchaseOrders = useCallback(async () => {
@@ -406,8 +402,10 @@ export function InventoryListPage() {
     }
   }, [poPage, poStatusFilter, toast])
 
+   
   useEffect(() => {
-    if (activeTab === 'purchase-orders') fetchPurchaseOrders()
+    if (activeTab === 'purchase-orders') // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchPurchaseOrders()
   }, [fetchPurchaseOrders, activeTab])
 
   const fetchStockMovements = useCallback(async () => {
@@ -429,8 +427,10 @@ export function InventoryListPage() {
     }
   }, [smPage, smTypeFilter, smMedicineFilter, toast])
 
+   
   useEffect(() => {
-    if (activeTab === 'stock-movements') fetchStockMovements()
+    if (activeTab === 'stock-movements') // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchStockMovements()
   }, [fetchStockMovements, activeTab])
 
   const fetchStats = useCallback(async () => {
@@ -458,7 +458,9 @@ export function InventoryListPage() {
     }
   }, [])
 
+   
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchStats()
   }, [fetchStats])
 
@@ -500,6 +502,7 @@ export function InventoryListPage() {
   // Client-side expiry filtering
   const filteredMedicines = useMemo(() => {
     if (!expiryFilter) return medicines
+    // eslint-disable-next-line react-hooks/purity
     const now = Date.now()
     return medicines.filter((med) => {
       if (!med.expiryDate) return expiryFilter === 'no_expiry'
@@ -516,6 +519,7 @@ export function InventoryListPage() {
   const stats = React.useMemo(() => {
     const allMeds = medicines
     const totalValue = allMeds.reduce((sum, m) => sum + m.sellingPrice * m.stock, 0)
+    // eslint-disable-next-line react-hooks/purity
     const now = Date.now()
     const expiringSoonCount = allMeds.filter((m) => {
       if (!m.expiryDate) return false
@@ -1914,7 +1918,7 @@ export function InventoryListPage() {
           {selectedPO && (
             <div className="space-y-4">
               <div className="max-h-[400px] overflow-y-auto space-y-3">
-                {selectedPO.items.map((item, index) => {
+                {selectedPO.items.map((item, _index) => {
                   const ri = receiveItems.find((r) => r.itemId === item.id)
                   return (
                     <div key={item.id} className="rounded-lg border p-4 space-y-2">

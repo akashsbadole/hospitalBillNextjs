@@ -42,12 +42,13 @@ export const useAuth = create<AuthState>()(
         })
 
         if (!response.ok) {
-          const data = await response.json()
+          let data: { error?: string } = {}
+          try { data = await response.json() } catch { /* non-JSON response */ }
           throw new Error(data.error || 'Login failed')
         }
 
         const { user, token } = await response.json()
-        set({ user, token, isAuthenticated: true, isLoading: false })
+        set({ user, token, isAuthenticated: true, isLoading: false, _checkAuthCalled: false })
       },
 
       logout: async () => {
@@ -64,7 +65,6 @@ export const useAuth = create<AuthState>()(
       },
 
       checkAuth: async () => {
-        // Prevent concurrent/repeated calls
         if (get()._checkAuthCalled) return
         set({ _checkAuthCalled: true })
 
@@ -88,7 +88,6 @@ export const useAuth = create<AuthState>()(
             return
           }
 
-          // If 401 and we have a token, try refresh once (raw fetch to avoid redirect loop)
           if (response.status === 401 && storedToken) {
             try {
               const refreshRes = await fetch('/api/auth/refresh', {
@@ -103,6 +102,7 @@ export const useAuth = create<AuthState>()(
                   token: refreshData.token,
                   isAuthenticated: true,
                   isLoading: false,
+                  _checkAuthCalled: false,
                 })
                 return
               }
@@ -111,10 +111,9 @@ export const useAuth = create<AuthState>()(
             }
           }
 
-          // Not authenticated — show login page
           set({ user: null, token: null, isAuthenticated: false, isLoading: false })
         } catch {
-          set({ user: null, isAuthenticated: false, isLoading: false })
+          set({ user: null, isAuthenticated: false, isLoading: false, _checkAuthCalled: false })
         }
       },
 

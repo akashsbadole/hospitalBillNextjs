@@ -106,7 +106,7 @@ export async function POST(request: NextRequest) {
       userEmail: auth.user!.email,
       userRole: auth.role!,
       action: 'CREATE',
-      module: 'shifts' as any,
+      module: 'shifts',
       details: { shiftId: shift.shiftId, name: data.name },
       ...extractRequestInfo(request),
     })

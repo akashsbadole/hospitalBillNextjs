@@ -428,7 +428,7 @@ async function getRevenuePreviousPeriod(tenantFilter: Record<string, unknown>) {
 
 // ── Patient Flow Analytics ──────────────────────────────────────────────
 async function getPatientFlowAnalytics(tenantFilter: Record<string, unknown>) {
-  const [allVisits, visitsByStageRaw, visitTypeCounts, doctors] = await Promise.all([
+  const [allVisits, visitsByStageRaw, visitTypeCounts] = await Promise.all([
     // All visits
     db.patientVisit.findMany({
       where: tenantFilter,

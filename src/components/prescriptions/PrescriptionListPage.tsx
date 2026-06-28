@@ -228,26 +228,6 @@ function parseNotes(notesStr: string | null): MedicineNote[] {
   }
 }
 
-function isToday(dateStr: string) {
-  return dateStr === new Date().toISOString().split('T')[0]
-}
-
-function isThisWeek(dateStr: string) {
-  const d = new Date(dateStr + 'T00:00:00')
-  const weekAgo = new Date()
-  weekAgo.setDate(weekAgo.getDate() - 7)
-  return d >= weekAgo
-}
-
-function generatePassword(length: number = 10): string {
-  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789'
-  let pass = ''
-  for (let i = 0; i < length; i++) {
-    pass += chars.charAt(Math.floor(Math.random() * chars.length))
-  }
-  return pass
-}
-
 // ==================== TEMPLATE DIALOG ====================
 
 function TemplateDialog({
@@ -659,7 +639,6 @@ export function PrescriptionListPage() {
     }
   }, [])
 
-  const limit = 20
   const abortRef = useRef<AbortController | null>(null)
   const patientSearchTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
@@ -723,8 +702,11 @@ export function PrescriptionListPage() {
     }
   }, [])
 
+   
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchPrescriptions()
+     
     fetchClinicSettings()
   }, [fetchPrescriptions, fetchClinicSettings])
 
@@ -760,9 +742,12 @@ export function PrescriptionListPage() {
     }
   }, [toast])
 
+   
   useEffect(() => {
     if (newPrescriptionOpen) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       fetchDoctors()
+       
       fetchPatients('')
     }
   }, [newPrescriptionOpen, fetchDoctors, fetchPatients])
@@ -770,16 +755,21 @@ export function PrescriptionListPage() {
   // Debounced medicine search
   useEffect(() => {
     if (!medicineSearchQuery || activeMedicineIndex === null) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setMedicineResults([])
+       
       setMedicineSearching(false)
       return
     }
     const timer = setTimeout(async () => {
+       
       setMedicineSearching(true)
       try {
         const res = await apiGet<{ data: MedicineSearchResult[] }>(`/medicines/search?q=${encodeURIComponent(medicineSearchQuery)}`)
+         
         setMedicineResults(res.data || [])
       } catch {
+         
         setMedicineResults([])
       } finally {
         setMedicineSearching(false)

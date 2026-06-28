@@ -1,13 +1,11 @@
 'use client'
 
 import React, { useState, useEffect, useCallback } from 'react'
-import { apiGet, apiPost, apiPut, apiDelete, type PaginatedResponse, type SingleResponse, ApiError } from '@/lib/api-client'
+import { apiGet, apiPost, apiPut, apiDelete, type PaginatedResponse, type SingleResponse } from '@/lib/api-client'
 import { useToast } from '@/hooks/use-toast'
 import {
   Card,
   CardContent,
-  CardHeader,
-  CardTitle,
 } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -49,17 +47,13 @@ import {
   RefreshCw,
   Search as SearchIcon,
   Loader2,
-  AlertCircle,
   Clock,
   FileCheck,
-  FileText,
   ChevronLeft,
   ChevronRight,
   PlayCircle,
   CircleDot,
-  CheckCircle2,
   ClipboardCheck,
-  IndianRupee,
   Beaker,
 } from 'lucide-react'
 
@@ -273,28 +267,37 @@ function OrdersTab() {
     }
   }, [])
 
+   
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchOrders()
   }, [fetchOrders])
 
+    
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchCatalog()
   }, [fetchCatalog])
 
   // Patient search
   useEffect(() => {
     if (patientSearch.trim().length < 2) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setPatientResults([])
       return
     }
     const timer = setTimeout(async () => {
+       
       setPatientSearching(true)
       try {
         const res = await apiGet<PaginatedResponse<Patient>>('/patients', { search: patientSearch.trim(), limit: 10 })
+         
         setPatientResults(res.data)
       } catch {
+         
         setPatientResults([])
       } finally {
+         
         setPatientSearching(false)
       }
     }, 300)
@@ -306,6 +309,7 @@ function OrdersTab() {
     const fetchDoctors = async () => {
       try {
         const res = await apiGet<PaginatedResponse<Doctor>>('/doctors', { limit: 100 })
+         
         setDoctorList(res.data)
       } catch {
         // silent
@@ -317,20 +321,26 @@ function OrdersTab() {
   // Fetch visits when patient is selected
   useEffect(() => {
     if (!selectedPatient) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setVisitList([])
+       
       setSelectedVisit('')
       return
     }
     const fetchVisits = async () => {
       try {
         const res = await apiGet<PaginatedResponse<Visit>>('/patient-visits', { patientId: selectedPatient.id, limit: 20 })
+         
         setVisitList(res.data)
       } catch {
+         
         setVisitList([])
       }
     }
     fetchVisits()
   }, [selectedPatient])
+
+  
 
   const handleAddOrder = async () => {
     if (!selectedPatient || !selectedTest || !selectedVisit) {
@@ -1026,7 +1036,9 @@ function CatalogTab() {
     }
   }, [page, searchQuery, categoryFilter, toast])
 
+   
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchTests()
   }, [fetchTests])
 

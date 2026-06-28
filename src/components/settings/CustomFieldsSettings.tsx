@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Loader2, Plus, Pencil, Trash2, GripVertical } from 'lucide-react'
+import { Loader2, Plus, Pencil, Trash2 } from 'lucide-react'
 import { apiGet, apiPost, apiPut, apiDelete, ApiError } from '@/lib/api-client'
 import { useToast } from '@/hooks/use-toast'
 import { Button } from '@/components/ui/button'
@@ -59,14 +59,15 @@ export function CustomFieldsSettings() {
       const params = entityFilter !== 'all' ? `?entityType=${entityFilter}` : ''
       const res = await apiGet<{ data: CustomField[] }>(`/custom-fields${params}`)
       setFields(res.data)
-    } catch (err) {
+    } catch {
       toast({ title: 'Error', description: 'Failed to load custom fields', variant: 'destructive' })
     } finally {
       setLoading(false)
     }
   }
 
-  useEffect(() => { fetchFields() }, [entityFilter])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => { fetchFields() }, [entityFilter, fetchFields])
 
   const handleSave = async (formData: Partial<CustomField>) => {
     setSaving(true)
@@ -94,7 +95,7 @@ export function CustomFieldsSettings() {
       await apiDelete(`/custom-fields/${id}`)
       toast({ title: 'Field Deleted' })
       fetchFields()
-    } catch (err) {
+    } catch {
       toast({ title: 'Error', description: 'Failed to delete', variant: 'destructive' })
     }
   }
@@ -212,20 +213,33 @@ function FieldDialog({
   const [placeholder, setPlaceholder] = useState('')
   const [sortOrder, setSortOrder] = useState(0)
 
+   
   useEffect(() => {
     if (field) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setEntityType(field.entityType)
+       
       setLabel(field.label)
+       
       setFieldType(field.fieldType)
+       
       setOptions(field.options || '')
+       
       setRequired(field.required)
+       
       setPlaceholder(field.placeholder || '')
+       
       setSortOrder(field.sortOrder)
     } else {
+       
       setEntityType('Patient')
+       
       setLabel('')
+       
       setFieldType('text')
+       
       setOptions('')
+       
       setRequired(false)
       setPlaceholder('')
       setSortOrder(0)

@@ -23,7 +23,6 @@ import {
   Lightbulb,
   ArrowLeftRight,
   Droplets,
-  Flame,
   Eye,
   Frown,
   Zap,
@@ -908,12 +907,16 @@ export function AiHealthAnalysisPage() {
     }
   }, [])
 
+   
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchPatients()
   }, [fetchPatients])
 
   // When patient changes, fetch their history
+    
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchHistory(selectedPatientId)
   }, [selectedPatientId, fetchHistory])
 

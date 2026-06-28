@@ -8,8 +8,6 @@ import {
   Eye,
   Pencil,
   Users,
-  UserPlus,
-  Activity,
   ChevronLeft,
   ChevronRight,
   Phone,
@@ -173,11 +171,15 @@ export function PatientListPage() {
     }
   }, [])
 
+   
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchPatients(currentPage, debouncedSearch, statusFilter, genderFilter, bloodGroupFilter, insuranceFilter, dateFrom, dateTo)
   }, [currentPage, debouncedSearch, statusFilter, genderFilter, bloodGroupFilter, insuranceFilter, dateFrom, dateTo, fetchPatients])
 
+    
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchStats()
   }, [fetchStats])
 

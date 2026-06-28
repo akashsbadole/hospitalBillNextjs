@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useCallback, useState } from 'react'
-import { useNavigation, type Page } from '@/stores/navigation'
+import { useNavigation } from '@/stores/navigation'
 
 interface Shortcut {
   key: string
@@ -12,10 +12,8 @@ interface Shortcut {
   action: () => void
 }
 
-const DEFAULT_SHORTCUTS: Shortcut[] = []
-
 export function useKeyboardShortcuts(extraShortcuts: Shortcut[] = []) {
-  const { setCurrentPage, currentPage } = useNavigation()
+  const { setCurrentPage } = useNavigation()
   const [showHelp, setShowHelp] = useState(false)
 
   const allShortcuts: Shortcut[] = [

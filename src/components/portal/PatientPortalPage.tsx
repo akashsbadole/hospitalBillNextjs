@@ -19,21 +19,11 @@ import {
   Phone,
   Mail,
   Lock,
-  ChevronLeft,
   Stethoscope,
-  AlertCircle,
-  RefreshCw,
   Smartphone,
   Banknote,
-  ChevronRight,
-  ChevronDown,
   Clock,
-  Syringe,
-  Activity,
-  Pill,
-  Search,
   Hospital,
-  Shield,
 } from 'lucide-react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -41,7 +31,6 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
-import { Separator } from '@/components/ui/separator'
 import {
   Dialog,
   DialogContent,
@@ -122,16 +111,9 @@ interface PortalBilling {
   totalBalance: number
 }
 
-const SHIFT_TYPES = ['Morning', 'Evening', 'Night'] as const
-
 function formatDate(dateStr: string) {
   const d = new Date(dateStr + 'T00:00:00')
   return d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })
-}
-
-function formatDateTime(dateStr: string) {
-  const d = new Date(dateStr)
-  return d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })
 }
 
 function getStatusBadge(status: string) {
@@ -186,6 +168,7 @@ export function PatientPortalPage() {
     const patientData = localStorage.getItem(PORTAL_PATIENT_KEY)
     if (token && patientData) {
       try {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setPatient(JSON.parse(patientData))
         setIsLoggedIn(true)
       } catch {
@@ -222,8 +205,10 @@ export function PatientPortalPage() {
     }
   }, [toast])
 
+   
   useEffect(() => {
-    if (isLoggedIn) fetchDashboardData()
+    if (isLoggedIn) // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchDashboardData()
   }, [isLoggedIn, fetchDashboardData])
 
   const handleLogin = async () => {
@@ -402,7 +387,7 @@ export function PatientPortalPage() {
                     onClick={() => setShowRegister(true)}
                     className="text-sm text-emerald-600 hover:text-emerald-700 underline underline-offset-2"
                   >
-                    Don't have an account? Register here
+                    Don&apos;t have an account? Register here
                   </button>
                 </div>
               </>

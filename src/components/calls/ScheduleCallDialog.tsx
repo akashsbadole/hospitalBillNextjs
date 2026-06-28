@@ -38,7 +38,6 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Card, CardContent } from '@/components/ui/card'
-import { Separator } from '@/components/ui/separator'
 import { ScrollArea } from '@/components/ui/scroll-area'
 
 // ==================== TYPES ====================
@@ -170,8 +169,11 @@ export function ScheduleCallDialog({
 
   useEffect(() => {
     if (open) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       fetchPatients()
+       
       fetchDoctors()
+       
       setFormData({
         patientId: prefillPatientId || '',
         doctorId: prefillDoctorId || '',
@@ -180,8 +182,11 @@ export function ScheduleCallDialog({
         durationEstimate: 30,
         notes: '',
       })
+       
       setFormErrors({})
+       
       setPatientSearch('')
+       
       setDoctorSearch('')
     }
   }, [open, prefillPatientId, prefillDoctorId, fetchPatients, fetchDoctors])

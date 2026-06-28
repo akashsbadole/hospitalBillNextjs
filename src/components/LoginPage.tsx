@@ -10,11 +10,11 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { useAuth } from '@/stores/auth'
 
 const DEMO_ACCOUNTS = [
-  { email: 'admin@medibill.com', password: 'admin123', role: 'Admin', label: 'Admin' },
-  { email: 'receptionist@medibill.com', password: 'pass123', role: 'Receptionist', label: 'Receptionist' },
-  { email: 'doctor@medibill.com', password: 'pass123', role: 'Doctor', label: 'Doctor' },
-  { email: 'accountant@medibill.com', password: 'pass123', role: 'Accountant', label: 'Accountant' },
-  { email: 'pharmacist@medibill.com', password: 'pass123', role: 'Pharmacist', label: 'Pharmacist' },
+  { email: 'admin@medibill.com', password: 'Admin@123', role: 'Admin', label: 'Admin' },
+  { email: 'receptionist@medibill.com', password: 'Receptionist@123', role: 'Receptionist', label: 'Receptionist' },
+  { email: 'doctor@medibill.com', password: 'Doctor@123', role: 'Doctor', label: 'Doctor' },
+  { email: 'accountant@medibill.com', password: 'Accountant@123', role: 'Accountant', label: 'Accountant' },
+  { email: 'pharmacist@medibill.com', password: 'Pharmacist@123', role: 'Pharmacist', label: 'Pharmacist' },
 ]
 
 const ROLE_COLORS: Record<string, string> = {

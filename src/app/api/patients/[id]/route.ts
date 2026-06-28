@@ -28,8 +28,6 @@ const updatePatientSchema = z.object({
   status: z.enum(['Active', 'Inactive', 'Archived']).optional(),
 })
 
-const VALID_STATUSES = ['Active', 'Inactive', 'Archived'] as const
-
 // ── GET ──────────────────────────────────────────────────────────────────
 export async function GET(
   request: NextRequest,

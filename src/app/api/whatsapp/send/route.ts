@@ -3,6 +3,7 @@ import { db } from '@/lib/db'
 import { z } from 'zod'
 import { generateWhatsAppId } from '@/lib/utils'
 import { authenticateRequest, checkWritePermission } from '@/lib/api-auth'
+import twilio from 'twilio'
 import { logAudit, extractRequestInfo } from '@/lib/audit-log'
 
 const whatsappTemplates = ['prescription', 'invoice', 'appointment_reminder', 'payment_receipt', 'lab_report'] as const
@@ -21,7 +22,6 @@ function getTwilioClient() {
   const accountSid = process.env.TWILIO_ACCOUNT_SID
   const authToken = process.env.TWILIO_AUTH_TOKEN
   if (accountSid && authToken) {
-    const twilio = require('twilio')
     return twilio(accountSid, authToken)
   }
   return null
@@ -87,7 +87,7 @@ export async function POST(request: NextRequest) {
         const twilioFrom = process.env.TWILIO_WHATSAPP_FROM || 'whatsapp:+14155238886'
         const twilioTo = `whatsapp:${data.to.startsWith('+') ? data.to : `+${data.to}`}`
 
-        const messageOptions: Record<string, unknown> = {
+        const messageOptions: { from: string; to: string; body: string; mediaUrl?: string[] } = {
           from: twilioFrom,
           to: twilioTo,
           body: messageBody,
@@ -128,7 +128,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Save WhatsAppMessage record to DB
-    const message = await db.whatsAppMessage.create({
+    await db.whatsAppMessage.create({
       data: {
         messageId,
         to: data.to,

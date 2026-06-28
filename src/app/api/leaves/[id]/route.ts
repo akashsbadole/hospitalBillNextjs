@@ -135,7 +135,7 @@ export async function PUT(
       userEmail: auth.user!.email,
       userRole: auth.role!,
       action: data.status ? 'STATUS_CHANGE' : 'UPDATE',
-      module: 'leaves' as any,
+      module: 'leaves',
       details: { leaveId: id, staffId: existing.staffId, previousStatus: existing.status, newStatus: updated.status, changedFields: Object.keys(data) },
       ...extractRequestInfo(request),
     })
@@ -178,7 +178,7 @@ export async function DELETE(
       userEmail: auth.user!.email,
       userRole: auth.role!,
       action: 'DELETE',
-      module: 'leaves' as any,
+      module: 'leaves',
       details: { leaveId: existing.leaveId, staffId: existing.staffId, type: existing.type },
       ...extractRequestInfo(request),
     })

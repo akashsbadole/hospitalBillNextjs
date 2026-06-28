@@ -5,7 +5,6 @@ import { authenticateRequest, checkWritePermission, getTenantFilter, getCreateBr
 import { logAudit, extractRequestInfo } from '@/lib/audit-log'
 
 const BLOOD_GROUPS = ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'] as const
-const DONOR_STATUSES = ['Active', 'Deferred', 'Inactive'] as const
 
 const createDonorSchema = z.object({
   name: z.string().trim().min(1, 'Name is required').max(200),

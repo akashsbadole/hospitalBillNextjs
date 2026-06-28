@@ -65,6 +65,7 @@ export function ImageUpload({ currentImage, onUploadComplete, type = 'general', 
         onClick={() => inputRef.current?.click()}
       >
         {displayUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element
           <img src={displayUrl} alt="Preview" className="h-full w-full object-cover" />
         ) : (
           <div className="flex flex-col items-center gap-2 p-4 text-muted-foreground">

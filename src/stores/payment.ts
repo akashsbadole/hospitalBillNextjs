@@ -1,6 +1,11 @@
 import { create } from 'zustand'
 import { apiPost, apiGet, type SingleResponse, ApiError } from '@/lib/api-client'
-import { formatCurrency } from '@/lib/utils'
+
+declare global {
+  interface Window {
+    Razorpay: new (options: Record<string, unknown>) => { open: () => void }
+  }
+}
 
 // ─── Types ───────────────────────────────────────────────────────────────
 
@@ -252,7 +257,7 @@ export const usePaymentStore = create<PaymentState>()((set, get) => ({
               },
             },
           }
-          const rzp = new (window as any).Razorpay(options)
+          const rzp = new window.Razorpay(options)
           rzp.open()
           set({ razorpayLoading: false })
         }

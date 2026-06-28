@@ -1,12 +1,12 @@
 'use client'
 
 import React, { useState, useEffect, useCallback } from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Switch } from '@/components/ui/switch'
 import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
-import { Loader2, RefreshCw, AlertCircle, CheckCircle2, Shield, ToggleLeft, ToggleRight } from 'lucide-react'
+import { Loader2, RefreshCw, AlertCircle, CheckCircle2, Shield } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useToast } from '@/hooks/use-toast'
 
@@ -32,8 +32,6 @@ const SECTION_LABELS: Record<ModuleSection, string> = {
 
 const SECTION_ORDER: ModuleSection[] = ['main', 'operations', 'admin']
 
-const TOTAL_MODULES = 44
-
 export function ModuleManagementSettings() {
   const { toast } = useToast()
   const [modules, setModules] = useState<ModuleItem[]>([])
@@ -56,7 +54,9 @@ export function ModuleManagementSettings() {
     }
   }, [])
 
+   
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     loadModules()
   }, [loadModules])
 

@@ -1,34 +1,19 @@
 'use client'
 
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { apiGet, apiPost, type PaginatedResponse, type SingleResponse, ApiError } from '@/lib/api-client'
 import { useToast } from '@/hooks/use-toast'
-import { useNavigation } from '@/stores/navigation'
 import {
   HeartPulse,
   ClipboardList,
   Droplets,
   Search,
   Plus,
-  Eye,
   Loader2,
-  ChevronLeft,
-  ChevronRight,
-  Clock,
-  Thermometer,
-  Wind,
-  Syringe,
-  Activity,
-  AlertTriangle,
-  User,
-  Stethoscope,
   Filter,
-  Pill,
   ArrowUp,
   ArrowDown,
   Minus,
-  RefreshCw,
-  Gauge,
   Bed,
 } from 'lucide-react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -38,7 +23,6 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
-import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
   Select,
@@ -157,12 +141,12 @@ function VitalSignsTab({
   vitals,
   loading,
   onRecord,
-  visitId,
+  _visitId,
 }: {
   vitals: VitalSign[]
   loading: boolean
   onRecord: () => void
-  visitId: string
+  _visitId: string
 }) {
   const getBpTrend = () => {
     if (vitals.length < 2) return []
@@ -269,14 +253,14 @@ function NursingNotesTab({
   shiftFilter,
   onShiftChange,
   onAddNote,
-  visitId,
+  _visitId,
 }: {
   notes: NursingNote[]
   loading: boolean
   shiftFilter: string
   onShiftChange: (v: string) => void
   onAddNote: () => void
-  visitId: string
+  _visitId: string
 }) {
   const filtered = shiftFilter === 'all' ? notes : notes.filter((n) => n.shift === shiftFilter)
 
@@ -362,13 +346,13 @@ function IntakeOutputTab({
   summary,
   loading,
   onRecord,
-  visitId,
+  _visitId,
 }: {
   records: IntakeOutput[]
   summary: IntakeOutputSummary | null
   loading: boolean
   onRecord: () => void
-  visitId: string
+  _visitId: string
 }) {
   return (
     <div className="space-y-4">
@@ -568,15 +552,21 @@ export function NursingChartingPage() {
     }
   }, [])
 
+   
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchPatients('')
   }, [fetchPatients])
 
   useEffect(() => {
     if (selectedPatient) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       fetchVitals(selectedPatient.id)
+       
       fetchNursingNotes(selectedPatient.id)
+       
       fetchIoRecords(selectedPatient.id)
+       
       setShowPatientSearch(false)
     }
   }, [selectedPatient, fetchVitals, fetchNursingNotes, fetchIoRecords])
@@ -585,6 +575,7 @@ export function NursingChartingPage() {
     setPatientSearch(value)
   }
 
+   
   useEffect(() => {
     const timer = setTimeout(() => {
       if (patientSearch) fetchPatients(patientSearch)
@@ -830,7 +821,7 @@ export function NursingChartingPage() {
                 resetVitalsForm()
                 setVitalsDialogOpen(true)
               }}
-              visitId={selectedPatient.id}
+              _visitId={selectedPatient.id}
             />
           </TabsContent>
 
@@ -844,7 +835,7 @@ export function NursingChartingPage() {
                 resetNoteForm()
                 setNoteDialogOpen(true)
               }}
-              visitId={selectedPatient.id}
+              _visitId={selectedPatient.id}
             />
           </TabsContent>
 
@@ -857,7 +848,7 @@ export function NursingChartingPage() {
                 resetIoForm()
                 setIoDialogOpen(true)
               }}
-              visitId={selectedPatient.id}
+              _visitId={selectedPatient.id}
             />
           </TabsContent>
         </Tabs>

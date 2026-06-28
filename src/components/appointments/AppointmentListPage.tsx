@@ -418,7 +418,6 @@ export function AppointmentListPage() {
   const [statusFilter, setStatusFilter] = useState<string>('all')
   const [appointments, setAppointments] = useState<Appointment[]>([])
   const [loading, setLoading] = useState(true)
-  const [totalCount, setTotalCount] = useState(0)
   const fetchTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const dateStr = format(currentDate, 'yyyy-MM-dd')
@@ -433,7 +432,6 @@ export function AppointmentListPage() {
       if (status && status !== 'all') params.status = status
       const res = await apiGet<PaginatedResponse<Appointment>>('/appointments', params)
       setAppointments(res.data)
-      setTotalCount(res.total)
     } catch (error) {
       if (error instanceof ApiError) {
         toast({ title: 'Error', description: error.message, variant: 'destructive' })
@@ -445,6 +443,7 @@ export function AppointmentListPage() {
     }
   }, [toast])
 
+   
   useEffect(() => {
     if (fetchTimeoutRef.current) clearTimeout(fetchTimeoutRef.current)
     fetchTimeoutRef.current = setTimeout(() => {

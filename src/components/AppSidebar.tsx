@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useMemo } from 'react'
+import React from 'react'
 import { useNavigation, type Page } from '@/stores/navigation'
 import { useAuth } from '@/stores/auth'
 import { canAccessPage } from '@/lib/rbac'

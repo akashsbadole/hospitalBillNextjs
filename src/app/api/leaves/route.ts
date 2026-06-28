@@ -6,7 +6,6 @@ import { authenticateRequest, checkWritePermission } from '@/lib/api-auth'
 import { logAudit, extractRequestInfo } from '@/lib/audit-log'
 
 const VALID_TYPES = ['Annual', 'Sick', 'Casual', 'Maternity', 'Paternity', 'Bereavement', 'Unpaid'] as const
-const VALID_STATUSES = ['Pending', 'Approved', 'Rejected', 'Cancelled'] as const
 
 const createLeaveSchema = z.object({
   staffId: z.string().trim().min(1, 'Staff ID is required'),
@@ -142,7 +141,7 @@ export async function POST(request: NextRequest) {
       userEmail: auth.user!.email,
       userRole: auth.role!,
       action: 'CREATE',
-      module: 'leaves' as any,
+      module: 'leaves',
       details: { leaveId: leave.leaveId, staffId: data.staffId, type: data.type, fromDate: data.fromDate, toDate: data.toDate },
       ...extractRequestInfo(request),
     })

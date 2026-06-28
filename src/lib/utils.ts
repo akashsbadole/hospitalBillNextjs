@@ -113,6 +113,7 @@ export function validateGSTIN(gstin: string): boolean {
 export function generateInvoiceNumber(lastNumber: string | null): string {
   if (!lastNumber) return 'INV-0001'
   const num = parseInt(lastNumber.replace('INV-', ''), 10)
+  if (isNaN(num)) return 'INV-0001'
   return `INV-${String(num + 1).padStart(4, '0')}`
 }
 
@@ -120,6 +121,7 @@ export function generateInvoiceNumber(lastNumber: string | null): string {
 export function generatePatientId(lastNumber: string | null): string {
   if (!lastNumber) return 'PAT-0001'
   const num = parseInt(lastNumber.replace('PAT-', ''), 10)
+  if (isNaN(num)) return 'PAT-0001'
   return `PAT-${String(num + 1).padStart(4, '0')}`
 }
 
@@ -127,6 +129,7 @@ export function generatePatientId(lastNumber: string | null): string {
 export function generateDoctorId(lastNumber: string | null): string {
   if (!lastNumber) return 'DOC-0001'
   const num = parseInt(lastNumber.replace('DOC-', ''), 10)
+  if (isNaN(num)) return 'DOC-0001'
   return `DOC-${String(num + 1).padStart(4, '0')}`
 }
 
@@ -134,6 +137,7 @@ export function generateDoctorId(lastNumber: string | null): string {
 export function generateAppointmentId(lastNumber: string | null): string {
   if (!lastNumber) return 'APT-0001'
   const num = parseInt(lastNumber.replace('APT-', ''), 10)
+  if (isNaN(num)) return 'APT-0001'
   return `APT-${String(num + 1).padStart(4, '0')}`
 }
 
@@ -141,6 +145,7 @@ export function generateAppointmentId(lastNumber: string | null): string {
 export function generatePaymentId(lastNumber: string | null): string {
   if (!lastNumber) return 'PAY-0001'
   const num = parseInt(lastNumber.replace('PAY-', ''), 10)
+  if (isNaN(num)) return 'PAY-0001'
   return `PAY-${String(num + 1).padStart(4, '0')}`
 }
 
@@ -148,6 +153,7 @@ export function generatePaymentId(lastNumber: string | null): string {
 export function generatePrescriptionId(lastNumber: string | null): string {
   if (!lastNumber) return 'PRX-0001'
   const num = parseInt(lastNumber.replace('PRX-', ''), 10)
+  if (isNaN(num)) return 'PRX-0001'
   return `PRX-${String(num + 1).padStart(4, '0')}`
 }
 
@@ -155,6 +161,7 @@ export function generatePrescriptionId(lastNumber: string | null): string {
 export function generateMedicineId(lastNumber: string | null): string {
   if (!lastNumber) return 'MED-0001'
   const num = parseInt(lastNumber.replace('MED-', ''), 10)
+  if (isNaN(num)) return 'MED-0001'
   return `MED-${String(num + 1).padStart(4, '0')}`
 }
 
@@ -162,6 +169,7 @@ export function generateMedicineId(lastNumber: string | null): string {
 export function generateStaffId(lastNumber: string | null): string {
   if (!lastNumber) return 'STF-0001'
   const num = parseInt(lastNumber.replace('STF-', ''), 10)
+  if (isNaN(num)) return 'STF-0001'
   return `STF-${String(num + 1).padStart(4, '0')}`
 }
 
@@ -169,6 +177,7 @@ export function generateStaffId(lastNumber: string | null): string {
 export function generateVisitId(lastNumber: string | null): string {
   if (!lastNumber) return 'VIS-0001'
   const num = parseInt(lastNumber.replace('VIS-', ''), 10)
+  if (isNaN(num)) return 'VIS-0001'
   return `VIS-${String(num + 1).padStart(4, '0')}`
 }
 
@@ -176,6 +185,7 @@ export function generateVisitId(lastNumber: string | null): string {
 export function generateSupportTicketId(lastNumber: string | null): string {
   if (!lastNumber) return 'TKT-0001'
   const num = parseInt(lastNumber.replace('TKT-', ''), 10)
+  if (isNaN(num)) return 'TKT-0001'
   return `TKT-${String(num + 1).padStart(4, '0')}`
 }
 
@@ -183,6 +193,7 @@ export function generateSupportTicketId(lastNumber: string | null): string {
 export function generateCallSessionId(lastNumber: string | null): string {
   if (!lastNumber) return 'CALL-0001'
   const num = parseInt(lastNumber.replace('CALL-', ''), 10)
+  if (isNaN(num)) return 'CALL-0001'
   return `CALL-${String(num + 1).padStart(4, '0')}`
 }
 
@@ -190,6 +201,7 @@ export function generateCallSessionId(lastNumber: string | null): string {
 export function generateInsuranceCompanyId(lastNumber: string | null): string {
   if (!lastNumber) return 'INS-0001'
   const num = parseInt(lastNumber.replace('INS-', ''), 10)
+  if (isNaN(num)) return 'INS-0001'
   return `INS-${String(num + 1).padStart(4, '0')}`
 }
 
@@ -197,6 +209,7 @@ export function generateInsuranceCompanyId(lastNumber: string | null): string {
 export function generateClaimId(lastNumber: string | null): string {
   if (!lastNumber) return 'CLM-0001'
   const num = parseInt(lastNumber.replace('CLM-', ''), 10)
+  if (isNaN(num)) return 'CLM-0001'
   return `CLM-${String(num + 1).padStart(4, '0')}`
 }
 
@@ -204,6 +217,7 @@ export function generateClaimId(lastNumber: string | null): string {
 export function generateLabTestId(lastNumber: string | null): string {
   if (!lastNumber) return 'LT-0001'
   const num = parseInt(lastNumber.replace('LT-', ''), 10)
+  if (isNaN(num)) return 'LT-0001'
   return `LT-${String(num + 1).padStart(4, '0')}`
 }
 
@@ -211,6 +225,7 @@ export function generateLabTestId(lastNumber: string | null): string {
 export function generateLabTestOrderId(lastNumber: string | null): string {
   if (!lastNumber) return 'LTO-0001'
   const num = parseInt(lastNumber.replace('LTO-', ''), 10)
+  if (isNaN(num)) return 'LTO-0001'
   return `LTO-${String(num + 1).padStart(4, '0')}`
 }
 
@@ -218,6 +233,7 @@ export function generateLabTestOrderId(lastNumber: string | null): string {
 export function generateImagingStudyId(lastNumber: string | null): string {
   if (!lastNumber) return 'IMG-0001'
   const num = parseInt(lastNumber.replace('IMG-', ''), 10)
+  if (isNaN(num)) return 'IMG-0001'
   return `IMG-${String(num + 1).padStart(4, '0')}`
 }
 
@@ -225,6 +241,7 @@ export function generateImagingStudyId(lastNumber: string | null): string {
 export function generatePurchaseOrderId(lastNumber: string | null): string {
   if (!lastNumber) return 'PO-0001'
   const num = parseInt(lastNumber.replace('PO-', ''), 10)
+  if (isNaN(num)) return 'PO-0001'
   return `PO-${String(num + 1).padStart(4, '0')}`
 }
 
@@ -232,6 +249,7 @@ export function generatePurchaseOrderId(lastNumber: string | null): string {
 export function generateStockMovementId(lastNumber: string | null): string {
   if (!lastNumber) return 'SM-0001'
   const num = parseInt(lastNumber.replace('SM-', ''), 10)
+  if (isNaN(num)) return 'SM-0001'
   return `SM-${String(num + 1).padStart(4, '0')}`
 }
 
@@ -239,6 +257,7 @@ export function generateStockMovementId(lastNumber: string | null): string {
 export function generateQueueTokenId(lastNumber: string | null): string {
   if (!lastNumber) return 'Q-0001'
   const num = parseInt(lastNumber.replace('Q-', ''), 10)
+  if (isNaN(num)) return 'Q-0001'
   return `Q-${String(num + 1).padStart(4, '0')}`
 }
 
@@ -246,6 +265,7 @@ export function generateQueueTokenId(lastNumber: string | null): string {
 export function generateBranchId(lastNumber: string | null): string {
   if (!lastNumber) return 'BRN-0001'
   const num = parseInt(lastNumber.replace('BRN-', ''), 10)
+  if (isNaN(num)) return 'BRN-0001'
   return `BRN-${String(num + 1).padStart(4, '0')}`
 }
 
@@ -253,6 +273,7 @@ export function generateBranchId(lastNumber: string | null): string {
 export function generateScanId(lastNumber: string | null): string {
   if (!lastNumber) return 'SCN-0001'
   const num = parseInt(lastNumber.replace('SCN-', ''), 10)
+  if (isNaN(num)) return 'SCN-0001'
   return `SCN-${String(num + 1).padStart(4, '0')}`
 }
 

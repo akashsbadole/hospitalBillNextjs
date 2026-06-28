@@ -5,7 +5,6 @@ import { format } from 'date-fns'
 import {
   Video,
   Phone,
-  PhoneOff,
   MessageSquare,
   Calendar,
   Clock,
@@ -15,14 +14,12 @@ import {
   CheckCircle2,
   AlertTriangle,
   XCircle,
-  Loader2,
   FileText,
   Activity,
   ExternalLink,
 } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
 import { apiGet, ApiError } from '@/lib/api-client'
-import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Separator } from '@/components/ui/separator'
@@ -202,8 +199,10 @@ export function CallDetailDialog({ callId, open, onOpenChange }: CallDetailDialo
     }
   }, [callId, toast])
 
+   
   useEffect(() => {
     if (open && callId) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       fetchDetail()
     }
   }, [open, callId, fetchDetail])

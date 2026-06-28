@@ -224,12 +224,15 @@ function StudiesTab() {
     }
   }, [page, modalityFilter, statusFilter, toast])
 
+   
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchStudies()
   }, [fetchStudies])
 
   useEffect(() => {
     if (patientSearch.trim().length < 2) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setPatientResults([])
       return
     }
@@ -962,7 +965,9 @@ function QueueTab() {
     }
   }, [toast])
 
+   
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchQueue()
   }, [fetchQueue])
 

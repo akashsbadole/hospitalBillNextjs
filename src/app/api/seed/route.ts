@@ -42,7 +42,7 @@ function buildStages(currentStage: VisitStageName, isCompleted: boolean, offsetM
 }
 
 async function seedPatientVisits(
-  db: any,
+  db: import('@prisma/client').PrismaClient,
   patients: Array<{ id: string; patientId: string }>,
   doctors: Array<{ id: string; doctorId: string }>,
 ) {

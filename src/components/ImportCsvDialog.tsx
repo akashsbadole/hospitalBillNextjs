@@ -1,12 +1,11 @@
 'use client'
 
 import { useState, useRef } from 'react'
-import { Upload, Download, FileText, Loader2, CheckCircle2, AlertCircle } from 'lucide-react'
+import { Upload, Download, Loader2, CheckCircle2, AlertCircle } from 'lucide-react'
 import { apiPost, ApiError } from '@/lib/api-client'
 import { useToast } from '@/hooks/use-toast'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
-import { Badge } from '@/components/ui/badge'
 import {
   Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle,
 } from '@/components/ui/dialog'

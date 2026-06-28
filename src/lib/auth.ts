@@ -37,7 +37,11 @@ export async function hashPassword(password: string): Promise<string> {
 
 export async function comparePassword(password: string, hash: string): Promise<boolean> {
   if (isLegacySha256Hash(hash)) {
-    return legacySha256Hash(password) === hash
+    const { timingSafeEqual } = await import('crypto')
+    const a = Buffer.from(legacySha256Hash(password))
+    const b = Buffer.from(hash)
+    if (a.length !== b.length) return false
+    return timingSafeEqual(a, b)
   }
   return bcrypt.compare(password, hash)
 }

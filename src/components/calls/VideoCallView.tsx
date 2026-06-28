@@ -12,7 +12,6 @@ import {
   Maximize2,
   Minimize2,
   Loader2,
-  PhoneCall,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -95,6 +94,7 @@ function useCallTimer(isActive: boolean) {
 
     const tick = () => {
       if (startTimeRef.current) {
+         
         setElapsed(Math.floor((Date.now() - startTimeRef.current) / 1000))
       }
       rafRef.current = requestAnimationFrame(tick)
@@ -272,6 +272,7 @@ export function VideoCallView({
           setConnectionStatus('Reconnecting')
           // Attempt ICE restart
           if (state === 'failed' && isInitiator && hasCreatedOffer.current) {
+            // eslint-disable-next-line no-console
             console.log('[VideoCallView] ICE failed, restarting...')
             restartICE(pc)
           }
@@ -333,6 +334,7 @@ export function VideoCallView({
     socketRef.current = socket
 
     socket.on('connect', () => {
+      // eslint-disable-next-line no-console
       console.log('[VideoCallView] Connected to signaling server')
       // Join the room
       socket.emit('join-room', {
@@ -343,10 +345,12 @@ export function VideoCallView({
     })
 
     socket.on('disconnect', () => {
+      // eslint-disable-next-line no-console
       console.log('[VideoCallView] Disconnected from signaling server')
     })
 
     socket.on('room-joined', (data: { roomId: string; participantCount: number; participants: { peerId: string; peerName: string }[] }) => {
+      // eslint-disable-next-line no-console
       console.log('[VideoCallView] Joined room:', data)
       // Find the other peer
       const otherPeer = data.participants.find((p) => p.peerId !== socket.id)
@@ -360,6 +364,7 @@ export function VideoCallView({
     })
 
     socket.on('peer-joined', (data: { peerId: string; peerName: string; isInitiator: boolean }) => {
+      // eslint-disable-next-line no-console
       console.log('[VideoCallView] Peer joined:', data)
       remotePeerIdRef.current = data.peerId
 
@@ -371,6 +376,7 @@ export function VideoCallView({
     })
 
     socket.on('peer-left', (data: { peerId: string; peerName: string; participantCount: number }) => {
+      // eslint-disable-next-line no-console
       console.log('[VideoCallView] Peer left:', data)
       if (data.peerId === remotePeerIdRef.current) {
         setRemotePeerConnected(false)
@@ -390,12 +396,14 @@ export function VideoCallView({
     })
 
     socket.on('call-ended', (data: { endedBy: string; roomId: string }) => {
+      // eslint-disable-next-line no-console
       console.log('[VideoCallView] Call ended by:', data)
       onCallEnd()
     })
 
     // WebRTC signaling events
     socket.on('offer', async (data: { sdp: RTCSessionDescriptionInit; fromPeerId: string }) => {
+      // eslint-disable-next-line no-console
       console.log('[VideoCallView] Received offer from:', data.fromPeerId)
       remotePeerIdRef.current = data.fromPeerId
 
@@ -418,6 +426,7 @@ export function VideoCallView({
     })
 
     socket.on('answer', async (data: { sdp: RTCSessionDescriptionInit; fromPeerId: string }) => {
+      // eslint-disable-next-line no-console
       console.log('[VideoCallView] Received answer from:', data.fromPeerId)
       const pc = peerConnectionRef.current
       if (!pc) return
@@ -668,6 +677,7 @@ export function VideoCallView({
         document.exitPictureInPicture().catch(() => {})
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // ==================== STATUS CONFIG ====================

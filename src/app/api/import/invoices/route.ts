@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
 
     // Invoice import requires multi-step: group rows by invoice number
     const invoiceGroups: Record<string, { rowIndex: number; data: Record<string, string>; items: Record<string, string>[] }> = {}
-    let invoiceNumIdx = headers.findIndex(h => /invoice\s*(no|number|#)?/i.test(h.trim()))
+    const invoiceNumIdx = headers.findIndex(h => /invoice\s*(no|number|#)?/i.test(h.trim()))
 
     for (let i = 0; i < rows.length; i++) {
       try {
@@ -77,7 +77,7 @@ export async function POST(request: NextRequest) {
           quantity: parseInt(item['quantity'] || '1') || 1,
           unitPrice: parseFloat(item['unit price'] || item['price'] || '0') || 0,
           gstRate: parseFloat(item['gst rate'] || item['gst'] || '0') || 0,
-          type: (item['type'] || 'Service') as any,
+          type: (item['type'] || 'Service') as string,
           total: (parseInt(item['quantity'] || '1') || 1) * (parseFloat(item['unit price'] || item['price'] || '0') || 0),
           gstAmount: 0,
         }))

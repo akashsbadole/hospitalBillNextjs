@@ -39,14 +39,6 @@ export async function GET(
       },
     })
 
-    let beds: Array<{ bedId: string; bedNumber: string; dailyRate: number; ward: { name: string } | null }> = []
-    if (visit?.patientId) {
-      beds = await db.bed.findMany({
-        where: { currentPatientId: visit.patientId },
-        include: { ward: { select: { name: true } } },
-      })
-    }
-
     if (!visit) {
       return NextResponse.json({ error: 'Visit not found' }, { status: 404 })
     }

@@ -61,7 +61,7 @@ function formatRelativeTime(dateStr?: string): string {
 
 function StepperNode({
   stageInfo,
-  index,
+  index: _index,
   isLast,
   compact,
 }: {
@@ -130,7 +130,7 @@ function StepperNode({
 
 // ─── Horizontal Stepper ────────────────────────────────────────────────────
 
-function HorizontalStepper({ currentStage, stages, compact }: WorkflowStepperProps) {
+function HorizontalStepper({ currentStage: _currentStage, stages, compact }: WorkflowStepperProps) {
   return (
     <div className="flex items-center w-full overflow-x-auto py-1">
       {stages.map((stageInfo, index) => (
@@ -148,7 +148,7 @@ function HorizontalStepper({ currentStage, stages, compact }: WorkflowStepperPro
 
 // ─── Vertical Stepper (mobile) ──────────────────────────────────────────────
 
-function VerticalStepper({ currentStage, stages, compact }: WorkflowStepperProps) {
+function VerticalStepper({ currentStage: _currentStage, stages, compact }: WorkflowStepperProps) {
   return (
     <div className="flex flex-col gap-0 w-full">
       {stages.map((stageInfo, index) => {

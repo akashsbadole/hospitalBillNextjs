@@ -16,7 +16,6 @@ import {
   MapPin,
   Calendar,
   FileText,
-  IndianRupee,
   CheckCircle2,
   Clock,
   AlertTriangle,
@@ -24,7 +23,6 @@ import {
   Wallet,
   Trash2,
   Loader2,
-  RefreshCw,
   Building2,
   CreditCard,
 } from 'lucide-react'
@@ -43,7 +41,6 @@ import {
 } from '@/components/ui/table'
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
@@ -75,15 +72,6 @@ function formatDate(dateStr: string): string {
   return date.toLocaleDateString('en-IN', {
     day: '2-digit',
     month: 'long',
-    year: 'numeric',
-  })
-}
-
-function formatDateShort(dateStr: string): string {
-  const date = new Date(dateStr + 'T00:00:00')
-  return date.toLocaleDateString('en-IN', {
-    day: '2-digit',
-    month: 'short',
     year: 'numeric',
   })
 }
@@ -158,6 +146,7 @@ export function InvoiceDetailPage() {
 
   const paymentStore = usePaymentStore()
 
+   
   useEffect(() => {
     if (invoiceId) {
       fetchInvoiceDetail(invoiceId)

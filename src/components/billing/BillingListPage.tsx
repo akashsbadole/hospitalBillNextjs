@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react'
 import { useNavigation } from '@/stores/navigation'
 import { useBillingStore, type Invoice as StoreInvoice } from '@/stores/billing'
-import { apiGet, apiDelete, type PaginatedResponse, ApiError } from '@/lib/api-client'
+import { apiGet, apiDelete, ApiError } from '@/lib/api-client'
 import { formatCurrency } from '@/lib/utils'
 import { useToast } from '@/hooks/use-toast'
 import { CreateInvoiceDialog } from './CreateInvoiceDialog'
@@ -61,7 +61,6 @@ import {
 import { ScrollArea } from '@/components/ui/scroll-area'
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
@@ -210,16 +209,20 @@ export function BillingListPage() {
   }, [])
 
   // Fetch invoices on mount and when page/filters change
+   
   useEffect(() => {
     fetchInvoices()
   }, [page, filters.search, filters.status, filters.fromDate, filters.toDate, fetchInvoices])
 
   // Fetch stats on mount
+   
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchStats()
   }, [fetchStats])
 
   // Refresh stats when create dialog closes (invoice may have been created)
+   
   useEffect(() => {
     if (prevDialogOpen.current && !createForm.dialogOpen) {
       fetchStats()

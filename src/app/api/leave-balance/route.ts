@@ -97,7 +97,7 @@ export async function POST(request: NextRequest) {
       userEmail: auth.user!.email,
       userRole: auth.role!,
       action: 'CREATE',
-      module: 'leave-balance' as any,
+      module: 'leave-balance',
       details: { staffId: data.staffId, type: data.type, year: data.year, totalDays: data.totalDays, usedDays: data.usedDays },
       ...extractRequestInfo(request),
     })

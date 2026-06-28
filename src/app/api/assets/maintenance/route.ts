@@ -16,8 +16,6 @@ const createSchema = z.object({
   notes: z.string().optional(),
 })
 
-const MAINTENANCE_TYPES = ['Preventive', 'Corrective', 'Calibration', 'AMC']
-
 export async function GET(request: NextRequest) {
   const auth = await authenticateRequest(request, '/api/assets')
   if (auth.error) return NextResponse.json({ error: auth.error.message }, { status: auth.error.status })

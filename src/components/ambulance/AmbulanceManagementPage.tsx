@@ -4,7 +4,7 @@ import React, { useState, useEffect, useCallback } from 'react'
 import { apiGet, apiPost, apiPut, ApiError } from '@/lib/api-client'
 import { useToast } from '@/hooks/use-toast'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -57,7 +57,6 @@ import {
   Loader2,
   RefreshCw,
   Filter,
-  Search,
   Ambulance,
 } from 'lucide-react'
 
@@ -238,7 +237,9 @@ export function AmbulanceManagementPage() {
     }
   }, [filterDispStatus, filterDispType, toast])
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { fetchAmbulances() }, [fetchAmbulances])
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { fetchDispatches() }, [fetchDispatches])
 
   const handleCreateAmbulance = async () => {

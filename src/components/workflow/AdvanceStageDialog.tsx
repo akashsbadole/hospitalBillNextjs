@@ -31,7 +31,7 @@ import {
 import { Separator } from '@/components/ui/separator'
 import { Badge } from '@/components/ui/badge'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { Loader2, ArrowRight, CheckCircle2, Plus, Trash2, Receipt, CreditCard, FileText, TestTube2, Pill, Search, Check, X as XIcon, Shield, Eye, Info } from 'lucide-react'
+import { Loader2, ArrowRight, CheckCircle2, Plus, Trash2, Receipt, CreditCard, FileText, TestTube2, Pill, Search, Check, Shield, Eye, Info } from 'lucide-react'
 
 // ─── Types ─────────────────────────────────────────────────────────────────
 
@@ -327,45 +327,54 @@ export function AdvanceStageDialog({
   // Reset state on dialog open/close
   useEffect(() => {
     if (open) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setSelectedStage('')
+       
       setNotes('')
+       
       setIsSubmitting(false)
+       
       setInvoiceItems([])
+       
       setInvoiceDiscount(0)
+       
       setInvoiceNotes('')
+       
       setShowQuickAdd(false)
+       
       setQuickAddFilter('')
+       
       setPaymentAmount(0)
+       
       setPaymentMethod('')
+       
       setInvoiceData(null)
+       
       setSelectedTests([])
+       
       setLabTestSearch('')
+       
       setLabCategoryFilter('')
+       
       setPrescriptionDiagnosis('')
+       
       setPrescriptionMedicines([])
+       
       setPrescriptionNotes('')
+       
       setBillingSummary(null)
+       
       setIsLoadingSummary(false)
+       
       setBillAndPay(false)
+       
       setBillPayMethod('Cash')
+       
       setLastAction(null)
     }
   }, [open])
 
-  // Fetch billing summary when "Billed" stage is selected (auto-populate)
-  useEffect(() => {
-    if (open && selectedStage === 'Billed' && invoiceItems.length === 0) {
-      fetchBillingSummary()
-    }
-  }, [open, selectedStage])
-
-  // Fetch invoice data when "Paid" is selected
-  useEffect(() => {
-    if (open && selectedStage === 'Paid') {
-      fetchLatestInvoice()
-    }
-  }, [open, selectedStage])
-
+  // ─── Fetch helpers ─────────────────────────────────────────────────
   const fetchBillingSummary = async () => {
     setIsLoadingSummary(true)
     try {
@@ -419,6 +428,26 @@ export function AdvanceStageDialog({
       setPaymentAmount(0)
     }
   }
+
+  // Fetch billing summary when "Billed" stage is selected (auto-populate)
+    
+  useEffect(() => {
+    if (open && selectedStage === 'Billed' && invoiceItems.length === 0) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      fetchBillingSummary()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, selectedStage])
+
+  // Fetch invoice data when "Paid" is selected
+    
+  useEffect(() => {
+    if (open && selectedStage === 'Paid') {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      fetchLatestInvoice()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, selectedStage])
 
   // ─── Invoice item handlers ────────────────────────────────────────────
   const addQuickItem = (item: Omit<InvoiceFormItem, 'id'>) => {

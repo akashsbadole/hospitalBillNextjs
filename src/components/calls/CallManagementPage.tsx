@@ -9,7 +9,6 @@ import {
   PhoneOff,
   Calendar,
   Clock,
-  Star,
   User,
   Stethoscope,
   AlertTriangle,
@@ -50,7 +49,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { Separator } from '@/components/ui/separator'
 import { ScheduleCallDialog } from './ScheduleCallDialog'
 import { ActiveCallPanel } from './ActiveCallPanel'
 import { CallDetailDialog } from './CallDetailDialog'
@@ -222,7 +220,10 @@ function DurationTimer({ startedAt }: { startedAt: string }) {
   const [elapsed, setElapsed] = useState(() => calcElapsed())
 
   useEffect(() => {
-    const interval = setInterval(() => setElapsed(calcElapsed()), 1000)
+    const interval = setInterval(() => {
+       
+      setElapsed(calcElapsed())
+    }, 1000)
     return () => clearInterval(interval)
   }, [calcElapsed])
 
@@ -442,13 +443,18 @@ export function CallManagementPage() {
   }, [viewTab, callTypeFilter, doctorFilter, page, toast])
 
   // Initial load
+   
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchDoctors()
+     
     fetchStats()
+     
     fetchActiveCalls()
   }, [fetchDoctors, fetchStats, fetchActiveCalls])
 
   // Fetch calls when filters change
+   
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current)
     debounceRef.current = setTimeout(() => {
@@ -460,6 +466,7 @@ export function CallManagementPage() {
   }, [viewTab, callTypeFilter, doctorFilter, page, fetchCalls])
 
   // Auto-refresh active calls every 30 seconds
+   
   useEffect(() => {
     pollRef.current = setInterval(() => {
       fetchActiveCalls()

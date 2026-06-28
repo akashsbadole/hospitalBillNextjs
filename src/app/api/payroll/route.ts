@@ -156,7 +156,7 @@ export async function POST(request: NextRequest) {
       userEmail: auth.user!.email,
       userRole: auth.role!,
       action: 'CREATE',
-      module: 'payroll' as any,
+      module: 'payroll',
       details: { payrollId: payroll.payrollId, staffId: data.staffId, month: data.month, year: data.year },
       ...extractRequestInfo(request),
     })

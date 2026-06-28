@@ -25,7 +25,6 @@ import {
   TrendingUp,
 } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
-import { useAuth } from '@/stores/auth'
 import {
   apiGet,
   apiPost,
@@ -285,7 +284,6 @@ function formatRelativeTime(dateStr: string): string {
 
 export function SupportCenterPage() {
   const { toast } = useToast()
-  const { user } = useAuth()
 
   // ── Ticket list state ──
   const [tickets, setTickets] = useState<SupportTicket[]>([])
@@ -328,7 +326,6 @@ export function SupportCenterPage() {
   // ── Ticket detail dialog ──
   const [detailDialogOpen, setDetailDialogOpen] = useState(false)
   const [selectedTicket, setSelectedTicket] = useState<SupportTicket | null>(null)
-  const [detailLoading, setDetailLoading] = useState(false)
 
   // ── Replies ──
   const [replies, setReplies] = useState<SupportReply[]>([])
@@ -445,15 +442,21 @@ export function SupportCenterPage() {
     }
   }, [])
 
+   
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchTickets()
   }, [fetchTickets])
 
+    
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchStats()
   }, [fetchStats])
 
+    
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchStaff()
   }, [fetchStaff])
 

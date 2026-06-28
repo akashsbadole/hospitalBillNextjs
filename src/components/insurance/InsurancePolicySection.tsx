@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { apiGet, apiPost, apiPut, apiDelete, ApiError } from '@/lib/api-client'
+import { apiGet, apiPost, apiDelete, ApiError } from '@/lib/api-client'
 import { useToast } from '@/hooks/use-toast'
 import { formatCurrency } from '@/lib/utils'
 import {
@@ -37,14 +37,12 @@ import {
   Shield,
   ShieldCheck,
   Plus,
-  Eye,
   Trash2,
   Loader2,
   Calendar,
   IndianRupee,
   User,
   Building2,
-  Ban,
 } from 'lucide-react'
 
 interface InsuranceCompany {
@@ -128,10 +126,12 @@ export function InsurancePolicySection({ patientId, patientName }: Props) {
     }
   }
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     fetchPolicies()
+    
     fetchCompanies()
-  }, [patientId])
+  }, [patientId, fetchPolicies])
 
   const resetForm = () => {
     setCompanyId('')

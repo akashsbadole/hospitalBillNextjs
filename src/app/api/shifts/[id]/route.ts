@@ -67,7 +67,7 @@ export async function PUT(
       userEmail: auth.user!.email,
       userRole: auth.role!,
       action: 'UPDATE',
-      module: 'shifts' as any,
+      module: 'shifts',
       details: { shiftId: id, name: updated.name, changedFields: Object.keys(data) },
       ...extractRequestInfo(request),
     })
@@ -110,7 +110,7 @@ export async function DELETE(
       userEmail: auth.user!.email,
       userRole: auth.role!,
       action: 'DELETE',
-      module: 'shifts' as any,
+      module: 'shifts',
       details: { shiftId: existing.shiftId, name: existing.name },
       ...extractRequestInfo(request),
     })

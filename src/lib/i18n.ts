@@ -57,6 +57,6 @@ export function t(key: string, translations?: Record<string, string>): string {
   return key
 }
 
-export function useTranslation(namespace: string) {
+export function useTranslation(_namespace: string) {
   return { t: (key: string) => key }
 }

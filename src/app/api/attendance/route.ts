@@ -152,7 +152,7 @@ export async function POST(request: NextRequest) {
       userEmail: auth.user!.email,
       userRole: auth.role!,
       action: 'CREATE',
-      module: 'attendance' as any,
+      module: 'attendance',
       details: { attendanceId: attendance.id, staffId: data.staffId, date: data.date, status: data.status },
       ...extractRequestInfo(request),
     })

@@ -16,7 +16,6 @@ import {
   CalendarDays,
   Clock,
   Stethoscope,
-  Loader2,
   AlertCircle,
   Timer,
 } from 'lucide-react'
@@ -79,11 +78,6 @@ function formatTime12(time: string): string {
   const ampm = h >= 12 ? 'PM' : 'AM'
   const displayH = h === 0 ? 12 : h > 12 ? h - 12 : h
   return `${displayH}:${m.toString().padStart(2, '0')} ${ampm}`
-}
-
-function timeToMinutes(time: string): number {
-  const [h, m] = time.split(':').map(Number)
-  return h * 60 + m
 }
 
 // Type-based color config
@@ -477,11 +471,15 @@ export function AppointmentCalendar() {
     [toast]
   )
 
+   
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchDoctors()
   }, [fetchDoctors])
 
+    
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchAppointments(currentWeekStart, selectedDoctorId)
   }, [currentWeekStart, selectedDoctorId, fetchAppointments])
 

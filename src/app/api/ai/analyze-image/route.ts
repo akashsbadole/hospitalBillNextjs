@@ -6,7 +6,7 @@ import { db } from '@/lib/db'
 import { z } from 'zod'
 import { authenticateRequest, checkWritePermission, checkModuleEnabled } from '@/lib/api-auth'
 import { logAudit, extractRequestInfo } from '@/lib/audit-log'
-import { analyzeMedicalImage, ALLOWED_IMAGE_TYPES, MODALITY_OPTIONS } from '@/lib/ai-service'
+import { analyzeMedicalImage } from '@/lib/ai-service'
 
 const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
 const MAX_SIZE = 10 * 1024 * 1024

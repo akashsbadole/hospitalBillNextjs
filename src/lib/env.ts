@@ -1,11 +1,6 @@
 // Centralized environment variable validation at startup
 // Import this first in server.ts or next.config.ts to fail fast
 
-type EnvConfig = {
-  required: string[]
-  optional: Record<string, string>
-}
-
 const REQUIRED: string[] = [
   'DATABASE_URL',
   'JWT_SECRET',
@@ -44,6 +39,11 @@ export function validateEnv(): void {
   // Validate JWT_SECRET length
   const jwtSecret = process.env.JWT_SECRET!
   if (jwtSecret.length < 32) {
+    if (process.env.NODE_ENV === 'production') {
+      const msg = '[ENV] FATAL: JWT_SECRET must be at least 32 characters in production. Aborting startup.'
+      console.error(msg)
+      throw new Error(msg)
+    }
     console.warn('[ENV] WARNING: JWT_SECRET is less than 32 characters. Use a stronger secret in production.')
   }
 
@@ -61,5 +61,5 @@ export function validateEnv(): void {
   }
 
   validated = true
-  console.log('[ENV] All required environment variables are set.')
+  console.warn('[ENV] All required environment variables are set.')
 }

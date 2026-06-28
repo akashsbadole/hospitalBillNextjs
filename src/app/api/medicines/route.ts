@@ -67,7 +67,7 @@ export async function GET(request: NextRequest) {
 
     // Fetch all matching records, then filter by dynamic stockStatus in memory
     // because stockStatus depends on each medicine's own minStock field
-    const [allMedicines, total] = await Promise.all([
+    const [allMedicines] = await Promise.all([
       db.medicine.findMany({
         where,
         orderBy: { name: 'asc' },

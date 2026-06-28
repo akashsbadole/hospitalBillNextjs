@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { Users, Clock, SkipForward, CheckCheck } from 'lucide-react'
+import { Users, Clock, CheckCheck } from 'lucide-react'
 import { apiGet, type PaginatedResponse } from '@/lib/api-client'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -84,14 +84,19 @@ export function QueueDisplayBoard() {
     }
   }, [activeDepartment])
 
+   
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchQueue()
     const interval = setInterval(fetchQueue, 10000)
     return () => clearInterval(interval)
   }, [fetchQueue])
 
   useEffect(() => {
-    const clock = setInterval(() => setCurrentTime(new Date()), 1000)
+    const clock = setInterval(() => {
+       
+      setCurrentTime(new Date())
+    }, 1000)
     return () => clearInterval(clock)
   }, [])
 

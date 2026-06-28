@@ -78,7 +78,7 @@ export async function PUT(
       userEmail: auth.user!.email,
       userRole: auth.role!,
       action: 'UPDATE',
-      module: 'attendance' as any,
+      module: 'attendance',
       details: { attendanceId: id, staffId: existing.staffId, date: existing.date, changedFields: Object.keys(data) },
       ...extractRequestInfo(request),
     })
@@ -121,7 +121,7 @@ export async function DELETE(
       userEmail: auth.user!.email,
       userRole: auth.role!,
       action: 'DELETE',
-      module: 'attendance' as any,
+      module: 'attendance',
       details: { attendanceId: id, staffId: existing.staffId, date: existing.date },
       ...extractRequestInfo(request),
     })

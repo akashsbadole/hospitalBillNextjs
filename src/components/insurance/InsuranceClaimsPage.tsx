@@ -1,13 +1,11 @@
 'use client'
 
 import React, { useState, useEffect, useCallback } from 'react'
-import { apiGet, apiPost, apiPut, apiDelete, type PaginatedResponse, type SingleResponse, ApiError } from '@/lib/api-client'
+import { apiGet, apiPost, apiPut, apiDelete, type PaginatedResponse, type SingleResponse } from '@/lib/api-client'
 import { useToast } from '@/hooks/use-toast'
 import {
   Card,
   CardContent,
-  CardHeader,
-  CardTitle,
 } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -15,7 +13,6 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Skeleton } from '@/components/ui/skeleton'
-import { Checkbox } from '@/components/ui/checkbox'
 import {
   Select,
   SelectContent,
@@ -42,25 +39,18 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
   Plus,
-  Eye,
   Edit,
   Trash2,
   X,
-  ShieldCheck,
   FileText,
   RefreshCw,
   Search as SearchIcon,
   Loader2,
-  AlertCircle,
   Building2,
-  Phone,
-  Mail,
-  MapPin,
   FileCheck,
   FileX,
   Clock,
   IndianRupee,
-  Users,
   ChevronLeft,
   ChevronRight,
 } from 'lucide-react'
@@ -144,7 +134,7 @@ function getCompanyTypeBadge(type: string) {
 // ==================== MAIN COMPONENT ====================
 
 export function InsuranceClaimsPage() {
-  const { toast } = useToast()
+  useToast()
   const [activeTab, setActiveTab] = useState('claims')
 
   return (
@@ -256,28 +246,37 @@ function ClaimsTab() {
     }
   }, [])
 
+   
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchClaims()
   }, [fetchClaims])
 
+    
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchCompanies()
   }, [fetchCompanies])
 
   // Patient search
   useEffect(() => {
     if (patientSearch.trim().length < 2) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setPatientResults([])
       return
     }
     const timer = setTimeout(async () => {
+       
       setPatientSearching(true)
       try {
         const res = await apiGet<PaginatedResponse<Patient>>('/patients', { search: patientSearch.trim(), limit: 10 })
+         
         setPatientResults(res.data)
       } catch {
+         
         setPatientResults([])
       } finally {
+         
         setPatientSearching(false)
       }
     }, 300)
@@ -867,7 +866,9 @@ function CompaniesTab() {
     }
   }, [page, searchQuery, typeFilter, toast])
 
+   
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchCompanies()
   }, [fetchCompanies])
 

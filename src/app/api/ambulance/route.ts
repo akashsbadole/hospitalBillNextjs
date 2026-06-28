@@ -72,13 +72,21 @@ export async function POST(request: NextRequest) {
     const num = last ? parseInt(last.ambulanceId.replace('AMB-', ''), 10) + 1 : 1
     const ambulanceId = `AMB-${String(num).padStart(4, '0')}`
 
+    const data = parsed.data
     const ambulance = await db.ambulance.create({
       data: {
-        ...parsed.data,
         ambulanceId,
-        insuranceValidUntil: parsed.data.insuranceValidUntil ? new Date(parsed.data.insuranceValidUntil) : undefined,
-        fitnessValidUntil: parsed.data.fitnessValidUntil ? new Date(parsed.data.fitnessValidUntil) : undefined,
-      } as any,
+        vehicleNumber: data.vehicleNumber,
+        driverName: data.driverName,
+        driverPhone: data.driverPhone,
+        driverLicense: data.driverLicense,
+        type: data.type,
+        status: data.status,
+        equipment: data.equipment,
+        hospitalBranch: data.hospitalBranch,
+        insuranceValidUntil: data.insuranceValidUntil ? new Date(data.insuranceValidUntil) : undefined,
+        fitnessValidUntil: data.fitnessValidUntil ? new Date(data.fitnessValidUntil) : undefined,
+      },
     })
 
     logAudit({

@@ -13,7 +13,6 @@ import {
   Thermometer,
   HeartPulse,
   Wind,
-  Scale,
   ChevronRight,
 } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
@@ -34,13 +33,7 @@ import {
   DialogDescription,
   DialogFooter,
 } from '@/components/ui/dialog'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
+
 
 // ==================== TYPES ====================
 
@@ -230,12 +223,19 @@ export function AiAnalysisDialog({
   // Reset when dialog opens
   React.useEffect(() => {
     if (open) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setAnalysisType('Health Analysis')
+       
       setSymptoms('')
+       
       setTemperature('')
+       
       setBloodPressure('')
+       
       setPulse('')
+       
       setOxygenLevel('')
+       
       setResult(null)
 
       // Auto-fill additional context from patient data
@@ -247,6 +247,7 @@ export function AiAnalysisDialog({
         if (patientContext.allergies) parts.push(`Allergies: ${patientContext.allergies}`)
         if (patientContext.pastTreatments) parts.push(`Past treatments: ${patientContext.pastTreatments}`)
         if (parts.length > 0) {
+           
           setAdditionalContext(parts.join('\n'))
         }
       }

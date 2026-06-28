@@ -56,7 +56,7 @@ export async function GET(
     })
 
     // Fetch doctor info
-    let doctorName = visit.doctorId
+    const doctorName = visit.doctorId
       ? (await db.doctor.findUnique({ where: { id: visit.doctorId }, select: { name: true } }))?.name ?? null
       : null
 

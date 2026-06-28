@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { useForm, type Resolver } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2 } from 'lucide-react'
@@ -66,7 +66,7 @@ export function AddDoctorDialog({ open, onOpenChange, onSuccess }: AddDoctorDial
   const [submitting, setSubmitting] = useState(false)
 
   const form = useForm<DoctorFormValues>({
-    resolver: zodResolver(doctorSchema) as any,
+    resolver: zodResolver(doctorSchema) as Resolver<DoctorFormValues>,
     defaultValues: {
       name: '',
       phone: '',

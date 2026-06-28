@@ -4,7 +4,6 @@ import React, { useState, useEffect, useCallback, useRef } from 'react'
 import { formatCurrency, cn } from '@/lib/utils'
 import { apiGet, apiPost, type PaginatedResponse, type SingleResponse, ApiError } from '@/lib/api-client'
 import { useToast } from '@/hooks/use-toast'
-import { useNavigation } from '@/stores/navigation'
 import {
   Card,
   CardContent,
@@ -12,7 +11,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -24,21 +22,6 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table'
 import {
   Dialog,
   DialogContent,
@@ -61,14 +44,9 @@ import {
   CreditCard,
   Banknote,
   Receipt,
-  RefreshCw,
-  AlertTriangle,
   CheckCircle2,
   Printer,
   X,
-  ChevronDown,
-  ChevronUp,
-  Phone,
   UserPlus,
 } from 'lucide-react'
 
@@ -117,11 +95,6 @@ interface SaleRecord {
 
 type PaymentMethod = 'Cash' | 'UPI' | 'Card'
 
-function formatDate(dateStr: string): string {
-  const d = new Date(dateStr)
-  return d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })
-}
-
 function formatDateTime(dateStr: string): string {
   const d = new Date(dateStr)
   return d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })
@@ -131,7 +104,7 @@ const QUICK_PAY_AMOUNTS = [500, 1000, 2000, 5000]
 
 export function PharmacyPosPage() {
   const { toast } = useToast()
-  const { setCurrentPage } = useNavigation()
+  useNavigation()
 
   const [searchQuery, setSearchQuery] = useState('')
   const [searchResults, setSearchResults] = useState<Medicine[]>([])
@@ -190,7 +163,9 @@ export function PharmacyPosPage() {
     }
   }, [])
 
+   
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchRecentSales()
   }, [fetchRecentSales])
 

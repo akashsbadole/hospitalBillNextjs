@@ -22,11 +22,9 @@ import {
   MoreHorizontal,
   ChevronLeft,
   ChevronRight,
-  Ban,
   Calendar,
   Sunrise,
   Sunset,
-  ClipboardList,
   Briefcase,
   FileText,
 } from 'lucide-react'
@@ -305,8 +303,11 @@ function PayrollTab() {
     }
   }, [])
 
+   
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchRecords()
+     
     fetchStats()
   }, [fetchRecords, fetchStats])
 
@@ -321,8 +322,10 @@ function PayrollTab() {
     }
   }, [toast])
 
+    
   useEffect(() => {
-    if (generateOpen) fetchStaff()
+    if (generateOpen) // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchStaff()
   }, [generateOpen, fetchStaff])
 
   const resetGenerateForm = () => {
@@ -897,6 +900,7 @@ function AttendanceTab() {
     }
   }, [page, dateFilter, staffSearchFilter, statusFilter, toast])
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { fetchRecords() }, [fetchRecords])
 
   const fetchStaff = useCallback(async () => {
@@ -909,7 +913,8 @@ function AttendanceTab() {
   }, [])
 
   useEffect(() => {
-    if (markOpen || editTarget) fetchStaff()
+    if (markOpen || editTarget) // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchStaff()
   }, [markOpen, editTarget, fetchStaff])
 
   const resetForm = () => {
@@ -1276,6 +1281,7 @@ function ShiftsTab() {
     }
   }, [toast])
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { fetchShifts() }, [fetchShifts])
 
   const resetForm = () => {
@@ -1520,7 +1526,7 @@ function ShiftsTab() {
           <AlertDialogHeader>
             <AlertDialogTitle>Delete Shift?</AlertDialogTitle>
             <AlertDialogDescription>
-              This will permanently delete the shift "{deleteTarget?.name}".
+              This will permanently delete the shift &quot;{deleteTarget?.name}&quot;.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -1597,6 +1603,7 @@ function LeavesTab() {
     }
   }, [page, staffFilter, statusFilter, dateFrom, dateTo, toast])
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { fetchRecords() }, [fetchRecords])
 
   const fetchStaff = useCallback(async () => {
@@ -1621,12 +1628,15 @@ function LeavesTab() {
     }
   }, [])
 
+   
   useEffect(() => {
-    if (applyOpen) fetchStaff()
+    if (applyOpen) // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchStaff()
   }, [applyOpen, fetchStaff])
 
   useEffect(() => {
     if (formStaff && formStaff !== balanceStaff) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setBalanceStaff(formStaff)
       fetchBalance(formStaff)
     }
@@ -1957,7 +1967,7 @@ function LeavesTab() {
 // ==================== MAIN COMPONENT ====================
 
 export function PayrollPage() {
-  const { toast } = useToast()
+  useToast()
 
   const fetchStaffForFilters = useCallback(async () => {
     try {
@@ -1967,11 +1977,14 @@ export function PayrollPage() {
     }
   }, [])
 
-  const [staffOptions, setStaffOptions] = useState<StaffOption[]>([])
+  const [, setStaffOptions] = useState<StaffOption[]>([])
 
   useEffect(() => {
     fetchStaffForFilters().then((res) => {
-      if (res) setStaffOptions(res.data)
+      if (res) {
+         
+        setStaffOptions(res.data)
+      }
     })
   }, [fetchStaffForFilters])
 

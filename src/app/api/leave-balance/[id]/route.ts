@@ -64,7 +64,7 @@ export async function PUT(
       userEmail: auth.user!.email,
       userRole: auth.role!,
       action: 'UPDATE',
-      module: 'leave-balance' as any,
+      module: 'leave-balance',
       details: { balanceId: id, staffId: existing.staffId, type: existing.type, year: existing.year, changedFields: Object.keys(data) },
       ...extractRequestInfo(request),
     })

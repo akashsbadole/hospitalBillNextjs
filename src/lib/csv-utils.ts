@@ -13,15 +13,18 @@ export function buildCsvRow(fields: unknown[]): string {
 }
 
 export function buildCsvResponse(headers: string[], rows: unknown[][], filename: string): NextResponse {
-  const headerLine = headers.join(',')
+  const headerLine = headers.map(escapeCsvField).join(',')
   const dataLines = rows.map(r => buildCsvRow(r)).join('\n')
   const csv = headerLine + '\n' + dataLines
+
+  // Sanitize filename: remove path traversal and non-safe characters
+  const safeFilename = filename.replace(/[^a-zA-Z0-9_\-\.]/g, '_').replace(/_{2,}/g, '_')
 
   return new NextResponse(csv, {
     status: 200,
     headers: {
       'Content-Type': 'text/csv; charset=utf-8',
-      'Content-Disposition': `attachment; filename="${filename}"`,
+      'Content-Disposition': `attachment; filename="${safeFilename}"`,
     },
   })
 }

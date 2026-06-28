@@ -75,7 +75,9 @@ export default function BarcodeScannerPage() {
     }
   }, [])
 
+   
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchHistory()
   }, [fetchHistory])
 

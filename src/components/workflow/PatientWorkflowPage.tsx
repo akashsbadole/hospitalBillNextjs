@@ -210,38 +210,6 @@ function VisitStatusBadge({ status }: { status: string }) {
   )
 }
 
-// ─── Stats Card ──────────────────────────────────────────────────────────────
-
-function StatsCard({
-  title,
-  value,
-  icon,
-  bgColor,
-  iconColor,
-}: {
-  title: string
-  value: number
-  icon: React.ReactNode
-  bgColor: string
-  iconColor: string
-}) {
-  return (
-    <Card className="rounded-xl border shadow-sm">
-      <CardContent className="p-4 lg:p-5">
-        <div className="flex items-start justify-between">
-          <div>
-            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{title}</p>
-            <p className="text-2xl font-bold mt-1">{value}</p>
-          </div>
-          <div className={cn('flex items-center justify-center rounded-lg p-2.5 shrink-0', bgColor)}>
-            <div className={iconColor}>{icon}</div>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
-  )
-}
-
 // ─── Stats Skeleton ─────────────────────────────────────────────────────────
 
 function StatsSkeleton() {
@@ -544,18 +512,23 @@ function VisitDetailPanel({
 
   useEffect(() => {
     if (!visitId) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setVisit(null)
       return
     }
 
     const fetchDetail = async () => {
+       
       setIsLoading(true)
+       
       setError(null)
       try {
         const res = await apiGet<SingleResponse<VisitDetail>>(`/patient-visits/${visitId}`)
+         
         setVisit(res.data)
       } catch (err) {
         if (err instanceof ApiError) {
+           
           setError(err.message)
           toast({
             title: 'Error',
@@ -564,6 +537,7 @@ function VisitDetailPanel({
           })
         }
       } finally {
+         
         setIsLoading(false)
       }
     }
@@ -811,7 +785,9 @@ function DischargeDialog({
 
   useEffect(() => {
     if (open) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setDischargeNotes('')
+       
       setIsSubmitting(false)
     }
   }, [open])
@@ -924,11 +900,15 @@ function DischargeSummaryDialog({
 
   useEffect(() => {
     if (open && visitId) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setSummary(null)
+       
       setError(null)
       fetchSummary(visitId)
     } else {
+       
       setSummary(null)
+       
       setError(null)
     }
   }, [open, visitId, fetchSummary])
@@ -1333,7 +1313,9 @@ export function PatientWorkflowPage() {
     }
   }, [page, statusFilter, stageFilter, toast])
 
+   
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchVisits()
   }, [fetchVisits])
 

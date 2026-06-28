@@ -66,7 +66,10 @@ export function MedicationListSection({ patientId }: Props) {
     } catch { /* silent */ } finally { setLoading(false) }
   }
 
-  useEffect(() => { fetch() }, [patientId, filter])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    fetch()
+  }, [patientId, filter, fetch])
 
   const resetForm = () => {
     setMedicationName(''); setStrength(''); setDosageForm(''); setFrequency(''); setRoute('')

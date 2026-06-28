@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { z } from 'zod'
-import { generateCallSessionId } from '@/lib/utils'
 import { authenticateRequest, checkWritePermission } from '@/lib/api-auth'
 import { logAudit, extractRequestInfo } from '@/lib/audit-log'
 

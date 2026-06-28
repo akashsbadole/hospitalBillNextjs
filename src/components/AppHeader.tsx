@@ -7,7 +7,6 @@ import {
   Users, Receipt, ClipboardList, CalendarDays, Stethoscope
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Separator } from '@/components/ui/separator'
@@ -226,6 +225,7 @@ export function AppHeader() {
   const [notifOpen, setNotifOpen] = useState(false)
   const notifPollRef = useRef<NodeJS.Timeout | null>(null)
 
+   
   useEffect(() => {
     if (branches.length === 0 && !loading) {
       fetchBranches()
@@ -281,6 +281,7 @@ export function AppHeader() {
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
         e.preventDefault()
         if (searchOpen) {
+           
           setSearchOpen(false)
         } else {
           openSearch()
@@ -331,11 +332,14 @@ export function AppHeader() {
   }, [])
 
   // Fetch on mount
+   
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchNotifications()
   }, [fetchNotifications])
 
   // Poll every 30 seconds
+   
   useEffect(() => {
     notifPollRef.current = setInterval(() => {
       fetchNotifications()

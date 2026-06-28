@@ -11,8 +11,8 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     const body = await request.json()
     const theatre = await db.operationTheatre.update({ where: { id }, data: body })
     return NextResponse.json({ data: theatre })
-  } catch (error: any) {
-    if (error?.code === 'P2025') {
+  } catch (error: unknown) {
+    if ((error as { code?: string })?.code === 'P2025') {
       return NextResponse.json({ error: 'Operation theatre not found' }, { status: 404 })
     }
     console.error('[OT_PUT]', error)
@@ -28,8 +28,8 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
     const { id } = await params
     await db.operationTheatre.delete({ where: { id } })
     return NextResponse.json({ message: 'Operation theatre deleted' })
-  } catch (error: any) {
-    if (error?.code === 'P2025') {
+  } catch (error: unknown) {
+    if ((error as { code?: string })?.code === 'P2025') {
       return NextResponse.json({ error: 'Operation theatre not found' }, { status: 404 })
     }
     console.error('[OT_DELETE]', error)

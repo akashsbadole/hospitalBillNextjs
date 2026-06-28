@@ -56,7 +56,7 @@ function getAuthHeaders(): Record<string, string> {
 // Track if we've already handled a 401 to avoid redirect loops
 let hasRedirectedOn401 = false
 
-// Reset the 401 redirect flag (called after successful auth)
+// Reset the 401 redirect flag — call after successful login
 export function reset401Redirect(): void {
   hasRedirectedOn401 = false
 }
@@ -78,13 +78,11 @@ async function handleResponse<T>(response: Response): Promise<T> {
     if (response.status === 401 && !hasRedirectedOn401) {
       hasRedirectedOn401 = true
       if (typeof window !== 'undefined') {
-        // Clear stored auth data
         try {
           localStorage.removeItem('medibill-auth')
         } catch {
           // Ignore
         }
-        // Use a gentle redirect that doesn't cause a hard reload loop
         window.location.replace('/')
       }
     }

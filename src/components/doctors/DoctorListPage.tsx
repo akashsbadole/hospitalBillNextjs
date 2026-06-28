@@ -7,7 +7,6 @@ import {
   Plus,
   Eye,
   Pencil,
-  CalendarClock,
   Search,
   Phone,
   Clock,
@@ -174,6 +173,7 @@ export function DoctorListPage() {
     }
   }, [toast])
 
+   
   useEffect(() => {
     fetchDoctors(debouncedDoctorSearch.current)
     fetchStaff(debouncedStaffSearch.current)

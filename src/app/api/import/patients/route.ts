@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { authenticateRequest } from '@/lib/api-auth'
-import { parseCsv, extractColumn, buildImportResponse, type CsvImportResult } from '@/lib/csv-utils'
+import { parseCsv, buildImportResponse, type CsvImportResult } from '@/lib/csv-utils'
+import type { Prisma } from '@prisma/client'
 
 const FIELD_MAP: Record<string, string> = {
   'patient id': 'patientId',
@@ -68,7 +69,7 @@ export async function POST(request: NextRequest) {
           data.pastTreatments = String(data.pastTreatments).split(',').map(s => s.trim()).filter(Boolean)
         }
 
-        await db.patient.create({ data: data as any })
+        await db.patient.create({ data: data as Prisma.PatientCreateInput })
         result.success++
       } catch (err) {
         result.errors.push({ row: i + 2, message: err instanceof Error ? err.message : 'Unknown error' })

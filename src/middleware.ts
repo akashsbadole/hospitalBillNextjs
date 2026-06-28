@@ -1,53 +1,92 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
-const PUBLIC_PATHS = ['/api/auth/login', '/api/auth/refresh', '/api/auth/logout', '/_next/static', '/favicon.ico']
+// Routes that do NOT require authentication
+const PUBLIC_ROUTES = [
+  '/api/auth/login',
+  '/api/auth/refresh',
+  '/api/auth/logout',
+  '/api/health',
+]
 
-const SAFE_METHODS = ['GET', 'HEAD', 'OPTIONS']
+// Pages that do NOT require authentication
+const PUBLIC_PAGES = [
+  '/',
+]
+
+function isPublicRoute(pathname: string): boolean {
+  return PUBLIC_ROUTES.some((route) => pathname === route || pathname.startsWith(route + '/'))
+}
+
+function isPublicPage(pathname: string): boolean {
+  return PUBLIC_PAGES.some((page) => pathname === page)
+}
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
-  if (PUBLIC_PATHS.some(p => pathname.startsWith(p))) {
+  // Skip middleware for public routes, static files, and Next.js internals
+  if (
+    isPublicRoute(pathname) ||
+    isPublicPage(pathname) ||
+    pathname.startsWith('/_next') ||
+    pathname.startsWith('/static') ||
+    pathname.includes('.') // static files (favicon.ico, logo.png, etc.)
+  ) {
     return NextResponse.next()
   }
 
-  if (!SAFE_METHODS.includes(request.method) && pathname.startsWith('/api')) {
-    const origin = request.headers.get('origin')
-    const host = request.headers.get('host')
+  // Check for auth token in cookies or Authorization header
+  const token = request.cookies.get('medibill_token')?.value ||
+    request.headers.get('authorization')?.replace('Bearer ', '')
 
-    if (origin && host) {
-      try {
-        const originHost = new URL(origin).host
-        if (originHost !== host) {
+  if (!token) {
+    // API routes: return 401 JSON
+    if (pathname.startsWith('/api/')) {
+      return NextResponse.json(
+        { error: 'Authentication required' },
+        { status: 401 }
+      )
+    }
+    // Pages: redirect to login
+    const loginUrl = new URL('/', request.url)
+    loginUrl.searchParams.set('redirect', pathname)
+    return NextResponse.redirect(loginUrl)
+  }
+
+  // CSRF protection: verify origin for state-changing API methods
+  if (pathname.startsWith('/api/') && !pathname.startsWith('/api/auth/')) {
+    const method = request.method.toUpperCase()
+    if (['POST', 'PUT', 'PATCH', 'DELETE'].includes(method)) {
+      const origin = request.headers.get('origin')
+      const host = request.headers.get('host')
+
+      // Allow requests with no origin (mobile apps, curl, etc.)
+      if (origin && host) {
+        const originUrl = new URL(origin)
+        if (originUrl.host !== host) {
           return NextResponse.json(
-            { error: 'CSRF validation failed: Invalid origin' },
+            { error: 'CSRF validation failed' },
             { status: 403 }
           )
         }
-      } catch {
-        return NextResponse.json(
-          { error: 'CSRF validation failed: Malformed origin' },
-          { status: 403 }
-        )
       }
-    }
-
-    const contentType = request.headers.get('content-type') || ''
-    if (contentType.includes('application/json') || contentType.includes('multipart/form-data')) {
-      // Has body — require Content-Type for CSRF safety on writes
     }
   }
 
+  // Security headers for all responses
   const response = NextResponse.next()
-
-  response.headers.set('X-Frame-Options', 'DENY')
   response.headers.set('X-Content-Type-Options', 'nosniff')
+  response.headers.set('X-Frame-Options', 'DENY')
+  response.headers.set('X-XSS-Protection', '1; mode=block')
   response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin')
 
   return response
 }
 
 export const config = {
-  matcher: ['/api/:path*'],
+  matcher: [
+    // Match all paths except static files and Next.js internals
+    '/((?!_next/static|_next/image|favicon.ico|apple-touch-icon.png|android-chrome-*.png|logo.png|site.webmanifest|robots.txt).*)',
+  ],
 }

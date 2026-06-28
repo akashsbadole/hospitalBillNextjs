@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect } from 'react'
 import { apiPost, ApiError } from '@/lib/api-client'
 import { useToast } from '@/hooks/use-toast'
 import { useAuth } from '@/stores/auth'
@@ -49,7 +49,6 @@ export function PaymentGatewaySettings() {
     loading,
     form,
     saving,
-    saveError,
     fetchSettings,
     updateFormField,
     saveRazorpaySettings,
@@ -64,6 +63,7 @@ export function PaymentGatewaySettings() {
   const [ppTestResult, setPpTestResult] = useState<'success' | 'fail' | null>(null)
 
   // ─── Fetch Config ───
+   
   useEffect(() => {
     fetchSettings()
   }, [fetchSettings])

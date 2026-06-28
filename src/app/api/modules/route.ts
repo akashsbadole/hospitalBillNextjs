@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
-import { authenticateRequest, checkWritePermission } from '@/lib/api-auth'
+import { authenticateRequest } from '@/lib/api-auth'
 import { logAudit, extractRequestInfo } from '@/lib/audit-log'
 
 export async function GET(request: NextRequest) {

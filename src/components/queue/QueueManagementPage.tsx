@@ -128,7 +128,9 @@ function QueueManagementContent() {
     }
   }, [departmentFilter, toast])
 
+   
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchQueue()
     const interval = setInterval(fetchQueue, 15000)
     return () => clearInterval(interval)
@@ -148,8 +150,10 @@ function QueueManagementContent() {
     }
   }, [])
 
+   
   useEffect(() => {
     if (issueDialogOpen) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       fetchPatients('')
     }
   }, [issueDialogOpen, fetchPatients])

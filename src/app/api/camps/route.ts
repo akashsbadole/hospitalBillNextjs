@@ -24,8 +24,6 @@ const createSchema = z.object({
   notes: z.string().optional(),
 })
 
-const CAMP_TYPES = ['General', 'Eye', 'Dental', 'Cardiac', 'Diabetes', 'Multi-Specialty']
-
 export async function GET(request: NextRequest) {
   const auth = await authenticateRequest(request, '/api/camps')
   if (auth.error) return NextResponse.json({ error: auth.error.message }, { status: auth.error.status })

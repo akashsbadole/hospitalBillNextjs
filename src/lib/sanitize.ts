@@ -30,7 +30,13 @@ export function sanitizeEmail(value: string | null | undefined): string {
 
 export function sanitizeNumeric(value: string | null | undefined): string {
   if (!value) return ''
-  return value.replace(/[^\d.]/g, '').trim()
+  // Allow only digits and a single decimal point; collapse multiple dots
+  const cleaned = value.replace(/[^\d.]/g, '')
+  const parts = cleaned.split('.')
+  if (parts.length > 2) {
+    return parts[0] + '.' + parts.slice(1).join('')
+  }
+  return cleaned.trim()
 }
 
 export function sanitizeObject<T extends Record<string, unknown>>(obj: T): T {

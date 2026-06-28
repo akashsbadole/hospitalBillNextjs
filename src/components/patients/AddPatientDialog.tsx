@@ -109,6 +109,7 @@ export function AddPatientDialog({ open, onOpenChange, patient, onSuccess }: Add
 
   useEffect(() => {
     if (open && patient) {
+       
       form.reset({
         name: patient.name,
         phone: patient.phone,

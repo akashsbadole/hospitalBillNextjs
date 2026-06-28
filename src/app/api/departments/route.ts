@@ -32,8 +32,8 @@ export async function POST(request: NextRequest) {
       },
     })
     return NextResponse.json({ data: department }, { status: 201 })
-  } catch (error: any) {
-    if (error?.code === 'P2002') {
+  } catch (error: unknown) {
+    if ((error as { code?: string })?.code === 'P2002') {
       return NextResponse.json({ error: 'A department with this name or code already exists' }, { status: 409 })
     }
     console.error('[DEPARTMENTS_POST]', error)

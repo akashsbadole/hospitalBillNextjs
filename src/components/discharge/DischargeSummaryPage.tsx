@@ -1,13 +1,10 @@
 'use client'
 
-import { useState, useEffect, useCallback, useRef } from 'react'
-import { apiGet, apiPost, apiPut, type PaginatedResponse, type SingleResponse, ApiError } from '@/lib/api-client'
+import { useState, useEffect, useCallback } from 'react'
+import { apiGet, apiPost, type PaginatedResponse, type SingleResponse, ApiError } from '@/lib/api-client'
 import { useToast } from '@/hooks/use-toast'
-import { useNavigation } from '@/stores/navigation'
-import { formatCurrency } from '@/lib/utils'
 import {
   ClipboardCheck,
-  FileText,
   Calendar,
   User,
   Stethoscope,
@@ -21,9 +18,6 @@ import {
   Clock,
   Activity,
   Pill,
-  ArrowUpRight,
-  AlertCircle,
-  RefreshCw,
   Filter,
   X,
   Trash2,
@@ -32,10 +26,9 @@ import {
   Utensils,
   Footprints,
   FileWarning,
-  Download,
   CheckCircle2,
 } from 'lucide-react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -416,14 +409,19 @@ export function DischargeSummaryPage() {
     }
   }, [])
 
+   
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchSummaries()
   }, [fetchSummaries])
 
+    
   useEffect(() => {
-    if (createDialogOpen) fetchIPDVisits('')
+    if (createDialogOpen) // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchIPDVisits('')
   }, [createDialogOpen, fetchIPDVisits])
 
+   
   useEffect(() => {
     const timer = setTimeout(() => {
       if (createDialogOpen) fetchIPDVisits(patientSearch)
@@ -855,7 +853,7 @@ export function DischargeSummaryPage() {
                 </Button>
               </div>
               {medications.length === 0 ? (
-                <p className="text-xs text-muted-foreground">No medications added. Click "Add Medicine" to prescribe.</p>
+                <p className="text-xs text-muted-foreground">No medications added. Click &quot;Add Medicine&quot; to prescribe.</p>
               ) : (
                 <div className="space-y-2">
                   {medications.map((med, i) => (

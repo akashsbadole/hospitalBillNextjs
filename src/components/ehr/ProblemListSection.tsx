@@ -16,7 +16,7 @@ import {
 import {
   Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle,
 } from '@/components/ui/dialog'
-import { Plus, Loader2, Pencil, Trash2, Activity, X } from 'lucide-react'
+import { Plus, Loader2, Pencil, Trash2, Activity } from 'lucide-react'
 
 interface Problem {
   id: string
@@ -57,7 +57,10 @@ export function ProblemListSection({ patientId }: Props) {
     } catch { /* silent */ } finally { setLoading(false) }
   }
 
-  useEffect(() => { fetch() }, [patientId, filter])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    fetch()
+  }, [patientId, filter, fetch])
 
   const resetForm = () => {
     setProblem(''); setIcdCode(''); setStatus('Active'); setOnsetDate(''); setNotes(''); setEditing(null)

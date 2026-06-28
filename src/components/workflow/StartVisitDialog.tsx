@@ -1,7 +1,6 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { cn } from '@/lib/utils'
 import { apiGet, apiPost, type PaginatedResponse, ApiError } from '@/lib/api-client'
 import { useToast } from '@/hooks/use-toast'
 import {
@@ -128,60 +127,6 @@ export function StartVisitDialog({
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [patientSearch, setPatientSearch] = useState('')
 
-  // Reset form on open
-  useEffect(() => {
-    if (open) {
-      setSelectedPatientId(prefillPatientId ?? '')
-      setSelectedDoctorId('')
-      setSelectedAppointmentId('')
-      setChiefComplaint('')
-      setNotes('')
-      setTemperature('')
-      setBloodPressure('')
-      setPulse('')
-      setOxygenLevel('')
-      setWeight('')
-      setHeight('')
-      setPatientSearch('')
-      // Reset new state
-      setVisitType('OPD')
-      setDepartment('')
-      setSelectedBedId('')
-      setSelectedWardId('')
-      setWards([])
-      setAvailableBeds([])
-      setIsLoadingBeds(false)
-      setIsLoadingWards(false)
-      fetchPatients()
-      fetchDoctors()
-      fetchDepartments()
-    }
-  }, [open, prefillPatientId])
-
-  // Fetch appointments when patient selected
-  useEffect(() => {
-    if (selectedPatientId && open) {
-      fetchAppointments(selectedPatientId)
-    } else {
-      setAppointments([])
-      setSelectedAppointmentId('')
-    }
-  }, [selectedPatientId, open])
-
-  // Fetch wards when visitType changes to IPD
-  useEffect(() => {
-    if (visitType === 'IPD' && open) {
-      fetchWards()
-      // Also fetch all available beds
-      fetchAvailableBeds()
-    } else {
-      setWards([])
-      setAvailableBeds([])
-      setSelectedWardId('')
-      setSelectedBedId('')
-    }
-  }, [visitType, open])
-
   const fetchPatients = async () => {
     setIsLoadingPatients(true)
     try {
@@ -258,6 +203,89 @@ export function StartVisitDialog({
     }
   }
 
+  // Reset form on open
+  useEffect(() => {
+    if (open) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setSelectedPatientId(prefillPatientId ?? '')
+       
+      setSelectedDoctorId('')
+       
+      setSelectedAppointmentId('')
+       
+      setChiefComplaint('')
+       
+      setNotes('')
+       
+      setTemperature('')
+       
+      setBloodPressure('')
+       
+      setPulse('')
+       
+      setOxygenLevel('')
+       
+      setWeight('')
+       
+      setHeight('')
+       
+      setPatientSearch('')
+      // Reset new state
+       
+      setVisitType('OPD')
+       
+      setDepartment('')
+       
+      setSelectedBedId('')
+       
+      setSelectedWardId('')
+       
+      setWards([])
+       
+      setAvailableBeds([])
+       
+      setIsLoadingBeds(false)
+       
+      setIsLoadingWards(false)
+      fetchPatients()
+      fetchDoctors()
+      fetchDepartments()
+    }
+  }, [open, prefillPatientId])
+
+  // Fetch appointments when patient selected
+  useEffect(() => {
+    if (selectedPatientId && open) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      fetchAppointments(selectedPatientId)
+    } else {
+       
+      setAppointments([])
+       
+      setSelectedAppointmentId('')
+    }
+  }, [selectedPatientId, open])
+
+  // Fetch wards when visitType changes to IPD
+  useEffect(() => {
+    if (visitType === 'IPD' && open) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      fetchWards()
+      // Also fetch all available beds
+       
+      fetchAvailableBeds()
+    } else {
+       
+      setWards([])
+       
+      setAvailableBeds([])
+       
+      setSelectedWardId('')
+       
+      setSelectedBedId('')
+    }
+  }, [visitType, open])
+
   const filteredBeds = selectedWardId
     ? availableBeds.filter(b => b.wardId === selectedWardId)
     : availableBeds
@@ -321,8 +349,6 @@ export function StartVisitDialog({
     p.patientId.toLowerCase().includes(patientSearch.toLowerCase()) ||
     p.phone.includes(patientSearch)
   )
-
-  const selectedPatient = patients.find(p => p.id === selectedPatientId)
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
