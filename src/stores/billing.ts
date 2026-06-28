@@ -259,6 +259,7 @@ interface BillingState {
   removeFormItem: (id: string) => void
   addQuickService: (serviceIndex: number) => void
   setFormErrors: (errors: Record<string, string>) => void
+  getGstCalculation: () => GstCalculation
   submitInvoice: () => Promise<boolean>
   resetCreateForm: () => void
   // ── Invoice Detail Actions ──
@@ -531,6 +532,55 @@ export const useBillingStore = create<BillingState>()((set, get) => ({
 
   setFormErrors: (errors) => {
     set({ createForm: { ...get().createForm, formErrors: errors } })
+  },
+
+  getGstCalculation: () => {
+    const { createForm } = get()
+    const { items, discount, discountType, isInterstate } = createForm
+
+    let subtotal = 0
+    let totalCgst = 0
+    let totalSgst = 0
+    let totalIgst = 0
+
+    for (const item of items) {
+      if (!item.description.trim() || item.unitPrice <= 0) continue
+      const lineTotal = item.unitPrice * item.quantity
+      const gstAmount = lineTotal * (item.gstRate / 100)
+      subtotal += lineTotal
+      if (isInterstate) {
+        totalIgst += gstAmount
+      } else {
+        totalCgst += gstAmount / 2
+        totalSgst += gstAmount / 2
+      }
+    }
+
+    const totalGst = totalCgst + totalSgst + totalIgst
+    const preDiscountTotal = subtotal + totalGst
+
+    let effectiveDiscount = 0
+    if (discountType === 'percentage') {
+      effectiveDiscount = preDiscountTotal * (discount / 100)
+    } else {
+      effectiveDiscount = Math.min(discount, preDiscountTotal)
+    }
+
+    const afterDiscount = preDiscountTotal - effectiveDiscount
+    const roundOffValue = Math.round(afterDiscount) - afterDiscount
+    const grandTotal = Math.round(afterDiscount)
+
+    return {
+      subtotal,
+      cgst: totalCgst,
+      sgst: totalSgst,
+      igst: totalIgst,
+      totalGst,
+      effectiveDiscount,
+      discountType,
+      roundOff: roundOffValue,
+      grandTotal,
+    }
   },
 
   submitInvoice: async () => {

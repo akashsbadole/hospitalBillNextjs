@@ -582,7 +582,7 @@ export function AiImagingPage() {
                     >
                       <div className="w-16 h-16 rounded-lg overflow-hidden bg-muted shrink-0 border">
                         {entry.input?.imageUrl ? (
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          // eslint-disable-next-line @next/next/no-img-element
                           <img
                             src={entry.input.imageUrl}
                             alt="Analysis"

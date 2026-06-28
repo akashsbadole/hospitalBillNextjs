@@ -45,7 +45,7 @@ async function writeAuditLog(input: AuditLogInput, retries = 0): Promise<void> {
         action: input.action,
         module: input.module,
         details: input.details ? JSON.stringify(input.details) : null,
-        ipAddress: sanitizeIp(input.ipAddress),
+        ipAddress: sanitizeIp(input.ipAddress ?? null),
         userAgent: input.userAgent || null,
         status: input.status || 'Success',
       },

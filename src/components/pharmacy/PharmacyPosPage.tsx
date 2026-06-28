@@ -4,6 +4,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react'
 import { formatCurrency, cn } from '@/lib/utils'
 import { apiGet, apiPost, type PaginatedResponse, type SingleResponse, ApiError } from '@/lib/api-client'
 import { useToast } from '@/hooks/use-toast'
+import { useNavigation } from '@/stores/navigation'
 import {
   Card,
   CardContent,

@@ -12,6 +12,14 @@ export async function GET(request: Request) {
     const tenantFilter = getTenantFilter(auth.role, auth.branchId, request)
 
     // Parallel queries for maximum performance
+    // Visits by current stage (grouped)
+    const visitsByStageRaw = await db.patientVisit.groupBy({
+      by: ['stage'],
+      where: { ...tenantFilter, status: 'Active' },
+      _count: { stage: true },
+      orderBy: { _count: { stage: 'desc' } },
+    })
+
     const [
       totalPatients,
       todayAppointments,
@@ -23,7 +31,6 @@ export async function GET(request: Request) {
       activeVisits,
       todayRegistrations,
       todaysDischarges,
-      visitsByStageRaw,
       opdCount,
       ipdCount,
     ] = await Promise.all([
@@ -99,14 +106,6 @@ export async function GET(request: Request) {
           stage: 'Discharged',
           updatedAt: { gte: new Date(today), lt: new Date(today + 'T23:59:59.999Z') },
         },
-      }),
-
-      // Visits by current stage (grouped)
-      db.patientVisit.groupBy({
-        by: ['stage'],
-        where: { ...tenantFilter, status: 'Active' },
-        _count: { stage: true },
-        orderBy: { _count: { stage: 'desc' } },
       }),
 
       // OPD count

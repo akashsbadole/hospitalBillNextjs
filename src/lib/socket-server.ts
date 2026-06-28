@@ -9,6 +9,7 @@ interface SocketTokenPayload {
   userId: string
   email: string
   role: string
+  branchId?: string
   type?: string
 }
 
