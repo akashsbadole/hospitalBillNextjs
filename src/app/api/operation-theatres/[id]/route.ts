@@ -9,7 +9,16 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
   try {
     const { id } = await params
     const body = await request.json()
-    const theatre = await db.operationTheatre.update({ where: { id }, data: body })
+
+    // Whitelist allowed fields to prevent mass assignment
+    const allowedFields: Record<string, unknown> = {}
+    if (body.name !== undefined) allowedFields.name = String(body.name).trim()
+    if (body.status !== undefined) allowedFields.status = body.status
+    if (body.equipment !== undefined) allowedFields.equipment = body.equipment
+    if (body.lastSterilized !== undefined) allowedFields.lastSterilized = body.lastSterilized
+    if (body.currentSurgeryId !== undefined) allowedFields.currentSurgeryId = body.currentSurgeryId
+
+    const theatre = await db.operationTheatre.update({ where: { id }, data: allowedFields })
     return NextResponse.json({ data: theatre })
   } catch (error: unknown) {
     if ((error as { code?: string })?.code === 'P2025') {

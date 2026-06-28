@@ -23,12 +23,17 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json()
+
+    if (!body.name || typeof body.name !== 'string' || body.name.trim().length === 0) {
+      return NextResponse.json({ error: 'Department name is required' }, { status: 400 })
+    }
+
     const department = await db.department.create({
       data: {
-        name: body.name,
-        description: body.description || null,
-        code: body.code || null,
-        sortOrder: body.sortOrder || 0,
+        name: body.name.trim().slice(0, 100),
+        description: typeof body.description === 'string' ? body.description.trim().slice(0, 500) : null,
+        code: typeof body.code === 'string' ? body.code.trim().slice(0, 20) : null,
+        sortOrder: typeof body.sortOrder === 'number' ? Math.max(0, Math.floor(body.sortOrder)) : 0,
       },
     })
     return NextResponse.json({ data: department }, { status: 201 })

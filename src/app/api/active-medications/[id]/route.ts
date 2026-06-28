@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
-import { authenticateRequest } from '@/lib/api-auth'
+import { authenticateRequest, checkWritePermission } from '@/lib/api-auth'
 import { z } from 'zod'
 
 const updateSchema = z.object({
@@ -16,6 +16,8 @@ const updateSchema = z.object({
 export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const auth = await authenticateRequest(request, '/api/active-medications')
   if (auth.error) return NextResponse.json({ error: auth.error.message }, { status: auth.error.status })
+  const writeCheck = checkWritePermission(auth.role!, 'PUT')
+  if (!writeCheck.allowed) return NextResponse.json({ error: writeCheck.error }, { status: 403 })
 
   try {
     const { id } = await params
@@ -35,6 +37,8 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
 export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const auth = await authenticateRequest(request, '/api/active-medications')
   if (auth.error) return NextResponse.json({ error: auth.error.message }, { status: auth.error.status })
+  const writeCheck = checkWritePermission(auth.role!, 'DELETE')
+  if (!writeCheck.allowed) return NextResponse.json({ error: writeCheck.error }, { status: 403 })
 
   try {
     const { id } = await params

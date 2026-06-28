@@ -9,15 +9,23 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
   try {
     const { id } = await params
     const body = await request.json()
+
+    // Whitelist allowed fields to prevent mass assignment
+    const allowedFields: Record<string, unknown> = {}
+    if (body.name !== undefined) {
+      if (typeof body.name !== 'string' || body.name.trim().length === 0) {
+        return NextResponse.json({ error: 'Department name cannot be empty' }, { status: 400 })
+      }
+      allowedFields.name = body.name.trim().slice(0, 100)
+    }
+    if (body.description !== undefined) allowedFields.description = typeof body.description === 'string' ? body.description.trim().slice(0, 500) : null
+    if (body.code !== undefined) allowedFields.code = typeof body.code === 'string' ? body.code.trim().slice(0, 20) : null
+    if (body.isActive !== undefined) allowedFields.isActive = Boolean(body.isActive)
+    if (body.sortOrder !== undefined) allowedFields.sortOrder = typeof body.sortOrder === 'number' ? Math.max(0, Math.floor(body.sortOrder)) : 0
+
     const department = await db.department.update({
       where: { id },
-      data: {
-        name: body.name,
-        description: body.description ?? undefined,
-        code: body.code ?? undefined,
-        isActive: body.isActive,
-        sortOrder: body.sortOrder,
-      },
+      data: allowedFields,
     })
     return NextResponse.json({ data: department })
   } catch (error: unknown) {

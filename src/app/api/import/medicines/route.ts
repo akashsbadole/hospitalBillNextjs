@@ -59,11 +59,31 @@ export async function POST(request: NextRequest) {
           continue
         }
 
-        if (data.purchasePrice) data.purchasePrice = Number(data.purchasePrice)
-        if (data.sellingPrice) data.sellingPrice = Number(data.sellingPrice)
-        if (data.stock) data.stock = Number(data.stock)
-        if (data.minStock) data.minStock = Number(data.minStock)
-        if (data.gstRate) data.gstRate = Number(data.gstRate)
+        if (data.purchasePrice) {
+          const v = Number(data.purchasePrice)
+          if (isNaN(v) || v < 0) { result.errors.push({ row: i + 2, message: 'Invalid purchase price' }); continue }
+          data.purchasePrice = v
+        }
+        if (data.sellingPrice) {
+          const v = Number(data.sellingPrice)
+          if (isNaN(v) || v < 0) { result.errors.push({ row: i + 2, message: 'Invalid selling price' }); continue }
+          data.sellingPrice = v
+        }
+        if (data.stock) {
+          const v = Number(data.stock)
+          if (isNaN(v) || v < 0 || !Number.isInteger(v)) { result.errors.push({ row: i + 2, message: 'Invalid stock quantity' }); continue }
+          data.stock = v
+        }
+        if (data.minStock) {
+          const v = Number(data.minStock)
+          if (isNaN(v) || v < 0 || !Number.isInteger(v)) { result.errors.push({ row: i + 2, message: 'Invalid minimum stock' }); continue }
+          data.minStock = v
+        }
+        if (data.gstRate) {
+          const v = Number(data.gstRate)
+          if (isNaN(v) || v < 0 || v > 100) { result.errors.push({ row: i + 2, message: 'Invalid GST rate (0-100)' }); continue }
+          data.gstRate = v
+        }
 
         await db.medicine.create({ data: data as Prisma.MedicineCreateInput })
         result.success++
