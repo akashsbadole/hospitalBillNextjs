@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { db } from '@/lib/db'
+import { errorDetails } from '@/lib/api-errors'
 
 export async function GET() {
   try {
@@ -24,7 +25,7 @@ export async function GET() {
       uptime: process.uptime(),
       db: {
         connected: false,
-        error: error instanceof Error ? error.message : 'Unknown database error',
+        error: errorDetails(error) || 'Database connection failed',
       },
     }, { status: 503 })
   }

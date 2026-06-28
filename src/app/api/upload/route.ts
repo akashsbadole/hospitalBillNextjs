@@ -16,6 +16,10 @@ export async function POST(request: NextRequest) {
     const file = formData.get('file') as File | null
     const type = (formData.get('type') as string) || 'general'
 
+    // Validate type to prevent path traversal
+    const ALLOWED_UPLOAD_TYPES = ['general', 'avatars', 'documents', 'lab-results', 'prescriptions', 'invoices']
+    const safeType = ALLOWED_UPLOAD_TYPES.includes(type) ? type : 'general'
+
     if (!file) {
       return NextResponse.json({ error: 'No file provided' }, { status: 400 })
     }
@@ -30,13 +34,13 @@ export async function POST(request: NextRequest) {
 
     const ext = file.name.split('.').pop() || 'png'
     const filename = `${uuid()}.${ext}`
-    const uploadDir = join(process.cwd(), 'public', 'uploads', type)
+    const uploadDir = join(process.cwd(), 'public', 'uploads', safeType)
     await mkdir(uploadDir, { recursive: true })
 
     const buffer = Buffer.from(await file.arrayBuffer())
     await writeFile(join(uploadDir, filename), buffer)
 
-    const url = `/uploads/${type}/${filename}`
+    const url = `/uploads/${safeType}/${filename}`
 
     return NextResponse.json({ data: { url, filename } })
   } catch (error) {

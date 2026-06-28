@@ -4,6 +4,7 @@ import { z } from 'zod'
 import { generatePaymentId } from '@/lib/utils'
 import { authenticateRequest, checkWritePermission, getTenantFilter, getCreateBranchId } from '@/lib/api-auth'
 import { logAudit, extractRequestInfo } from '@/lib/audit-log'
+import { errorDetails } from '@/lib/api-errors'
 
 // ── Schemas ──────────────────────────────────────────────────────────────
 const createPaymentSchema = z.object({
@@ -247,13 +248,13 @@ export async function POST(request: NextRequest) {
     console.error('[PAYMENTS_POST]', error)
     const message = error instanceof Error ? error.message : 'Unknown error'
     if (message.includes('exceeds remaining balance')) {
-      return NextResponse.json({ error: 'Payment amount exceeds balance', details: message }, { status: 400 })
+      return NextResponse.json({ error: 'Payment amount exceeds balance' }, { status: 400 })
     }
     if (message.includes('Invoice not found') || message.includes('not found')) {
-      return NextResponse.json({ error: message }, { status: 404 })
+      return NextResponse.json({ error: 'Invoice not found' }, { status: 404 })
     }
     return NextResponse.json(
-      { error: 'Failed to create payment', details: message },
+      { error: 'Failed to create payment', details: errorDetails(error) },
       { status: 500 }
     )
   }

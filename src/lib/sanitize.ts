@@ -52,3 +52,15 @@ export function sanitizeObject<T extends Record<string, unknown>>(obj: T): T {
   }
   return sanitized as T
 }
+
+// Escape SQL LIKE wildcards (% and _) to prevent query-pattern manipulation
+// Use this when passing user input to Prisma's `contains` filter
+export function escapeLikeWildcard(value: string): string {
+  return value.replace(/[%_]/g, char => `\\${char}`)
+}
+
+// Sanitize search input: trim, escape LIKE wildcards, limit length
+export function sanitizeSearchInput(value: string | null | undefined, maxLength = 100): string {
+  if (!value) return ''
+  return escapeLikeWildcard(value.trim().slice(0, maxLength))
+}
