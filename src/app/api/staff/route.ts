@@ -6,7 +6,7 @@ import { authenticateRequest, checkWritePermission } from '@/lib/api-auth'
 import { logAudit, extractRequestInfo } from '@/lib/audit-log'
 
 // ── Schemas ──────────────────────────────────────────────────────────────
-const VALID_ROLES = ['Admin', 'Receptionist', 'Doctor', 'Accountant', 'Pharmacist'] as const
+const VALID_ROLES = ['Admin', 'Receptionist', 'Doctor', 'Accountant', 'Pharmacist', 'Nurse', 'Lab Technician'] as const
 const VALID_STATUSES = ['Active', 'Inactive'] as const
 
 const staffIdSchema = z.object({

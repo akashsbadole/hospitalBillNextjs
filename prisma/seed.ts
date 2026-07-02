@@ -48,13 +48,13 @@ async function main() {
   const usersData = [
     { userId: 'USR-0001', name: 'Super Admin', email: 'superadmin@medibill.com', password: adminHash, role: 'Super Admin', phone: '9820000000', branchIdx: 0 },
     { userId: 'USR-0002', name: 'Admin User', email: 'admin@medibill.com', password: adminHash, role: 'Admin', phone: '9820000001', branchIdx: 0 },
-    { userId: 'USR-0002', name: 'Pooja Mehta', email: 'receptionist@medibill.com', password: passwordHash, role: 'Receptionist', phone: '9820000002', branchIdx: 0 },
-    { userId: 'USR-0003', name: 'Dr. Rajesh Sharma', email: 'doctor@medibill.com', password: passwordHash, role: 'Doctor', phone: '9820000003', branchIdx: 0 },
-    { userId: 'USR-0004', name: 'Sanjay Verma', email: 'accountant@medibill.com', password: passwordHash, role: 'Accountant', phone: '9820000004', branchIdx: 0 },
-    { userId: 'USR-0005', name: 'Kavita Joshi', email: 'pharmacist@medibill.com', password: passwordHash, role: 'Pharmacist', phone: '9820000005', branchIdx: 0 },
-    { userId: 'USR-0006', name: 'Neha Agarwal', email: 'neha.a@saihospital.in', password: passwordHash, role: 'Receptionist', phone: '9820150006', branchIdx: 1 },
-    { userId: 'USR-0007', name: 'Deepak Patil', email: 'deepak.p@saihospital.in', password: passwordHash, role: 'Pharmacist', phone: '9820150007', branchIdx: 1 },
-    { userId: 'USR-0008', name: 'Meera Sharma', email: 'meera.s@saihospital.in', password: passwordHash, role: 'Accountant', phone: '9820150008', branchIdx: 2 },
+    { userId: 'USR-0003', name: 'Pooja Mehta', email: 'receptionist@medibill.com', password: passwordHash, role: 'Receptionist', phone: '9820000002', branchIdx: 0 },
+    { userId: 'USR-0004', name: 'Dr. Rajesh Sharma', email: 'doctor@medibill.com', password: passwordHash, role: 'Doctor', phone: '9820000003', branchIdx: 0 },
+    { userId: 'USR-0005', name: 'Sanjay Verma', email: 'accountant@medibill.com', password: passwordHash, role: 'Accountant', phone: '9820000004', branchIdx: 0 },
+    { userId: 'USR-0006', name: 'Kavita Joshi', email: 'pharmacist@medibill.com', password: passwordHash, role: 'Pharmacist', phone: '9820000005', branchIdx: 0 },
+    { userId: 'USR-0007', name: 'Neha Agarwal', email: 'neha.a@saihospital.in', password: passwordHash, role: 'Receptionist', phone: '9820150006', branchIdx: 1 },
+    { userId: 'USR-0008', name: 'Deepak Patil', email: 'deepak.p@saihospital.in', password: passwordHash, role: 'Pharmacist', phone: '9820150007', branchIdx: 1 },
+    { userId: 'USR-0009', name: 'Meera Sharma', email: 'meera.s@saihospital.in', password: passwordHash, role: 'Accountant', phone: '9820150008', branchIdx: 2 },
   ]
   const userRecords: Array<{ id: string; userId: string }> = []
   for (const u of usersData) {
